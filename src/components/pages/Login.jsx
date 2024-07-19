@@ -1,7 +1,7 @@
-import { Link } from 'react-router-dom';
-
 import bannerImg from '../../assets/images/login_banner.jpg';
 import configs from '../../configs';
+import Input from '../input';
+import Button from '../button';
 
 function Login() {
     return (
@@ -13,8 +13,8 @@ function Login() {
                     className='h-full w-full object-cover'
                 />
             </div>
-            <div className='flex items-center justify-center lg:col-span-1 lg:min-h-screen lg:pl-[48px] lg:pr-[48px]'>
-                <div className='color-red w-11/12 place-content-center sm:w-4/5 md:w-3/5 lg:w-full'>
+            <div className='flex h-screen content-center items-center justify-center lg:col-span-1 lg:min-h-screen lg:pl-[48px] lg:pr-[48px]'>
+                <div className='w-11/12 place-content-center bg-white sm:w-4/5 md:w-3/5 lg:w-full'>
                     <h2 className='bold mb-4 text-center text-[40px] font-bold'>
                         Đăng nhập
                     </h2>
@@ -23,22 +23,24 @@ function Login() {
                             <label htmlFor='email' className=''>
                                 Email
                             </label>
-                            <input
+                            <Input
+                                rounded
                                 id='email'
                                 type='text'
-                                className='w-full border-2 border-[#E5E5E5] bg-[#F2F2F2] p-2 focus:outline-primary-light'
                                 placeholder='Nhập email'
+                                className={'w-full p-2'}
                             />
                         </div>
                         <div className='mb-4'>
                             <label htmlFor='password' className=''>
                                 Password
                             </label>
-                            <input
-                                placeholder='Nhập password'
+                            <Input
+                                rounded
                                 id='password'
-                                type='text'
-                                className='w-full border-2 border-[#E5E5E5] bg-[#F2F2F2] p-2 focus:outline-primary-light'
+                                type='password'
+                                placeholder='Nhập mật khẩu'
+                                className={'w-full p-2'}
                             />
                         </div>
                     </form>
@@ -57,24 +59,29 @@ function Login() {
                                 Ghi nhớ thiết bị
                             </label>
                         </div>
-                        {/* <div>
-                            <p className='text-primary cursor-pointer font-medium hover:underline'>
+                        <div>
+                            <Button
+                                textonly
+                                to={configs.routes.resetPassword}
+                                className='font-medium'
+                            >
                                 Quên mật khẩu?
-                            </p>
-                        </div> */}
+                            </Button>
+                        </div>
                     </div>
-                    <button className='h-[40px] w-full rounded-sm border-0 bg-primary pb-[10px] pt-[10px] text-[15px] font-bold text-white hover:bg-primary-dark'>
+                    <Button className='w-full font-medium' rounded>
                         Đăng nhập
-                    </button>
-                    <div className='mt-4'>
-                        <p>
-                            Bạn chưa có tài khoản?
-                            <Link to={configs.routes.register}>
-                                <span className='cursor-pointer font-medium text-primary hover:underline'>
-                                    Đăng ký ngay
-                                </span>
-                            </Link>
-                        </p>
+                    </Button>
+                    <div className='mt-4 flex gap-1'>
+                        <span>Bạn chưa có tài khoản?</span>
+
+                        <Button
+                            textonly
+                            to={configs.routes.register}
+                            className='font-medium'
+                        >
+                            Đăng ký ngay
+                        </Button>
                     </div>
                 </div>
             </div>

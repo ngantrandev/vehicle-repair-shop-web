@@ -1,6 +1,6 @@
-import Home from '../components/pages/Home';
-import Login from '../components/pages/Login';
-import Register from '../components/pages/Register';
+import Home from '../components/pages/Home.jsx';
+import Login from '../components/pages/Login.jsx';
+import Register from '../components/pages/Register.jsx';
 import configs from '../configs';
 
 const publicRoutes = [

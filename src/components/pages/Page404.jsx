@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 
 import notFoundImg from '../../assets/images/404.svg';
 import configs from '../../configs';
+import Button from '../button';
 
 function Page404() {
     return (
@@ -12,9 +13,7 @@ function Page404() {
             </h1>
 
             <Link to={configs.routes.home}>
-                <button className='rounded-md bg-primary-light p-2 text-sm font-bold text-[#fff] lg:text-xl'>
-                    Quay về trang chủ
-                </button>
+                <Button rounded>Quay lại trang chủ</Button>
             </Link>
         </div>
     );

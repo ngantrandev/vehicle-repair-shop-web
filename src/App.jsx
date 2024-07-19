@@ -2,7 +2,7 @@ import { Routes, Route, Navigate } from 'react-router-dom';
 
 import { publicRoutes } from './routes/index.js';
 import configs from './configs/index.js';
-import Page404 from './components/pages/Page404';
+import Page404 from './components/pages/Page404.jsx';
 
 function App() {
     return (
