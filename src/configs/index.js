@@ -3,6 +3,7 @@ const routes = {
     register: '/register',
     home: '/home',
     resetPassword: '/reset-password',
+    createService: '/service/new',
 };
 
 const configs = {

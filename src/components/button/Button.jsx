@@ -10,7 +10,7 @@ const Button = forwardRef(function Button(
         outlined,
         textonly,
         circle,
-        size = 40,
+        size = 10,
         onClick,
         disabled,
         children,
@@ -46,9 +46,7 @@ const Button = forwardRef(function Button(
     } else if (textonly) {
         customClassName.push('text-primary hover:underline');
     } else if (circle) {
-        customClassName.push(
-            `rounded-full w-[${size}px] h-[${size}px] border-2`
-        );
+        customClassName.push(`rounded-full size-${size} border-2`);
     }
 
     if (disabled) {

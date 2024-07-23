@@ -6,16 +6,106 @@ import 'tippy.js/dist/tippy.css'; // optional
 import logo from '/favicon.svg';
 import textLogo from '/favicon_text.svg';
 import Button from '../button';
+import PaginatedItems from '../paginateditems';
+import ServiceList from '../servicelist';
+import DropDown from '../dropdown';
 
 const webName = import.meta.env.VITE_WEB_NAME;
+
+let serviceList = [
+    { name: 'Thaydfa xích xe honda', price: '700.000đ', time: '30p' },
+    { name: 'Thayas lốp xe wave alpha', price: '500.000đ', time: '1h30p' },
+    {
+        name: 'Thaydfa xíaesrfqwrefch xe honda',
+        price: '70sdf0.000đ',
+        time: '30p',
+    },
+    { name: 'Thay dadsfầusdfsadf xe dream', price: '300.00sdf0đ', time: '1h' },
+    { name: 'Thay lốp xe wave alpha', price: '50sdf0.000đ', time: '1h30p' },
+    { name: 'Thay xífch xsdfsdfae honda', price: '700.000đ', time: '30p' },
+    {
+        name: 'Thay lốp xeasdfasdf wave alpha',
+        price: '500.000đ',
+        time: '1h30p',
+    },
+    { name: 'Thay xíchads asdfasxe honda', price: '700.000đ', time: '30p' },
+    { name: 'Thay dầu xasdffasdfe dream', price: '300.000đ', time: '1h' },
+    { name: 'Thaydf lốp xdfe wave alpha', price: '500.000đ', time: '1h30p' },
+    { name: 'Thayadf xíchaassdfasd xe honda', price: '700.000đ', time: '30p' },
+    { name: 'Thay lốp xdfasde wave alpha', price: '500.000đ', time: '1h30p' },
+    { name: 'Thay xích xfasdfe honda', price: '700.000đ', time: '30p' },
+    { name: 'Thay dầu xe dream', price: '300.000đ', time: '1h' },
+    { name: 'Thay xífch xsdfsdfae honda', price: '700.000đ', time: '30p' },
+    {
+        name: 'Thay lốp xeasdfasdf wave alpha',
+        price: '500.000đ',
+        time: '1h30p',
+    },
+    { name: 'Thay xíchads asdfasxe honda', price: '700.000đ', time: '30p' },
+    { name: 'Thay dầu xasdffasdfe dream', price: '300.000đ', time: '1h' },
+    { name: 'Thaydf lốp xdfe wave alpha', price: '500.000đ', time: '1h30p' },
+    { name: 'Thayadf xíchaassdfasd xe honda', price: '700.000đ', time: '30p' },
+    { name: 'Thay lốp xdfasde wave alpha', price: '500.000đ', time: '1h30p' },
+    { name: 'Thay xích xfasdfe honda', price: '700.000đ', time: '30p' },
+    { name: 'Thay dầu xe dreadsfasdfam', price: '300.000đ', time: '1h' },
+    { name: 'Thay xífcadfah xsdfsdfae honda', price: '700.000đ', time: '30p' },
+    {
+        name: 'Thay lốp xdfeasdfasdf wave alpha',
+        price: '500.000đ',
+        time: '1h30p',
+    },
+    { name: 'Thay xíchadass asdfasxe honda', price: '700.000đ', time: '30p' },
+    { name: 'Thay dầu xasasdfdffasdfe dream', price: '300.000đ', time: '1h' },
+    { name: 'Thaydf lốp xdfe wave alpha', price: '500.000đ', time: '1h30p' },
+    {
+        name: 'Thafdyadf xíchaassdfasd xe honda',
+        price: '700.000đ',
+        time: '30p',
+    },
+    {
+        name: 'Thay lốp xsdfadfasdfasde wave alpha',
+        price: '500.000đ',
+        time: '1h30p',
+    },
+    { name: 'Thsfaady xích sdfxfasdfe honda', price: '700.000đ', time: '30p' },
+    { name: 'Thay dầu xe dream', price: '300.000đ', time: '1h' },
+    {
+        name: 'Thaasdfy xífcash xsdfsdfae honda',
+        price: '700.000đ',
+        time: '30p',
+    },
+    {
+        name: 'Thafyad lốpsd dfaxeasdfasdf wave alpha',
+        price: '500.000đ',
+        time: '1h30p',
+    },
+    { name: 'Thayf xícfahads asdfasxe honda', price: '700.000đ', time: '30p' },
+    { name: 'Thay dầusdf xasdffasdfe dream', price: '300.000đ', time: '1h' },
+    { name: 'Thaydf asdốp xdfe wave alpha', price: '500.000đ', time: '1h30p' },
+    {
+        name: 'Thayadf aadsfxíchaassdfasd xe honda',
+        price: '700.000đ',
+        time: '30p',
+    },
+    {
+        name: 'Thay lốpdsfsf xdfasde wave alpha',
+        price: '500.000đ',
+        time: '1h30p',
+    },
+    { name: 'Thay xícha xfasdfe honda', price: '700.000đ', time: '30p' },
+    { name: 'Thay dầu sdfadxe dream', price: '300.000đ', time: '1h' },
+];
+
+// serviceList = [...Array(303).keys()];
 
 function Home() {
     const [isSignedIn, setIsSignedIn] = useState(false);
     const [cartNumber, setCartNumber] = useState(0);
+    const [dropdownOpenId, setDropdownOpenId] = useState(null);
 
     useEffect(() => {
         // Check if user is signed in
-        setIsSignedIn(false);
+        setIsSignedIn(true);
     }, []);
 
     useEffect(() => {
@@ -24,7 +114,7 @@ function Home() {
     }, [cartNumber]);
 
     return (
-        <div className='mx-2 md:mx-12'>
+        <div className='mx-2 mb-10 md:mx-12'>
             <div className='flex h-[70px] w-full items-center justify-between gap-x-2 border-b-2 bg-white py-[14px] sm:gap-x-8 md:gap-x-16 lg:gap-x-4'>
                 <Link
                     to='/'
@@ -77,10 +167,10 @@ function Home() {
                     </Tippy>
                     {isSignedIn ? (
                         <Tippy content='Profile'>
-                            <Button circle className={'overflow-hidden'}>
+                            <Button circle className='size-10 overflow-hidden'>
                                 <svg
                                     id='default-avatar'
-                                    className='h-[80%] w-[80%] fill-current text-gray-500'
+                                    className='size-[80%] fill-current text-gray-500'
                                     viewBox='0 0 512 512'
                                     width='512'
                                     xmlns='http://www.w3.org/2000/svg'
@@ -104,7 +194,83 @@ function Home() {
                     )}
                 </div>
             </div>
-            <div>This is content</div>
+
+            <div>
+                <div id='banner' className='mt-4 h-56 w-full'>
+                    <div className='relative h-full w-full rounded-xl bg-primary-light p-[2rem] font-bold text-white'>
+                        <div
+                            id='title'
+                            className='text-2xl font-bold lg:ml-[2rem] lg:text-[2rem]'
+                        >
+                            Bảo dưỡng xe
+                        </div>
+                        <div
+                            id='subtitle'
+                            className='mt-3 text-xs lg:ml-[4rem] lg:mr-[10rem] lg:mt-4 lg:text-sm'
+                        >
+                            Chúng tôi cung cấp dịch vụ bảo dưỡng xe cao cấp, áp
+                            dụng đối với nhiều dòng xe. Cam kết bảo đảm chất
+                            lượng cho quý khách hàng.
+                        </div>
+                        <Button
+                            outlined
+                            className='absolute bottom-0 mb-8 border-white text-xs text-white hover:bg-white hover:text-primary active:bg-opacity-0 active:text-white lg:mb-5 lg:ml-[4rem] lg:mr-[8rem] lg:text-sm'
+                        >
+                            Tìm dịch vụ
+                        </Button>
+                    </div>
+                </div>
+
+                <div id='services-container'>
+                    <div
+                        id='action-button'
+                        className='mx-4 mb-8 mt-10 flex flex-wrap gap-3'
+                    >
+                        <DropDown
+                            id='service-type'
+                            name='Loại dịch vụ'
+                            data={[
+                                { name: 'toan', id: 1 },
+                                { name: 'toan', id: 1 },
+                                { name: 'toan', id: 1 },
+                                { name: 'toan', id: 1 },
+                                { name: 'toan', id: 1 },
+                                { name: 'toan', id: 1 },
+                                { name: 'toan', id: 1 },
+                            ]}
+                            inputPlaceHolder='Tìm kiếm dịch vụ'
+                            dropdownOpenId={dropdownOpenId}
+                            setDropdownOpenId={setDropdownOpenId}
+                            onItemSelect={(id) => console.log(id)}
+                        />
+                        <DropDown
+                            id='vehicle-type'
+                            name='Loại xe'
+                            data={[
+                                { name: 'toan', id: 1 },
+                                { name: 'toan', id: 1 },
+                                { name: 'toan', id: 1 },
+                                { name: 'toan', id: 1 },
+                                { name: 'toan', id: 1 },
+                                { name: 'toan', id: 1 },
+                                { name: 'toan', id: 1 },
+                            ]}
+                            className='w-'
+                            inputPlaceHolder='Tìm kiếm dịch vụ'
+                            dropdownOpenId={dropdownOpenId}
+                            setDropdownOpenId={setDropdownOpenId}
+                        />
+                    </div>
+
+                    <PaginatedItems
+                        data={serviceList}
+                        itemsPerPage={10}
+                        size={8}
+                    >
+                        <ServiceList />
+                    </PaginatedItems>
+                </div>
+            </div>
         </div>
     );
 }
