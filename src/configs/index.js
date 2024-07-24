@@ -3,7 +3,11 @@ const routes = {
     register: '/register',
     home: '/home',
     resetPassword: '/reset-password',
-    createService: '/service/new',
+    service: {
+        list: '/service/',
+        create: '/service/new',
+        modify: '/service/:service_id/modify',
+    },
 };
 
 const configs = {
