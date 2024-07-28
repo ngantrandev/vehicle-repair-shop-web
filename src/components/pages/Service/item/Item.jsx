@@ -17,7 +17,16 @@ function Item({ data, className }) {
             </td>
             <td>{price} đồng</td>
             <td className='flex gap-x-2'>
-                <Link to={'#'} className='flex hover:text-primary'>
+                <Link
+                    to={{
+                        pathname: `/service/${data.id}/modify`,
+                    }}
+                    state={{
+                        data: data,
+                        from: window.location.pathname,
+                    }}
+                    className='flex hover:text-primary'
+                >
                     <Tippy content='Chỉnh sửa'>
                         <div className='size-6'>
                             <svg

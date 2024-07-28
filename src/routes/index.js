@@ -1,9 +1,11 @@
+import MyBookings from '../components/pages/booking/MyBookings.jsx';
 import CreateService from '../components/pages/CreateService.jsx';
 import Home from '../components/pages/Home.jsx';
 import Login from '../components/pages/Login.jsx';
 import ModifyService from '../components/pages/ModifyService.jsx';
 import Register from '../components/pages/Register.jsx';
 import Service from '../components/pages/Service';
+import ServiceDetail from '../components/pages/ServiceDetail.jsx';
 import User from '../components/pages/User';
 import configs from '../configs';
 
@@ -12,6 +14,11 @@ const publicRoutes = [
     { path: configs.routes.register, component: Register, layout: null },
     { path: configs.routes.home, component: Home, layout: null },
     {
+        path: configs.routes.booking.list,
+        component: MyBookings,
+        layout: null,
+    },
+    {
         path: configs.routes.service.create,
         component: CreateService,
         layout: null,
@@ -19,6 +26,11 @@ const publicRoutes = [
     {
         path: configs.routes.service.modify,
         component: ModifyService,
+        layout: null,
+    },
+    {
+        path: configs.routes.service.detail,
+        component: ServiceDetail,
         layout: null,
     },
     { path: configs.routes.admin.dashboard.services, component: Service },

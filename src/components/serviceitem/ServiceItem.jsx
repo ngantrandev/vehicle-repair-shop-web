@@ -19,7 +19,7 @@ function ServiceItem({ itemData, className, ...otherProps }) {
         >
             <div
                 id='item-header'
-                className='flex h-2/3 items-center justify-center bg-pink-light font-bold'
+                className='flex h-2/3 items-center justify-center bg-pink-light px-1 font-bold lg:px-2'
             >
                 <p className='text-center text-lg md:text-2xl lg:text-3xl'>
                     {name}

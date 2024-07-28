@@ -8,35 +8,30 @@ import { Fragment } from 'react';
 
 function App() {
     return (
-        <div>
-            <Routes>
-                {publicRoutes.map((route, index) => {
-                    let Layout = DefaultLayout;
-                    if (route.layout) {
-                        Layout = route.layout;
-                    } else if (route.layout === null) {
-                        Layout = Fragment;
-                    }
-                    const Page = route.component;
-                    return (
-                        <Route
-                            key={index}
-                            path={route.path}
-                            element={
-                                <Layout>
-                                    <Page />
-                                </Layout>
-                            }
-                        />
-                    );
-                })}
-                <Route
-                    path='/'
-                    element={<Navigate to={configs.routes.home} />}
-                />
-                <Route path='*' element={<Page404 />} />
-            </Routes>
-        </div>
+        <Routes>
+            {publicRoutes.map((route, index) => {
+                let Layout = DefaultLayout;
+                if (route.layout) {
+                    Layout = route.layout;
+                } else if (route.layout === null) {
+                    Layout = Fragment;
+                }
+                const Page = route.component;
+                return (
+                    <Route
+                        key={index}
+                        path={route.path}
+                        element={
+                            <Layout>
+                                <Page />
+                            </Layout>
+                        }
+                    />
+                );
+            })}
+            <Route path='/' element={<Navigate to={configs.routes.home} />} />
+            <Route path='*' element={<Page404 />} />
+        </Routes>
     );
 }
 

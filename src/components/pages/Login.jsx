@@ -1,9 +1,27 @@
+import { useState } from 'react';
+
 import bannerImg from '../../assets/images/login_banner.jpg';
 import configs from '../../configs';
 import Input from '../input';
 import Button from '../button';
 
+import * as authService from '../../services/authService';
+import { useNavigate } from 'react-router-dom';
+
 function Login() {
+    const [username, setUsername] = useState('');
+    const [password, setPassword] = useState('');
+    const navigate = useNavigate();
+
+    const handleSignIn = async () => {
+        const result = await authService.login({ username, password });
+
+        localStorage.setItem('token', result.token);
+        localStorage.setItem('user', JSON.stringify(result.data));
+
+        navigate(configs.routes.home);
+    };
+
     return (
         <div className='grid w-full grid-cols-1 text-[15px] lg:grid-cols-3'>
             <div className='hidden h-screen lg:col-span-2 lg:block'>
@@ -20,20 +38,22 @@ function Login() {
                     </h2>
                     <form>
                         <div className='mb-4'>
-                            <label htmlFor='email' className=''>
-                                Email
+                            <label htmlFor='username' className=''>
+                                Tên tài khoản
                             </label>
                             <Input
                                 rounded
-                                id='email'
+                                id='username'
                                 type='text'
-                                placeholder='Nhập email'
+                                placeholder='Nhập tên tài khoản'
                                 className={'w-full p-2'}
+                                value={username}
+                                onChange={(e) => setUsername(e.target.value)}
                             />
                         </div>
                         <div className='mb-4'>
                             <label htmlFor='password' className=''>
-                                Password
+                                Mât khẩu
                             </label>
                             <Input
                                 rounded
@@ -41,6 +61,8 @@ function Login() {
                                 type='password'
                                 placeholder='Nhập mật khẩu'
                                 className={'w-full p-2'}
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
                             />
                         </div>
                     </form>
@@ -69,7 +91,11 @@ function Login() {
                             </Button>
                         </div>
                     </div>
-                    <Button className='w-full font-medium' rounded>
+                    <Button
+                        className='w-full font-medium'
+                        rounded
+                        onClick={() => handleSignIn()}
+                    >
                         Đăng nhập
                     </Button>
                     <div className='mt-4 flex gap-1'>

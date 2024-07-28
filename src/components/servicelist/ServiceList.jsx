@@ -1,6 +1,7 @@
 import { PropTypes } from 'prop-types';
 
 import ServiceItem from '../serviceitem';
+import { Link } from 'react-router-dom';
 
 const ServiceList = ({ data }) => {
     return (
@@ -9,11 +10,19 @@ const ServiceList = ({ data }) => {
             className='mt-4 grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-4'
         >
             {data.map((service, index) => (
-                <ServiceItem
+                <Link
                     key={index}
-                    itemData={service}
-                    className='w-full hover:-translate-y-1 hover:border hover:border-primary'
-                />
+                    to={`/services/${service.id}/`}
+                    state={{
+                        data: service,
+                        from: window.location.pathname,
+                    }}
+                >
+                    <ServiceItem
+                        itemData={service}
+                        className='w-full hover:-translate-y-1 hover:border hover:border-primary'
+                    />
+                </Link>
             ))}
         </div>
     );

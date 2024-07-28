@@ -4,10 +4,18 @@ const routes = {
     home: '/home',
     resetPassword: '/reset-password',
     service: {
-        list: '/service/',
-        create: '/service/new',
-        modify: '/service/:service_id/modify',
+        list: '/services/',
+        create: '/services/new',
+        modify: '/services/:service_id/modify',
+        detail: '/services/:service_id',
     },
+    booking: {
+        list: 'users/:user_id/bookings/',
+        create: '/bookings/new',
+        modify: '/bookings/:booking_id/modify',
+        detail: '/bookings/:booking_id',
+    },
+
     admin: {
         dashboard: {
             services: '/admin/dashboard/service',
@@ -16,8 +24,29 @@ const routes = {
     },
 };
 
+const STATUS_CODE = {
+    OK: 200,
+    BAD_REQUEST: 400,
+    FORBIDDEN: 403,
+    UNAUTHORIZED: 401,
+    NOT_FOUND: 404,
+    INTERNAL_SERVER_ERROR: 500,
+    CONFLICT: 409,
+    UNPROCESSABLE_ENTITY: 422,
+};
+
+const BOOKING_STATE = {
+    pending: 'pending',
+    accepted: 'accepted',
+    fixing: 'fixing',
+    done: 'done',
+    cancelled: 'cancelled',
+};
+
 const configs = {
     routes,
+    STATUS_CODE,
+    BOOKING_STATE,
 };
 
 export default configs;

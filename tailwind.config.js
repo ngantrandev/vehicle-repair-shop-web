@@ -9,6 +9,7 @@ export default {
                 'primary-supper-light': '#73b4ff',
                 'primary-dark': '#0056b3',
                 'pink-light': '#F0D9D9',
+                'green-light': '#18C07A',
             },
         },
     },

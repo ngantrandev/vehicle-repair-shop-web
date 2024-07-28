@@ -8,6 +8,7 @@ function Input({
     value,
     onChange,
     className,
+    multiline,
     ...otherProps
 }) {
     /**'focus:outline-primary-supper-light w-full border-2 border-[#E5E5E5] bg-[#F2F2F2] p-2' */
@@ -25,8 +26,13 @@ function Input({
 
     customClassName.push(className);
 
+    let Tag = 'input';
+    if (multiline) {
+        Tag = 'textarea';
+    }
+
     return (
-        <input
+        <Tag
             id={id}
             type={type}
             placeholder={placeholder}
@@ -46,6 +52,7 @@ Input.propTypes = {
     value: PropTypes.string,
     onChange: PropTypes.func,
     className: PropTypes.string,
+    multiline: PropTypes.bool,
 };
 
 export default Input;

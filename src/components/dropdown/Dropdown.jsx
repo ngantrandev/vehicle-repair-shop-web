@@ -18,13 +18,13 @@ function Dropdown({
         useState(currentIrem); /**id of selected item */
     const isOpen = id === dropdownOpenId;
 
-    useEffect(()=>{
-        data.forEach(item => {
-            if(item.id === currentIrem){
+    useEffect(() => {
+        data.forEach((item) => {
+            if (item.id === currentIrem) {
                 setDropdownName(item.name);
             }
         });
-    }, [data, currentIrem])
+    }, [data, currentIrem]);
 
     const handleToggle = () => {
         setDropdownOpenId(isOpen ? null : id);

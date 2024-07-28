@@ -1,30 +1,32 @@
 import { useEffect, useState } from 'react';
-import { PropTypes } from 'prop-types';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 import Button from '../button';
 import Dropdown from '../dropdown';
 import Input from '../input';
 
-function ModifyService({
-    data = {
-        id: 1,
-        name: 'Sửa xe',
-        description: 'Sửa xe',
-        price: 100000,
-        estimated_time: '01:00',
-        category: { name: 'Sửa xe', id: 1 },
-        active: 1,
-    },
-}) {
-    const { name, description, price, estimated_time, category, active } = data;
+function ModifyService() {
+    const location = useLocation();
+    const navigate = useNavigate();
+
+    const { from, data } = location.state;
+
+    const {
+        name,
+        description,
+        price,
+        estimated_time: time,
+        category,
+        active,
+    } = data;
+
     const [listCategory, setListCategory] = useState([]);
     const [serviceStatus, setServiceStatus] = useState(active === 1);
 
     const [inputName, setInputName] = useState(name);
     const [inputDescription, setInputDescription] = useState(description);
     const [inputPrice, setInputPrice] = useState(price);
-    const [inputEstimatedTime, setInputEstimatedTime] =
-        useState(estimated_time);
+    const [inputTime, setInputTime] = useState(time);
 
     useEffect(() => {
         setListCategory([
@@ -46,7 +48,19 @@ function ModifyService({
 
     return (
         <div className='flex h-screen w-full items-center justify-center bg-primary-supper-light'>
-            <Button className='fixed left-0 top-0 m-3 flex gap-1' rounded>
+            <Button
+                className='fixed left-0 top-0 m-3 flex gap-1'
+                rounded
+                onClick={() => {
+                    if (
+                        window.confirm(
+                            'Bạn có chắc chắn muốn rời khỏi trang này?'
+                        )
+                    ) {
+                        navigate(from);
+                    }
+                }}
+            >
                 <svg
                     className='fill-current text-white'
                     baseProfile='tiny'
@@ -63,6 +77,7 @@ function ModifyService({
                 </svg>
                 <span>Quay lại</span>
             </Button>
+
             <div
                 id='container'
                 className='flex h-screen w-full flex-col items-center justify-center bg-white px-3 md:w-1/2'
@@ -99,6 +114,7 @@ function ModifyService({
                             onChange={(e) =>
                                 setInputDescription(e.target.value)
                             }
+                            multiline
                         />
                     </div>
                     <div className='mb-4'>
@@ -125,10 +141,8 @@ function ModifyService({
                             type='time'
                             placeholder='Nhập thời gian ước tính'
                             className={'w-full p-2'}
-                            value={inputEstimatedTime}
-                            onChange={(e) =>
-                                setInputEstimatedTime(e.target.value)
-                            }
+                            value={inputTime}
+                            onChange={(e) => setInputTime(e.target.value)}
                         />
                     </div>
                     <div className='mb-4 w-2/3'>
@@ -154,7 +168,6 @@ function ModifyService({
                             <input
                                 id='active'
                                 type='checkbox'
-                                value=''
                                 className='peer sr-only'
                                 {...(serviceStatus && { checked: true })}
                                 onChange={() => {
@@ -177,9 +190,5 @@ function ModifyService({
         </div>
     );
 }
-
-ModifyService.propTypes = {
-    data: PropTypes.object.isRequired,
-};
 
 export default ModifyService;

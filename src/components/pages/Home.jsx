@@ -10,102 +10,41 @@ import PaginatedItems from '../paginateditems';
 import ServiceList from '../servicelist';
 import DropDown from '../dropdown';
 
+import * as loadData from '../../services/loadData.js';
+
 const webName = import.meta.env.VITE_WEB_NAME;
-
-let serviceList = [
-    { name: 'Thaydfa xích xe honda', price: '700.000đ', time: '30p' },
-    { name: 'Thayas lốp xe wave alpha', price: '500.000đ', time: '1h30p' },
-    {
-        name: 'Thaydfa xíaesrfqwrefch xe honda',
-        price: '70sdf0.000đ',
-        time: '30p',
-    },
-    { name: 'Thay dadsfầusdfsadf xe dream', price: '300.00sdf0đ', time: '1h' },
-    { name: 'Thay lốp xe wave alpha', price: '50sdf0.000đ', time: '1h30p' },
-    { name: 'Thay xífch xsdfsdfae honda', price: '700.000đ', time: '30p' },
-    {
-        name: 'Thay lốp xeasdfasdf wave alpha',
-        price: '500.000đ',
-        time: '1h30p',
-    },
-    { name: 'Thay xíchads asdfasxe honda', price: '700.000đ', time: '30p' },
-    { name: 'Thay dầu xasdffasdfe dream', price: '300.000đ', time: '1h' },
-    { name: 'Thaydf lốp xdfe wave alpha', price: '500.000đ', time: '1h30p' },
-    { name: 'Thayadf xíchaassdfasd xe honda', price: '700.000đ', time: '30p' },
-    { name: 'Thay lốp xdfasde wave alpha', price: '500.000đ', time: '1h30p' },
-    { name: 'Thay xích xfasdfe honda', price: '700.000đ', time: '30p' },
-    { name: 'Thay dầu xe dream', price: '300.000đ', time: '1h' },
-    { name: 'Thay xífch xsdfsdfae honda', price: '700.000đ', time: '30p' },
-    {
-        name: 'Thay lốp xeasdfasdf wave alpha',
-        price: '500.000đ',
-        time: '1h30p',
-    },
-    { name: 'Thay xíchads asdfasxe honda', price: '700.000đ', time: '30p' },
-    { name: 'Thay dầu xasdffasdfe dream', price: '300.000đ', time: '1h' },
-    { name: 'Thaydf lốp xdfe wave alpha', price: '500.000đ', time: '1h30p' },
-    { name: 'Thayadf xíchaassdfasd xe honda', price: '700.000đ', time: '30p' },
-    { name: 'Thay lốp xdfasde wave alpha', price: '500.000đ', time: '1h30p' },
-    { name: 'Thay xích xfasdfe honda', price: '700.000đ', time: '30p' },
-    { name: 'Thay dầu xe dreadsfasdfam', price: '300.000đ', time: '1h' },
-    { name: 'Thay xífcadfah xsdfsdfae honda', price: '700.000đ', time: '30p' },
-    {
-        name: 'Thay lốp xdfeasdfasdf wave alpha',
-        price: '500.000đ',
-        time: '1h30p',
-    },
-    { name: 'Thay xíchadass asdfasxe honda', price: '700.000đ', time: '30p' },
-    { name: 'Thay dầu xasasdfdffasdfe dream', price: '300.000đ', time: '1h' },
-    { name: 'Thaydf lốp xdfe wave alpha', price: '500.000đ', time: '1h30p' },
-    {
-        name: 'Thafdyadf xíchaassdfasd xe honda',
-        price: '700.000đ',
-        time: '30p',
-    },
-    {
-        name: 'Thay lốp xsdfadfasdfasde wave alpha',
-        price: '500.000đ',
-        time: '1h30p',
-    },
-    { name: 'Thsfaady xích sdfxfasdfe honda', price: '700.000đ', time: '30p' },
-    { name: 'Thay dầu xe dream', price: '300.000đ', time: '1h' },
-    {
-        name: 'Thaasdfy xífcash xsdfsdfae honda',
-        price: '700.000đ',
-        time: '30p',
-    },
-    {
-        name: 'Thafyad lốpsd dfaxeasdfasdf wave alpha',
-        price: '500.000đ',
-        time: '1h30p',
-    },
-    { name: 'Thayf xícfahads asdfasxe honda', price: '700.000đ', time: '30p' },
-    { name: 'Thay dầusdf xasdffasdfe dream', price: '300.000đ', time: '1h' },
-    { name: 'Thaydf asdốp xdfe wave alpha', price: '500.000đ', time: '1h30p' },
-    {
-        name: 'Thayadf aadsfxíchaassdfasd xe honda',
-        price: '700.000đ',
-        time: '30p',
-    },
-    {
-        name: 'Thay lốpdsfsf xdfasde wave alpha',
-        price: '500.000đ',
-        time: '1h30p',
-    },
-    { name: 'Thay xícha xfasdfe honda', price: '700.000đ', time: '30p' },
-    { name: 'Thay dầu sdfadxe dream', price: '300.000đ', time: '1h' },
-];
-
-// serviceList = [...Array(303).keys()];
 
 function Home() {
     const [isSignedIn, setIsSignedIn] = useState(false);
     const [cartNumber, setCartNumber] = useState(0);
+    const [serviceList, setServiceList] = useState([]);
     const [dropdownOpenId, setDropdownOpenId] = useState(null);
+    const [serviceCategories, setServiceCategories] = useState([]);
+    const [motorcycleBrands, setMotorcycleBrands] = useState([]);
 
     useEffect(() => {
         // Check if user is signed in
         setIsSignedIn(true);
+    }, []);
+
+    useEffect(() => {
+        const fetchServices = async () => {
+            const services = await loadData.getListService();
+            const serviceCategories = await loadData.getServiceCategories();
+            const motorcycleBrands = await loadData.getMotorcycleBrands();
+
+            setMotorcycleBrands([
+                { id: -1, name: 'Tất cả' },
+                ...motorcycleBrands,
+            ]);
+            setServiceCategories([
+                { id: -1, name: 'Tất cả' },
+                ...serviceCategories,
+            ]);
+            setServiceList(services);
+        };
+
+        fetchServices();
     }, []);
 
     useEffect(() => {
@@ -229,42 +168,28 @@ function Home() {
                         <DropDown
                             id='service-type'
                             name='Loại dịch vụ'
-                            data={[
-                                { name: 'toan', id: 1 },
-                                { name: 'toan', id: 1 },
-                                { name: 'toan', id: 1 },
-                                { name: 'toan', id: 1 },
-                                { name: 'toan', id: 1 },
-                                { name: 'toan', id: 1 },
-                                { name: 'toan', id: 1 },
-                            ]}
+                            data={serviceCategories}
                             inputPlaceHolder='Tìm kiếm dịch vụ'
                             dropdownOpenId={dropdownOpenId}
                             setDropdownOpenId={setDropdownOpenId}
                             onItemSelect={(id) => console.log(id)}
+                            visibleSearch
                         />
                         <DropDown
                             id='vehicle-type'
                             name='Loại xe'
-                            data={[
-                                { name: 'toan', id: 1 },
-                                { name: 'toan', id: 1 },
-                                { name: 'toan', id: 1 },
-                                { name: 'toan', id: 1 },
-                                { name: 'toan', id: 1 },
-                                { name: 'toan', id: 1 },
-                                { name: 'toan', id: 1 },
-                            ]}
+                            data={motorcycleBrands}
                             className='w-'
                             inputPlaceHolder='Tìm kiếm dịch vụ'
                             dropdownOpenId={dropdownOpenId}
                             setDropdownOpenId={setDropdownOpenId}
+                            visibleSearch
                         />
                     </div>
 
                     <PaginatedItems
                         data={serviceList}
-                        itemsPerPage={10}
+                        itemsPerPage={5}
                         size={8}
                     >
                         <ServiceList />

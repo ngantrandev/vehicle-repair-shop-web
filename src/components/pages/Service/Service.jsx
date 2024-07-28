@@ -9,21 +9,15 @@ function Service() {
 
         setServices([
             {
+                id: 1,
                 name: 'Sửa xe honda',
                 estimated_time: '00:02',
-                price: '$1.29',
-            },
-
-            {
-                name: 'Sửa xe yamaha',
-                estimated_time: '01:25',
-                price: '$1.29',
-            },
-
-            {
-                name: 'Sửa xe kawasaki',
-                estimated_time: '00:30',
-                price: '$1.29',
+                description: 'Sửa xe honda',
+                price: '1.29',
+                category: {
+                    id: 1,
+                },
+                active: 1,
             },
         ]);
     }, []);
