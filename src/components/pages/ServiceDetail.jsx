@@ -5,7 +5,7 @@ import Button from '../button';
 import SuccessPopup from '../popup/SuccessPopup';
 import Input from '../input';
 
-import * as loadData from '../../services/loadData';
+import loadData from '../../services/loadData';
 import bookingService from '../../services/bookingService';
 import ultils from '../../ultils';
 import configs from '../../configs';
@@ -27,29 +27,27 @@ function ServiceDetail() {
 
     const getProvinces = async () => {
         const provinces = await loadData.getListProvince();
-        setProvinces(provinces);
+        setProvinces(provinces.data);
     };
 
     const getDistricts = async (provinceId) => {
         const districts = await loadData.getListDistrict(provinceId);
-        setDistricts(districts);
+        setDistricts(districts.data);
     };
 
     const getWards = async (districtId) => {
         const wards = await loadData.getListWard(districtId);
-        setWards(wards);
+        setWards(wards.data);
     };
 
     const handleCreateBooking = async () => {
         if (!selectedWard || !ultils.isValidInteger(selectedWard)) {
-            console.log('Chưa chọn phường xã');
             return;
         }
 
         const user = ultils.getUserDataLogedin();
 
         if (!user) {
-            console.log('Chưa đăng nhập');
             return;
         }
 
@@ -80,7 +78,7 @@ function ServiceDetail() {
 
     return (
         <div className='relative'>
-            <div className='relative flex h-screen w-full items-center justify-center'>
+            <div className='relative flex h-screen w-full flex-col items-center justify-center'>
                 <Button
                     rounded
                     onClick={() => navigate(from)}
@@ -88,14 +86,23 @@ function ServiceDetail() {
                 >
                     Quay lại
                 </Button>
-                <div className='flex h-full w-3/5 flex-col items-center justify-center'>
-                    <div className='flex h-1/2 w-full flex-col items-center justify-center rounded-md bg-primary-supper-light'>
+                <h1 className='mt-12 text-3xl font-bold'>Thông tin dịch vụ</h1>
+                <div className='mt-12 flex h-full w-3/5 flex-col'>
+                    <div className='flex h-1/2 w-full flex-col items-center justify-center rounded-md border-2 border-primary-light'>
                         <div className='flex flex-col gap-y-2 px-4'>
-                            <h1 className='text-3xl font-bold'>{name}</h1>
+                            <div>
+                                <span>Tên dịch vụ: </span>
+                                <span className='text-3xl font-bold'>
+                                    {name}
+                                </span>
+                            </div>
                             <h3>Mô tả: {description}</h3>
                             <h3>
                                 Phí dịch vụ:
-                                <span className='text-primary'>{price}</span>
+                                <span className='font-bold'>
+                                    {' '}
+                                    {ultils.getCurrencyFormat(price)}
+                                </span>
                             </h3>
                             <h3>Thời gian ước tính: {time}</h3>{' '}
                         </div>
@@ -173,7 +180,7 @@ function ServiceDetail() {
 
                                 <div className='col-span-3 sm:col-span-1'>
                                     <label
-                                        htmlFor='category'
+                                        htmlFor='province'
                                         className='mb-2 block text-sm font-medium text-gray-900'
                                     >
                                         Tỉnh thành
@@ -207,7 +214,7 @@ function ServiceDetail() {
                                         Quận huyện
                                     </label>
                                     <select
-                                        id='category'
+                                        id='district'
                                         className='block w-full rounded-lg border-2 border-primary-light p-2.5 text-sm focus:border-primary-light'
                                         onChange={(e) =>
                                             getWards(e.target.value)

@@ -1,4 +1,5 @@
 import axios from 'axios';
+
 import configs from '../configs';
 
 const httpRequest = axios.create({
@@ -18,7 +19,7 @@ const get = async (apiPath, params = {}) => {
             throw new Error(res.data.message);
         }
 
-        return res.data;
+        return res;
     } catch (error) {
         throw new Error(error);
     }
@@ -52,6 +53,12 @@ const patch = async (apiPath, data = {}) => {
     }
 };
 
-export default httpRequest;
+// export default httpRequest;
 
-export { get, post, patch };
+const requests = {
+    get,
+    post,
+    patch,
+};
+
+export default requests;

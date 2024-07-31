@@ -16,8 +16,8 @@ function Login() {
     const handleSignIn = async () => {
         const result = await authService.login({ username, password });
 
-        localStorage.setItem('token', result.token);
-        localStorage.setItem('user', JSON.stringify(result.data));
+        localStorage.setItem('token', result.data.token);
+        localStorage.setItem('user', JSON.stringify(result.data.data));
 
         navigate(configs.routes.home);
     };
@@ -33,7 +33,7 @@ function Login() {
             </div>
             <div className='flex h-screen content-center items-center justify-center lg:col-span-1 lg:min-h-screen lg:pl-[48px] lg:pr-[48px]'>
                 <div className='w-11/12 place-content-center bg-white sm:w-4/5 md:w-3/5 lg:w-full'>
-                    <h2 className='bold mb-4 text-center text-[40px] font-bold'>
+                    <h2 className='bold mb-4 text-center text-[40px] font-bold text-primary'>
                         Đăng nhập
                     </h2>
                     <form>

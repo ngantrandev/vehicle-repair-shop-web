@@ -1,10 +1,10 @@
+import { Fragment } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 
 import { publicRoutes } from './routes/index.js';
 import configs from './configs/index.js';
 import Page404 from './components/pages/Page404.jsx';
-import DefaultLayout from './layouts/defaultLayout/DefaultLayout.jsx';
-import { Fragment } from 'react';
+import DefaultLayout from './layouts/defaultLayout';
 
 function App() {
     return (

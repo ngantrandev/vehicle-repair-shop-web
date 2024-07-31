@@ -1,4 +1,4 @@
-import * as httpRequests from '../ultils/httpRequest';
+import httpRequests from '../ultils/httpRequest';
 
 const getServiceCategories = async () => {
     try {
@@ -24,7 +24,7 @@ const getListService = async () => {
     try {
         const res = await httpRequests.get('/services');
 
-        return res.data;
+        return res;
     } catch (error) {
         throw new Error(error);
     }
@@ -64,11 +64,35 @@ const getListWard = async (districtId) => {
     }
 };
 
-export {
+const getCarts = async (userId) => {
+    try {
+        const res = await httpRequests.get(`users/${userId}/carts`);
+
+        return res;
+    } catch (error) {
+        throw new Error(error);
+    }
+};
+
+const getActiveServiceStations = async () => {
+    try {
+        const res = await httpRequests.get('/stations');
+
+        return res;
+    } catch (error) {
+        throw new Error(error);
+    }
+};
+
+const loadData = {
     getListService,
     getServiceCategories,
     getMotorcycleBrands,
     getListProvince,
     getListDistrict,
     getListWard,
+    getCarts,
+    getActiveServiceStations,
 };
+
+export default loadData;

@@ -17,9 +17,17 @@ const isValidInteger = (value) => {
     );
 };
 
+const getCurrencyFormat = (value) => {
+    return Intl.NumberFormat('vi-VN', {
+        style: 'currency',
+        currency: 'VND',
+    }).format(value);
+};
+
 const ultils = {
     getUserDataLogedin,
     isValidInteger,
+    getCurrencyFormat,
 };
 
 export default ultils;

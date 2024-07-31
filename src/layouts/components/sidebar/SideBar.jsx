@@ -16,6 +16,10 @@ function SideBar({ className }) {
                     title='Danh sách tài khoản'
                     to={configs.routes.admin.dashboard.users}
                 />
+                <SideBarItem
+                    title='Danh sách đặt lịch'
+                    to={configs.routes.admin.dashboard.bookings}
+                />
             </Menu>
         </aside>
     );

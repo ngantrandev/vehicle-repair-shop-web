@@ -1,9 +1,11 @@
 import PropTypes from 'prop-types';
 
+import ultils from '../../ultils/ultils';
+
 function ServiceItem({ itemData, className, ...otherProps }) {
     const customClassName = ['h-72 w-72 overflow-hidden rounded-2xl'];
 
-    const { name, price, time } = itemData;
+    const { name, price, estimated_time: time } = itemData;
 
     const props = {
         ...otherProps,
@@ -32,7 +34,7 @@ function ServiceItem({ itemData, className, ...otherProps }) {
                 <h1 className='overflow-hidden text-ellipsis whitespace-nowrap text-sm md:text-base'>
                     {name}
                 </h1>
-                <p>{price}</p>
+                <p>{ultils.getCurrencyFormat(price)}</p>
                 <div className='flex items-center gap-1'>
                     <svg
                         className='w-4'

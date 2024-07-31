@@ -1,14 +1,27 @@
 import { useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 import Button from '../button';
 import Dropdown from '../dropdown';
 import Input from '../input';
+import configs from '../../configs';
 
 function CreateService() {
+    const location = useLocation();
+    const navigate = useNavigate();
+
+    const { from } = location.state || {
+        from: { pathname: configs.routes.home },
+    };
+
     const [dropdownOpenId, setDropdownOpenId] = useState(null);
     return (
         <div className='flex h-screen w-full items-center justify-center bg-primary-supper-light'>
-            <Button className='fixed left-0 top-0 m-3 flex gap-1' rounded>
+            <Button
+                className='fixed left-0 top-0 m-3 flex gap-1'
+                rounded
+                onClick={() => navigate(from)}
+            >
                 <svg
                     className='fill-current text-white'
                     baseProfile='tiny'

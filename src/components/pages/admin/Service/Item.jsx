@@ -1,26 +1,34 @@
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
-import configs from '../../../configs';
+
+import configs from '../../../../configs';
+import ultils from '../../../../ultils';
 
 import Tippy from '@tippyjs/react';
 
 function Item({ data, className }) {
-    const {
-        firstname: firstName,
-        lastname: lastName,
-        email,
-        phone,
-        role,
-    } = data;
+    const { name, estimated_time: time, price } = data;
+    const [hour, minute] = time.split(':');
 
     return (
         <tr className={className}>
-            <td>{lastName + ' ' + firstName}</td>
-            <td>{email}</td>
-            <td>{phone}</td>
-            <td>{role === 'admin' ? 'Quản trị viên' : 'Người dùng'}</td>
+            <td>{name}</td>
+            <td>
+                {hour && hour > 0 ? `${hour} giờ` : ''}{' '}
+                {minute && minute > 0 ? `${minute} phút` : ''}
+            </td>
+            <td>{ultils.getCurrencyFormat(price)}</td>
             <td className='flex gap-x-2'>
-                <Link to={'#'} className='flex hover:text-primary'>
+                <Link
+                    to={{
+                        pathname: `/services/${data.id}/modify`,
+                    }}
+                    state={{
+                        data: data,
+                        from: window.location.pathname,
+                    }}
+                    className='flex hover:text-primary'
+                >
                     <Tippy content='Chỉnh sửa'>
                         <div className='size-6'>
                             <svg
@@ -46,7 +54,7 @@ function Item({ data, className }) {
                     </Tippy>
                 </Link>
                 <Link
-                    to={configs.routes.admin.dashboard.users}
+                    to={configs.routes.admin.dashboard.services + '/1'}
                     className='flex hover:text-primary'
                 >
                     <Tippy content='Xóa'>

@@ -15,6 +15,7 @@ const Button = forwardRef(function Button(
         disabled,
         children,
         className,
+        hidden,
         ...otherProps
     },
     ref
@@ -57,6 +58,10 @@ const Button = forwardRef(function Button(
         customClassName.push(className);
     }
 
+    if (hidden) {
+        customClassName.push('hidden');
+    }
+
     return (
         <Component ref={ref} className={customClassName.join(' ')} {...props}>
             {children}
@@ -76,6 +81,7 @@ Button.propTypes = {
     disabled: PropTypes.bool,
     children: PropTypes.node.isRequired,
     className: PropTypes.string,
+    hidden: PropTypes.bool,
 };
 
 export default Button;

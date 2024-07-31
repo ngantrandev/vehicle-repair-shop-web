@@ -1,15 +1,16 @@
+import { useState } from 'react';
 import PropTypes from 'prop-types';
 
-import Button from '../../../button';
+import Button from '../../button/index.js';
 import {
     DotIcon,
     FixingIcon,
     CanceledIcon,
     DoneIcon,
-} from '../../../../assets/icon/Icon.jsx';
-import configs from '../../../../configs/index.js';
-import bookingService from '../../../../services/bookingService.js';
-import { useState } from 'react';
+} from '../../../assets/icon/Icon.jsx';
+import configs from '../../../configs/index.js';
+import bookingService from '../../../services/bookingService.js';
+import ultils from '../../../ultils/ultils.js';
 
 function Item({ data, className }) {
     const {
@@ -47,7 +48,6 @@ function Item({ data, className }) {
             if (res.status === configs.STATUS_CODE.OK) {
                 setStatus(configs.BOOKING_STATE.cancelled);
             }
-            console.log(res);
         } catch (error) {
             console.log(error);
         }
@@ -58,12 +58,7 @@ function Item({ data, className }) {
             <td>{service.name}</td>
             <td>{getTime(createdAt)}</td>
             <td>{getTime(modified_at)}</td>
-            <td>
-                {Intl.NumberFormat('vi-VN', {
-                    style: 'currency',
-                    currency: 'VND',
-                }).format(service.price)}
-            </td>
+            <td>{ultils.getCurrencyFormat(service.price)}</td>
             <td>
                 <div className='flex items-center gap-2'>
                     {status === configs.BOOKING_STATE.pending ? (
