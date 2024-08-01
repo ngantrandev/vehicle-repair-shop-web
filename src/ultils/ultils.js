@@ -1,9 +1,44 @@
+import moment from 'moment-timezone';
+
 const getUserDataLogedin = () => {
     const user = JSON.parse(localStorage.getItem('user'));
     if (user) {
         return user;
     }
     return null;
+};
+
+const getAccessToken = () => {
+    const token = localStorage.getItem('token');
+
+    if (token) {
+        return token;
+    }
+    return null;
+};
+
+const getUserRole = () => {
+    const token = getAccessToken();
+
+    if (!token) {
+        return '';
+    }
+
+    var base64Url = token.split('.')[1];
+    var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+    var jsonPayload = decodeURIComponent(
+        window
+            .atob(base64)
+            .split('')
+            .map(function (c) {
+                return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+            })
+            .join('')
+    );
+
+    const payload = JSON.parse(jsonPayload);
+
+    return payload.role;
 };
 
 const isValidInteger = (value) => {
@@ -24,10 +59,25 @@ const getCurrencyFormat = (value) => {
     }).format(value);
 };
 
+const convertTimeToGMT7 = (time) => {
+    const localDateTime = moment.utc(time).tz('Asia/Bangkok');
+
+    return localDateTime.format('HH:mm:ss DD/MM/YYYY');
+};
+
+const removeUserDataLogedin = () => {
+    localStorage.removeItem('user');
+    localStorage.removeItem('token');
+};
+
 const ultils = {
     getUserDataLogedin,
     isValidInteger,
     getCurrencyFormat,
+    convertTimeToGMT7,
+    removeUserDataLogedin,
+    getAccessToken,
+    getUserRole,
 };
 
 export default ultils;

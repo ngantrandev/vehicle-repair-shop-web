@@ -18,6 +18,8 @@ function BookingDetail() {
 
     const [status, setStatus] = useState('');
 
+    const [userRole, setUserRole] = useState('');
+
     const [selectedStaff, setSelectedStaff] = useState('');
     const [selectedStation, setSelectedStation] = useState('');
     const [note, setNote] = useState('');
@@ -26,6 +28,16 @@ function BookingDetail() {
 
     const [stations, setStations] = useState([]);
     const [staffs, setStaffs] = useState([]);
+
+    useEffect(() => {
+        const role = ultils.getUserRole();
+
+        if (!role) {
+            return;
+        }
+
+        setUserRole(role);
+    }, []);
 
     useEffect(() => {
         const fetchStaffs = async (stationId) => {
@@ -71,10 +83,7 @@ function BookingDetail() {
     useEffect(() => {
         const fetchBookingDetail = async () => {
             try {
-                const res = await bookingService.getBookingByID(
-                    userId,
-                    bookingId
-                );
+                const res = await bookingService.getBookingByID(bookingId);
 
                 if (res.status !== configs.STATUS_CODE.OK) {
                     throw new Error(res.data.message);
@@ -83,7 +92,7 @@ function BookingDetail() {
                 const resData = res.data;
 
                 setSelectedStation(resData.data?.station_id || '');
-                setSelectedStaff(resData.data?.staff?.id || '');
+                setSelectedStaff(resData.data?.staff_id || '');
                 setNote(resData.data?.note || '');
                 setStatus(resData.data?.status || '');
 
@@ -242,6 +251,7 @@ function BookingDetail() {
                         Chi nhánh
                     </label>
                     <select
+                        disabled={userRole !== configs.USER_ROLES.admin}
                         id='station'
                         className='block w-full rounded-lg border-2 border-primary-light p-2.5 text-sm focus:border-primary-light'
                         value={selectedStation}
@@ -267,6 +277,7 @@ function BookingDetail() {
                         Nhân viên
                     </label>
                     <select
+                        disabled={userRole !== configs.USER_ROLES.admin}
                         id='staffs'
                         className='block w-full rounded-lg border-2 border-primary-light p-2.5 text-sm focus:border-primary-light'
                         value={selectedStaff}
@@ -290,6 +301,7 @@ function BookingDetail() {
                         Ghi chú
                     </label>
                     <Input
+                        disabled={userRole !== configs.USER_ROLES.admin}
                         multiline
                         className={
                             'w-full rounded-md border-2 border-primary-light p-2'
@@ -350,7 +362,8 @@ function BookingDetail() {
                     </Button>
                 )}
 
-                {status !== configs.BOOKING_STATE.done &&
+                {userRole === configs.USER_ROLES.admin &&
+                status !== configs.BOOKING_STATE.done &&
                 status !== configs.BOOKING_STATE.cancelled ? (
                     <Button
                         rounded

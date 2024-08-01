@@ -27,6 +27,11 @@ function Header({ className }) {
         navigate(`/users/${user.id}/bookings`);
     };
 
+    const handleClickSignOut = () => {
+        ultils.removeUserDataLogedin();
+        navigate(configs.routes.login);
+    };
+
     useEffect(() => {
         const user = ultils.getUserDataLogedin();
 
@@ -35,13 +40,18 @@ function Header({ className }) {
             return;
         }
 
-        setRole(user.role);
+        const role = ultils.getUserRole();
 
         setUser(user);
+        setRole(role);
         setIsSignedIn(true);
     }, []);
 
     useEffect(() => {
+        if (role !== configs.USER_ROLES.customer) {
+            return;
+        }
+
         const fetchData = async () => {
             const result = await loadData.getCarts(user.id);
 
@@ -117,7 +127,7 @@ function Header({ className }) {
                 )}
                 {isSignedIn ? (
                     <>
-                        {role === configs.USER_ROLES.customer ? (
+                        {role === configs.USER_ROLES.customer && (
                             <Button
                                 className=''
                                 rounded
@@ -125,7 +135,9 @@ function Header({ className }) {
                             >
                                 Dịch vụ của tôi
                             </Button>
-                        ) : (
+                        )}
+
+                        {role === configs.USER_ROLES.admin && (
                             <Button
                                 rounded
                                 onClick={() =>
@@ -137,8 +149,24 @@ function Header({ className }) {
                                 Quản lý
                             </Button>
                         )}
-                        <Tippy content='Profile'>
-                            <Button circle className='size-10 overflow-hidden'>
+
+                        {role === configs.USER_ROLES.staff && (
+                            <Button
+                                rounded
+                                onClick={() =>
+                                    navigate(configs.routes.staff.task)
+                                }
+                            >
+                                Xem nhiệm vụ
+                            </Button>
+                        )}
+
+                        <Tippy content='Đăng xuất'>
+                            <Button
+                                circle
+                                className='size-10 overflow-hidden'
+                                onClick={() => handleClickSignOut()}
+                            >
                                 <svg
                                     id='default-avatar'
                                     className='size-[80%] fill-current text-gray-500'

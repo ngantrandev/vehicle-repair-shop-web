@@ -11,6 +11,7 @@ import User from '../components/pages/admin/User';
 import configs from '../configs';
 import SidebarLayout from '../layouts/sidebarLayout/SidebarLayout.jsx';
 import BookingDetail from '../components/pages/booking/BookingDetail.jsx';
+import ListTask from '../components/pages/staff/ListTask.jsx';
 
 const publicRoutes = [
     { path: configs.routes.login, component: Login, layout: null },
@@ -52,6 +53,11 @@ const publicRoutes = [
         path: configs.routes.admin.dashboard.bookings,
         component: BookingMagager,
         layout: SidebarLayout,
+    },
+
+    {
+        path: configs.routes.staff.task,
+        component: ListTask,
     },
 ];
 

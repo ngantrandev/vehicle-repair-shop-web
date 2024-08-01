@@ -49,11 +49,9 @@ const doneBooking = async (staffId, bookingId, note) => {
     }
 };
 
-const getBookingByID = async (userId, bookingId) => {
+const getBookingByID = async (bookingId) => {
     try {
-        const res = await httpRequests.get(
-            `users/${userId}/bookings/${bookingId}`
-        );
+        const res = await httpRequests.get(`/bookings/${bookingId}`);
 
         return res;
     } catch (error) {
@@ -74,6 +72,18 @@ const setBookingStatusToFixing = async (staffId, bookingId, note) => {
     }
 };
 
+const getAllBookingsOfStaff = async (staffId) => {
+    try {
+        if (!staffId) return;
+
+        const res = await httpRequests.get(`staffs/${staffId}/bookings`);
+
+        return res;
+    } catch (error) {
+        throw new Error(error);
+    }
+};
+
 const bookingService = {
     createBooking,
     getAllBookings,
@@ -81,6 +91,7 @@ const bookingService = {
     doneBooking,
     getBookingByID,
     setBookingStatusToFixing,
+    getAllBookingsOfStaff,
 };
 
 export default bookingService;

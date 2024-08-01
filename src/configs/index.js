@@ -23,6 +23,9 @@ const routes = {
             bookings: '/admin/dashboard/booking',
         },
     },
+    staff: {
+        task: '/staff/tasks',
+    },
 };
 
 const STATUS_CODE = {
