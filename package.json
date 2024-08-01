@@ -11,6 +11,7 @@
         "format": "prettier --write ./src"
     },
     "dependencies": {
+        "@goongmaps/goong-map-react": "^1.1.2",
         "@tippyjs/react": "^4.2.6",
         "axios": "^1.7.2",
         "moment-timezone": "^0.5.45",
