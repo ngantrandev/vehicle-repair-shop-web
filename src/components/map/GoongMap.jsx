@@ -32,7 +32,7 @@ const navStyle = {
 };
 const positionOptions = { enableHighAccuracy: true };
 
-function GoongMap({ className }, ref) {
+const GoongMap = forwardRef(function GoongMap({ className }, ref) {
     const mapRef = useRef();
 
     const [isDragging, setIsDragging] = useState(false);
@@ -109,10 +109,10 @@ function GoongMap({ className }, ref) {
             </MapGL>
         </div>
     );
-}
+});
 
 GoongMap.propTypes = {
     className: PropTypes.string,
 };
 
-export default forwardRef(GoongMap);
+export default GoongMap;

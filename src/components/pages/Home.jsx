@@ -8,6 +8,7 @@ import ServiceList from '../servicelist';
 import DropDown from '../dropdown';
 
 import loadData from '../../services/loadData.js';
+import GoongMap from '../map/GoongMap.jsx';
 
 function Home() {
     const [serviceList, setServiceList] = useState([]);
@@ -92,6 +93,13 @@ function Home() {
                 <PaginatedItems data={serviceList} itemsPerPage={5} size={8}>
                     <ServiceList />
                 </PaginatedItems>
+            </div>
+
+            <div className='my-20 flex flex-col gap-y-8 text-center'>
+                <h1 className='text-2xl font-bold lg:text-3xl'>
+                    Địa chỉ trụ sở chính
+                </h1>
+                <GoongMap className='h-72 w-full bg-primary' />
             </div>
         </>
     );

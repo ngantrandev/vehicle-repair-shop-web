@@ -6,6 +6,7 @@ import configs from '../../../../configs';
 
 function User() {
     const [users, setUsers] = useState([]);
+
     useEffect(() => {
         const fetchUsers = async () => {
             try {

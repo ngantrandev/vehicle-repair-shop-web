@@ -5,49 +5,49 @@ import bookingService from '../../../services/bookingService';
 import configs from '../../../configs';
 import TaskItem from './TaskItem';
 import { useNavigate } from 'react-router-dom';
+import ultils from '../../../ultils';
 
 function ListTask() {
-    const [user, setUser] = useState({});
     const [bookings, setBookings] = useState([]);
 
     const navigate = useNavigate();
 
     useEffect(() => {
-        const fetchTask = async () => {
-            try {
-                if (!user) {
-                    return;
-                }
+        try {
+            const user = ultils.getUserDataLogedin();
 
-                const res = await bookingService.getAllBookingsOfStaff(user.id);
+            console.log(user);
 
-                if (!res) {
-                    return;
-                }
-
-                if (res.status !== configs.STATUS_CODE.OK) {
-                    return;
-                }
-
-                const resData = res.data;
-
-                setBookings(resData.data);
-            } catch (error) {
-                console.log(error);
+            if (!user) {
+                return;
             }
-        };
 
-        fetchTask();
-    }, [user]);
+            const fetchTask = async () => {
+                try {
+                    const res = await bookingService.getAllBookingsOfStaff(
+                        user.id
+                    );
 
-    useEffect(() => {
-        const user = JSON.parse(localStorage.getItem('user'));
+                    if (!res) {
+                        return;
+                    }
 
-        if (!user) {
-            return;
+                    if (res.status !== configs.STATUS_CODE.OK) {
+                        return;
+                    }
+
+                    const resData = res.data;
+
+                    setBookings(resData.data);
+                } catch (error) {
+                    console.log(error);
+                }
+            };
+
+            fetchTask();
+        } catch (error) {
+            console.log(error);
         }
-
-        setUser(user);
     }, []);
 
     const handleClickDetail = (booking) => {

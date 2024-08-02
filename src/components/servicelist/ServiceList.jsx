@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import { PropTypes } from 'prop-types';
 
-import ServiceItem from '../serviceitem';
+import ServiceItem from './ServiceItem.jsx';
 
 const ServiceList = ({ data }) => {
     return (

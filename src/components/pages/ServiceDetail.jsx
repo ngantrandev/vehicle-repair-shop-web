@@ -1,19 +1,23 @@
 import { useLocation, useNavigate } from 'react-router-dom';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import Button from '../button';
 import SuccessPopup from '../popup/SuccessPopup';
 import ultils from '../../ultils';
 import FormCreateBooking from '../form/FormCreateBooking';
+import configs from '../../configs';
 
 function ServiceDetail() {
     const location = useLocation();
     const navigate = useNavigate();
-    const { from, data } = location.state;
 
-    const { name, description, price, estimated_time: time } = data;
     const [isSuccessPopupOpen, setIsSuccessPopupOpen] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
+
+    const [role, setRole] = useState('');
+
+    const { from, data } = location.state;
+    const { name, description, price, estimated_time: time } = data;
 
     const handleOnCloseForm = () => {
         setIsSubmitting(false);
@@ -23,6 +27,18 @@ function ServiceDetail() {
         setIsSubmitting(false);
         setIsSuccessPopupOpen(true);
     };
+
+    useEffect(() => {
+        try {
+            const role = ultils.getUserRole();
+
+            if (role && role.trim().length > 0) {
+                setRole(role);
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    }, []);
 
     return (
         <div className='relative'>
@@ -54,16 +70,17 @@ function ServiceDetail() {
                             </h3>
                             <h3>Thời gian ước tính: {time}</h3>{' '}
                         </div>
-                        <div className='mt-16 flex gap-2'>
-                            {/* <Button rounded>Thêm vào giỏ hàng</Button> */}
-                            <Button
-                                rounded
-                                className='px-10'
-                                onClick={() => setIsSubmitting(true)}
-                            >
-                                Đặt lịch
-                            </Button>
-                        </div>
+                        {role === configs.USER_ROLES.customer && (
+                            <div className='mt-16 flex gap-2'>
+                                <Button
+                                    rounded
+                                    className='px-10'
+                                    onClick={() => setIsSubmitting(true)}
+                                >
+                                    Đặt lịch
+                                </Button>
+                            </div>
+                        )}
                     </div>
                 </div>
             </div>

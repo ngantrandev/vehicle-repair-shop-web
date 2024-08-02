@@ -10,15 +10,6 @@ function BookingMagager() {
     const [bookings, setBookings] = useState([]);
     const navigate = useNavigate();
 
-    useEffect(() => {
-        const user = JSON.parse(localStorage.getItem('user'));
-
-        if (!user) {
-            console.log('User is not logged in');
-            return;
-        }
-    }, []);
-
     const handleClickDetail = (booking) => {
         navigate(`/users/${booking.user?.id}/bookings/${booking.id}`, {
             state: { from: window.location.pathname },

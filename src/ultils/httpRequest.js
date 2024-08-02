@@ -2,12 +2,14 @@ import axios from 'axios';
 
 import configs from '../configs';
 
+const token = localStorage.getItem('token');
+
 const httpRequest = axios.create({
     baseURL: import.meta.env.VITE_API_BASE_URL,
     timeout: 5000,
     headers: {
         'Content-Type': 'application/json',
-        token: 'Bearer' + ' ' + localStorage.getItem('token'),
+        token: 'Bearer' + ' ' + token,
     },
 });
 
