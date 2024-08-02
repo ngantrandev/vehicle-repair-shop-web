@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 
 import bookingService from '../../../services/bookingService';
@@ -9,6 +9,7 @@ import adminStaffService from '../../../services/admin.staff.service';
 import Button from '../../button';
 import adminBookingService from '../../../services/admin.bookingService';
 import Input from '../../input';
+import GoongMap from '../../map/GoongMap';
 
 function BookingDetail() {
     const { booking_id: bookingId, user_id: userId } = useParams();
@@ -17,7 +18,6 @@ function BookingDetail() {
     const { from } = location.state;
 
     const [status, setStatus] = useState('');
-
     const [userRole, setUserRole] = useState('');
 
     const [selectedStaff, setSelectedStaff] = useState('');
@@ -28,6 +28,26 @@ function BookingDetail() {
 
     const [stations, setStations] = useState([]);
     const [staffs, setStaffs] = useState([]);
+
+    const startPoint = useMemo(() => {
+        const station = booking.station || {};
+
+        const { longitude, latitude } = station;
+
+        if (!longitude || !latitude) return [];
+
+        return [longitude, latitude];
+    }, [booking]);
+
+    const endPoint = useMemo(() => {
+        const address = booking.address || {};
+
+        const { longitude, latitude } = address;
+
+        if (!longitude || !latitude) return [];
+
+        return [longitude, latitude];
+    }, [booking]);
 
     useEffect(() => {
         const role = ultils.getUserRole();
@@ -97,6 +117,8 @@ function BookingDetail() {
                 setStatus(resData.data?.status || '');
 
                 setBooking(resData.data);
+
+                setSelectedStation(resData.data?.station?.id);
             } catch (error) {
                 console.log(error);
             }
@@ -177,7 +199,7 @@ function BookingDetail() {
     };
 
     return (
-        <div className='relative flex w-full justify-center'>
+        <div className='relative flex w-full flex-col justify-center'>
             <div className='absolute top-6 flex w-full'>
                 <Button
                     className='absolute'
@@ -381,6 +403,18 @@ function BookingDetail() {
                         Xác nhận hủy
                     </Button>
                 )}
+            </div>
+
+            <div className='my-20 flex flex-col gap-y-8 text-center'>
+                <h1 className='text-2xl font-bold lg:text-3xl'>
+                    Hướng dẫn đường đi
+                </h1>
+                <GoongMap
+                    className='h-72 w-full bg-primary'
+                    startPoint={startPoint}
+                    endPoint={endPoint}
+                    hidecenter
+                />
             </div>
         </div>
     );

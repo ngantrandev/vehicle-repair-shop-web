@@ -1,4 +1,9 @@
 import moment from 'moment-timezone';
+import polyline from '@mapbox/polyline';
+
+const decodePolyline = (str) => {
+    return polyline.decode(str).map(([lat, lng]) => [lng, lat]);
+};
 
 const getUserDataLogedin = () => {
     const user = JSON.parse(localStorage.getItem('user'));
@@ -78,6 +83,7 @@ const ultils = {
     removeUserDataLogedin,
     getAccessToken,
     getUserRole,
+    decodePolyline,
 };
 
 export default ultils;

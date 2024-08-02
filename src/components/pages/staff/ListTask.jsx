@@ -16,8 +16,6 @@ function ListTask() {
         try {
             const user = ultils.getUserDataLogedin();
 
-            console.log(user);
-
             if (!user) {
                 return;
             }

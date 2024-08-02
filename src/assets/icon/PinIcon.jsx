@@ -1,10 +1,10 @@
 import PropTypes from 'prop-types';
 
-function PinIcon({ active }) {
+function PinIcon({ className, active }) {
     return (
         <svg
             fill='currentColor'
-            className={`h-10 w-10 origin-bottom text-red-500 transition-transform duration-100 ${active ? 'scale-125' : 'scale-100'}`}
+            className={`h-10 w-10 origin-bottom transition-transform duration-100 ${active ? 'scale-125' : 'scale-100'} ${className}`}
             version='1.1'
             viewBox='0 0 91 91'
             xmlSpace='preserve'
@@ -20,6 +20,7 @@ function PinIcon({ active }) {
 
 PinIcon.propTypes = {
     active: PropTypes.bool,
+    className: PropTypes.string,
 };
 
 export default PinIcon;
