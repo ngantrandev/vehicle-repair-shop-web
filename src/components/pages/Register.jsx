@@ -1,11 +1,110 @@
+import { useCallback, useState } from 'react';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 import bannerImg from '../../assets/images/login_banner.jpg';
 import configs from '../../configs';
 import Input from '../input';
 import Button from '../button';
+import ultils from '../../ultils/ultils';
+import authService from '../../services/authService';
 
 function Register() {
+    const [username, setUsername] = useState('');
+    const [fullName, setFullName] = useState('');
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [confirmPassword, setConfirmPassword] = useState('');
+
+    const resetForm = useCallback(() => {
+        setUsername(null);
+        setFullName('');
+        setEmail('');
+        setPassword('');
+        setConfirmPassword('');
+    }, []);
+
+    const handleRegister = useCallback(() => {
+        const createAccount = async () => {
+            try {
+                if (!username || username.trim().length === 0) {
+                    ultils.notifyError('Tên người dùng không được để trống');
+                    return;
+                }
+
+                if (fullName.split(' ').length < 2) {
+                    ultils.notifyError('Họ tên phải có ít nhất 2 từ');
+                    return;
+                }
+
+                if (!ultils.isValidEmail(email)) {
+                    ultils.notifyError('Email không hợp lệ');
+                    return;
+                }
+
+                if (password.length < 6) {
+                    ultils.notifyError('Mật khẩu phải có ít nhất 6 ký tự');
+                    return;
+                }
+
+                if (password !== confirmPassword) {
+                    ultils.notifyError('Mật khẩu không khớp');
+                    return;
+                }
+
+                const res = await authService.register({
+                    username,
+                    password,
+                    fullName,
+                    email,
+                });
+
+                if (res.status === configs.STATUS_CODE.OK) {
+                    ultils.notifySuccess('Đăng ký thành công');
+
+                    resetForm();
+
+                    setTimeout(() => {
+                        ultils.notifyInfo(
+                            'Vui lòng chuyển sang trang đăng nhập để đăng nhập'
+                        );
+                    }, 1000);
+                } else if (res.status === configs.STATUS_CODE.CONFLICT) {
+                    ultils.notifyError('Tên tài khoản hoặc Email đã tồn tại');
+                }
+            } catch (error) {
+                console.log(error);
+                ultils.notifyError('Đăng ký thất bại');
+            }
+        };
+
+        createAccount();
+    }, [username, fullName, email, password, confirmPassword, resetForm]);
+
+    const handleFullNameChange = useCallback((e) => {
+        setFullName(e.target.value.replace(/\s+/g, ' '));
+    }, []);
+
+    const handleUsernameChange = useCallback((e) => {
+        setUsername(e.target.value);
+    }, []);
+
+    const handleEmailChange = useCallback((e) => {
+        setEmail(e.target.value);
+    }, []);
+
+    const handlePasswordChange = useCallback((e) => {
+        setPassword(e.target.value);
+    }, []);
+
+    const handleConfirmPasswordChange = useCallback((e) => {
+        setConfirmPassword(e.target.value);
+    }, []);
+
+    console.log('username: ', username);
+
     return (
-        <div className='grid w-full grid-cols-1 text-[15px] lg:grid-cols-3'>
+        <div className='relative grid w-full grid-cols-1 text-[15px] lg:grid-cols-3'>
             <div className='hidden h-screen lg:col-span-2 lg:block'>
                 <img
                     src={bannerImg}
@@ -20,6 +119,20 @@ function Register() {
                     </h2>
                     <form>
                         <div className='mb-4'>
+                            <label htmlFor='username' className=''>
+                                Tên người dùng
+                            </label>
+                            <Input
+                                rounded
+                                id='username'
+                                type='text'
+                                placeholder='Nhập tên người dùng'
+                                className={'w-full p-2'}
+                                value={username}
+                                onChange={handleUsernameChange}
+                            />
+                        </div>
+                        <div className='mb-4'>
                             <label htmlFor='fullname' className=''>
                                 Họ và tên
                             </label>
@@ -29,6 +142,8 @@ function Register() {
                                 type='text'
                                 placeholder='Nhập họ và tên'
                                 className={'w-full p-2'}
+                                value={fullName}
+                                onChange={handleFullNameChange}
                             />
                         </div>
                         <div className='mb-4'>
@@ -41,6 +156,8 @@ function Register() {
                                 type='text'
                                 placeholder='Nhập email'
                                 className={'w-full p-2'}
+                                value={email}
+                                onChange={handleEmailChange}
                             />
                         </div>
                         <div className='mb-4'>
@@ -53,6 +170,8 @@ function Register() {
                                 type='password'
                                 placeholder='Nhập password'
                                 className={'w-full p-2'}
+                                value={password}
+                                onChange={handlePasswordChange}
                             />
                         </div>
                         <div className='mb-4'>
@@ -65,11 +184,18 @@ function Register() {
                                 type='password'
                                 placeholder='Nhập lại password'
                                 className={'w-full p-2'}
+                                value={confirmPassword}
+                                onChange={handleConfirmPasswordChange}
+                                password
                             />
                         </div>
                     </form>
 
-                    <Button className='w-full font-medium' rounded>
+                    <Button
+                        className='w-full font-medium'
+                        rounded
+                        onClick={handleRegister}
+                    >
                         Đăng ký
                     </Button>
                     <div className='mt-4 flex gap-1'>
@@ -85,6 +211,19 @@ function Register() {
                     </div>
                 </div>
             </div>
+            <ToastContainer
+                position='bottom-right'
+                autoClose={5000}
+                limit={5}
+                hideProgressBar={false}
+                newestOnTop
+                closeOnClick
+                rtl={false}
+                pauseOnFocusLoss={false}
+                draggable={false}
+                pauseOnHover
+                theme='colored'
+            />
         </div>
     );
 }

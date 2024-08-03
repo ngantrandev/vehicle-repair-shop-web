@@ -1,12 +1,14 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { ToastContainer } from 'react-toastify';
 
 import bannerImg from '../../assets/images/login_banner.jpg';
 import configs from '../../configs';
 import Input from '../input';
 import Button from '../button';
 
-import * as authService from '../../services/authService';
-import { useNavigate } from 'react-router-dom';
+import authService from '../../services/authService';
+import ultils from '../../ultils';
 
 function Login() {
     const [username, setUsername] = useState('');
@@ -14,12 +16,32 @@ function Login() {
     const navigate = useNavigate();
 
     const handleSignIn = async () => {
+        if (!username) {
+            ultils.notifyWarning('Vui lòng nhập tên tài khoản');
+            return;
+        }
+
+        if (!password) {
+            ultils.notifyWarning('Vui lòng nhập mật khẩu');
+            return;
+        }
+
         const result = await authService.login({ username, password });
 
-        localStorage.setItem('token', result.data.token);
-        localStorage.setItem('user', JSON.stringify(result.data.data));
+        if (result.status !== configs.STATUS_CODE.OK) {
+            ultils.notifyError(result.data.message);
+            return;
+        }
 
-        navigate(configs.routes.home);
+        ultils.notifySuccess('Đăng nhập thành công');
+
+        setTimeout(() => {
+            const resData = result.data;
+            localStorage.setItem('token', resData.token);
+            localStorage.setItem('user', JSON.stringify(resData.data));
+
+            navigate(configs.routes.home);
+        }, 3000);
     };
 
     return (
@@ -111,6 +133,20 @@ function Login() {
                     </div>
                 </div>
             </div>
+
+            <ToastContainer
+                position='bottom-right'
+                autoClose={5000}
+                limit={5}
+                hideProgressBar={false}
+                newestOnTop
+                closeOnClick
+                rtl={false}
+                pauseOnFocusLoss={false}
+                draggable={false}
+                pauseOnHover
+                theme='colored'
+            />
         </div>
     );
 }

@@ -1,4 +1,15 @@
 import PropTypes from 'prop-types';
+import { memo, useEffect, useMemo, useState } from 'react';
+
+import OpenEye from '../../assets/icon/OpenEye';
+import CloseEye from '../../assets/icon/CloseEye';
+
+const INPUT_TYPES = {
+    TEXT: 'text',
+    PASSWORD: 'password',
+    EMAIL: 'email',
+    NUMBER: 'number',
+};
 
 function Input({
     id,
@@ -9,11 +20,31 @@ function Input({
     onChange,
     className,
     multiline,
+    password,
     ...otherProps
 }) {
-    /**'focus:outline-primary-supper-light w-full border-2 border-[#E5E5E5] bg-[#F2F2F2] p-2' */
+    const isPasswordField = useMemo(
+        () => type === INPUT_TYPES.PASSWORD,
+        [type]
+    );
 
     const customClassName = ['focus:outline-primary-light'];
+    const [isShowPassword, setIsShowPassword] = useState(false);
+    const [inputType, setInputType] = useState(
+        password ? INPUT_TYPES.PASSWORD : type
+    );
+
+    useEffect(() => {
+        setIsShowPassword(inputType === INPUT_TYPES.TEXT ? true : false);
+    }, [inputType]);
+
+    const toggleInputType = () => {
+        if (inputType === INPUT_TYPES.PASSWORD) {
+            setInputType(INPUT_TYPES.TEXT);
+        } else {
+            setInputType(INPUT_TYPES.PASSWORD);
+        }
+    };
 
     const props = {
         onChange,
@@ -32,15 +63,30 @@ function Input({
     }
 
     return (
-        <Tag
-            id={id}
-            type={type}
-            placeholder={placeholder}
-            className={customClassName.join(' ')}
-            value={value}
-            onChange={onChange}
-            {...props}
-        />
+        <div className='relative'>
+            <Tag
+                id={id}
+                type={inputType}
+                placeholder={placeholder}
+                className={customClassName.join(' ')}
+                value={value}
+                onChange={onChange}
+                {...props}
+            />
+
+            {isPasswordField && (
+                <div
+                    className='absolute right-0 top-1/2 -translate-x-2 -translate-y-1/2 p-2 hover:cursor-pointer'
+                    onClick={toggleInputType}
+                >
+                    {isShowPassword ? (
+                        <OpenEye className='h-4' />
+                    ) : (
+                        <CloseEye className='h-4' />
+                    )}
+                </div>
+            )}
+        </div>
     );
 }
 
@@ -53,6 +99,7 @@ Input.propTypes = {
     onChange: PropTypes.func,
     className: PropTypes.string,
     multiline: PropTypes.bool,
+    password: PropTypes.bool,
 };
 
-export default Input;
+export default memo(Input);

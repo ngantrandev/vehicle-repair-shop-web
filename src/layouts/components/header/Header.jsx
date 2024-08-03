@@ -16,11 +16,23 @@ const webName = import.meta.env.VITE_WEB_NAME;
 function Header({ className }) {
     const [isSignedIn, setIsSignedIn] = useState(false);
     const [carts, setCarts] = useState([]);
-    const [user, setUser] = useState({});
     const [role, setRole] = useState('');
     const navigate = useNavigate();
 
     const handleClickGoToMyBooking = () => {
+        const user = ultils.getUserDataLogedin();
+
+        if (!user || !isSignedIn || !user.id) {
+            ultils.notifyError('Bạn chưa đăng nhập');
+            setTimeout(() => {
+                ultils.notifyWarning(
+                    'Vui lòng đăng nhập để thực hiện chức năng'
+                );
+            }, 500);
+
+            return;
+        }
+
         if (!isSignedIn) {
             navigate('/login');
         }
@@ -42,7 +54,6 @@ function Header({ className }) {
 
         const role = ultils.getUserRole();
 
-        setUser(user);
         setRole(role);
         setIsSignedIn(true);
     }, []);
@@ -52,11 +63,16 @@ function Header({ className }) {
             return;
         }
 
+        const user = ultils.getUserDataLogedin();
+
+        if (!user || !user.id) {
+            return;
+        }
+
         const fetchData = async () => {
             const result = await loadData.getCarts(user.id);
 
             if (result.status !== configs.STATUS_CODE.OK) {
-                console.log(result.message);
                 return;
             }
 
@@ -70,7 +86,7 @@ function Header({ className }) {
         if (isSignedIn) {
             fetchData();
         }
-    }, [isSignedIn, user.id]);
+    }, [isSignedIn, role]);
 
     return (
         <div className={className}>

@@ -1,5 +1,6 @@
 import moment from 'moment-timezone';
 import polyline from '@mapbox/polyline';
+import { toast } from 'react-toastify';
 
 const decodePolyline = (str) => {
     return polyline.decode(str).map(([lat, lng]) => [lng, lat]);
@@ -75,6 +76,70 @@ const removeUserDataLogedin = () => {
     localStorage.removeItem('token');
 };
 
+const isValidEmail = (email) => {
+    return email
+        .toLowerCase()
+        .match(
+            /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+        );
+};
+
+const notifySuccess = (message, configs = {}) => {
+    toast.success(message, {
+        position: 'bottom-right',
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: false,
+        progress: undefined,
+        theme: 'colored',
+        ...configs,
+    });
+};
+
+const notifyError = (message, configs = {}) => {
+    toast.error(message, {
+        position: 'bottom-right',
+        autoClose: 10000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: false,
+        progress: undefined,
+        theme: 'colored',
+        ...configs,
+    });
+};
+
+const notifyInfo = (message, configs = {}) => {
+    toast.info(message, {
+        position: 'bottom-right',
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: false,
+        progress: undefined,
+        theme: 'colored',
+        ...configs,
+    });
+};
+
+const notifyWarning = (message, configs = {}) => {
+    toast.warning(message, {
+        position: 'bottom-right',
+        autoClose: 10000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: false,
+        progress: undefined,
+        theme: 'colored',
+        ...configs,
+    });
+};
+
 const ultils = {
     getUserDataLogedin,
     isValidInteger,
@@ -84,6 +149,11 @@ const ultils = {
     getAccessToken,
     getUserRole,
     decodePolyline,
+    isValidEmail,
+    notifySuccess,
+    notifyError,
+    notifyInfo,
+    notifyWarning,
 };
 
 export default ultils;

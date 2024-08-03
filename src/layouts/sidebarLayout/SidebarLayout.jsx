@@ -1,4 +1,5 @@
 import { PropTypes } from 'prop-types';
+import { ToastContainer } from 'react-toastify';
 
 import SideBar from '../components/sidebar';
 import Header from '../components/header';
@@ -13,6 +14,20 @@ function SidebarLayout({ children }) {
                     {children}
                 </div>
             </div>
+
+            <ToastContainer
+                position='bottom-right'
+                autoClose={5000}
+                limit={5}
+                hideProgressBar={false}
+                newestOnTop
+                closeOnClick
+                rtl={false}
+                pauseOnFocusLoss={false}
+                draggable={false}
+                pauseOnHover
+                theme='colored'
+            />
         </div>
     );
 }

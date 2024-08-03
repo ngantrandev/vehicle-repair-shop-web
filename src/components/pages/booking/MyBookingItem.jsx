@@ -38,16 +38,26 @@ function Item({ data, className }) {
             const user = JSON.parse(localStorage.getItem('user'));
 
             if (!user) {
-                console.log('User is not logged in');
+                ultils.notifyError('Bạn chưa đăng nhập');
+
+                setTimeout(() => {
+                    ultils.notifyWarning(
+                        'Vui lòng đăng nhập để thực hiện chức năng'
+                    );
+                }, 500);
+
                 return;
             }
             const res = await bookingService.cancelBooking(user.id, bookingId, {
                 note: 'Hủy bởi',
             });
 
-            if (res.status === configs.STATUS_CODE.OK) {
-                setStatus(configs.BOOKING_STATE.cancelled);
+            if (res.status !== configs.STATUS_CODE.OK) {
+                ultils.notifyError('Hủy đặt lịch thất bại');
             }
+
+            setStatus(configs.BOOKING_STATE.cancelled);
+            ultils.notifySuccess('Hủy đặt lịch thành công');
         } catch (error) {
             console.log(error);
         }

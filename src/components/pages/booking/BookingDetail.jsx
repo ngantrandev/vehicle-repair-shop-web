@@ -129,6 +129,16 @@ function BookingDetail() {
 
     const handleConfirmBooking = async () => {
         try {
+            if (!selectedStation || selectedStation.length === 0) {
+                ultils.notifyWarning('Vui lòng chọn chi nhánh');
+                return;
+            }
+
+            if (!selectedStaff || selectedStaff.length === 0) {
+                ultils.notifyWarning('Vui lòng chọn nhân viên');
+                return;
+            }
+
             const res = await adminBookingService.confirmBooking(
                 userId,
                 bookingId,
@@ -141,6 +151,7 @@ function BookingDetail() {
             }
 
             setStatus(configs.BOOKING_STATE.accepted);
+            ultils.notifySuccess('Đã xác nhận đặt lịch');
         } catch (error) {
             console.log(error);
         }
@@ -159,6 +170,7 @@ function BookingDetail() {
             }
 
             setStatus(configs.BOOKING_STATE.fixing);
+            ultils.notifySuccess('Đã xác nhận bắt đầu sửa chữa');
         } catch (error) {
             console.log(error);
         }
@@ -177,6 +189,7 @@ function BookingDetail() {
             }
 
             setStatus(configs.BOOKING_STATE.done);
+            ultils.notifySuccess('Đã xác nhận hoàn thành sửa chữa');
         } catch (error) {
             console.log(error);
         }
@@ -184,6 +197,10 @@ function BookingDetail() {
 
     const handleCancelBooking = async () => {
         try {
+            if (note.length === 0) {
+                ultils.notifyWarning('Vui lòng nhập lý do hủy đặt lịch');
+                return;
+            }
             const res = await bookingService.cancelBooking(userId, bookingId, {
                 note: note,
             });
@@ -193,6 +210,7 @@ function BookingDetail() {
             }
 
             setStatus(configs.BOOKING_STATE.cancelled);
+            ultils.notifySuccess('Đã xác nhận hủy đặt lịch');
         } catch (error) {
             console.log(error);
         }
@@ -273,7 +291,10 @@ function BookingDetail() {
                         Chi nhánh
                     </label>
                     <select
-                        disabled={userRole !== configs.USER_ROLES.admin}
+                        disabled={
+                            userRole !== configs.USER_ROLES.admin ||
+                            status !== configs.BOOKING_STATE.pending
+                        }
                         id='station'
                         className='block w-full rounded-lg border-2 border-primary-light p-2.5 text-sm focus:border-primary-light'
                         value={selectedStation}
@@ -299,7 +320,10 @@ function BookingDetail() {
                         Nhân viên
                     </label>
                     <select
-                        disabled={userRole !== configs.USER_ROLES.admin}
+                        disabled={
+                            userRole !== configs.USER_ROLES.admin ||
+                            status !== configs.BOOKING_STATE.pending
+                        }
                         id='staffs'
                         className='block w-full rounded-lg border-2 border-primary-light p-2.5 text-sm focus:border-primary-light'
                         value={selectedStaff}

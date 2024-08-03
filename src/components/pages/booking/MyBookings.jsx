@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-import Item from './Item.jsx';
+import Item from './MyBookingItem.jsx';
 import bookingService from '../../../services/bookingService.js';
 
 function MyBookings() {

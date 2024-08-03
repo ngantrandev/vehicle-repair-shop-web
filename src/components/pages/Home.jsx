@@ -75,7 +75,6 @@ function Home() {
                         inputPlaceHolder='Tìm kiếm dịch vụ'
                         dropdownOpenId={dropdownOpenId}
                         setDropdownOpenId={setDropdownOpenId}
-                        onItemSelect={(id) => console.log(id)}
                         visibleSearch
                     />
                     <DropDown

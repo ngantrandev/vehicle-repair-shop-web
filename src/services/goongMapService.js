@@ -3,7 +3,11 @@ const goongMapBaseUrl = import.meta.env.VITE_GOONG_MAP_BASE_URL;
 
 import httpRequest from '../ultils/httpRequest';
 
-const getDirections = async (origin = [], destination = [], vehicleType = 'bike') => {
+const getDirections = async (
+    origin = [],
+    destination = [],
+    vehicleType = 'bike'
+) => {
     const [originLongitude, originLatitude] = origin;
     const [destinationLongitude, destinationLatitude] = destination;
 
