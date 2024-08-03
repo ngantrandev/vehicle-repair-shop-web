@@ -1,10 +1,8 @@
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
-
-import configs from '../../../../configs';
-import ultils from '../../../../ultils';
-
 import Tippy from '@tippyjs/react';
+
+import ultils from '../../../../ultils';
 
 function Item({ data, className }) {
     const { name, estimated_time: time, price } = data;
@@ -24,7 +22,6 @@ function Item({ data, className }) {
                         pathname: `/services/${data.id}/modify`,
                     }}
                     state={{
-                        data: data,
                         from: window.location.pathname,
                     }}
                     className='flex hover:text-primary'
@@ -53,7 +50,7 @@ function Item({ data, className }) {
                         </div>
                     </Tippy>
                 </Link>
-                <Link
+                {/* <Link
                     to={configs.routes.admin.dashboard.services + '/1'}
                     className='flex hover:text-primary'
                 >
@@ -76,7 +73,7 @@ function Item({ data, className }) {
                             </svg>
                         </div>
                     </Tippy>
-                </Link>
+                </Link> */}
             </td>
         </tr>
     );

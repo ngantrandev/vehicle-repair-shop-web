@@ -101,8 +101,6 @@ function Register() {
         setConfirmPassword(e.target.value);
     }, []);
 
-    console.log('username: ', username);
-
     return (
         <div className='relative grid w-full grid-cols-1 text-[15px] lg:grid-cols-3'>
             <div className='hidden h-screen lg:col-span-2 lg:block'>

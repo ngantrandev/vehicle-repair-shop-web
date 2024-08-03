@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react';
+import Tippy from '@tippyjs/react';
+import { useNavigate } from 'react-router-dom';
 
 import adminBookingService from '../../../../services/admin.bookingService';
 import configs from '../../../../configs';
 import Item from './Item';
-import Tippy from '@tippyjs/react';
-import { useNavigate } from 'react-router-dom';
 
 function BookingMagager() {
     const [bookings, setBookings] = useState([]);
@@ -36,11 +36,11 @@ function BookingMagager() {
         fetchBooking();
     }, []);
     return (
-        <div className='flex w-full flex-col'>
+        <div className='flex w-full flex-col items-center px-0 md:px-4'>
             <h1 className='py-10 text-center text-3xl font-bold'>
                 Danh sách lịch hẹn của khách
             </h1>
-            <div className='relative m-5 border-collapse overflow-x-auto border-2 shadow-md sm:rounded-lg'>
+            <div className='relative m-5 w-max border-collapse overflow-x-auto border-2 bg-white shadow-md sm:rounded-lg md:w-full'>
                 <table className='w-full table-auto'>
                     <thead className='h-8 border-y-2 bg-primary-supper-light'>
                         <tr className='text-left'>

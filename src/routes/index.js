@@ -27,13 +27,12 @@ const publicRoutes = [
     },
     {
         path: configs.routes.service.create,
-        component: CreateService,
-        layout: null,
+        component: CreateService
     },
     {
         path: configs.routes.service.modify,
         component: ModifyService,
-        layout: null,
+        
     },
     {
         path: configs.routes.service.detail,

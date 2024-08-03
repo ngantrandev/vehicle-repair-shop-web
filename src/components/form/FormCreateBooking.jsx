@@ -56,7 +56,18 @@ function FormCreateBooking({ service, onClose, onSuccess }) {
     }, [selectedDistrict]);
 
     const handleCreateBooking = async () => {
+        if (!selectedProvince || !ultils.isValidInteger(selectedProvince)) {
+            ultils.notifyError('Không được để trống tỉnh thành');
+            return;
+        }
+
+        if (!selectedDistrict || !ultils.isValidInteger(selectedDistrict)) {
+            ultils.notifyError('Không được để trống quận huyện');
+            return;
+        }
+
         if (!selectedWard || !ultils.isValidInteger(selectedWard)) {
+            ultils.notifyError('Không được để trống phường xã');
             return;
         }
 
@@ -137,7 +148,7 @@ function FormCreateBooking({ service, onClose, onSuccess }) {
                                 <Input
                                     rounded
                                     id='ward'
-                                    type='password'
+                                    type='text'
                                     placeholder='Nhập địa chỉ nhà, tên đường'
                                     className={'w-full bg-white p-2'}
                                     multiline

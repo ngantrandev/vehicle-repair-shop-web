@@ -47,7 +47,7 @@ const positionOptions = { enableHighAccuracy: true };
  *
  */
 const GoongMap = forwardRef(function GoongMap(
-    { className, startPoint = [], endPoint = [], hidecenter },
+    { className, originPoint = [], startPoint = [], endPoint = [], hidecenter },
     ref
 ) {
     const mapRef = useRef();
@@ -167,11 +167,24 @@ const GoongMap = forwardRef(function GoongMap(
                         <Marker
                             longitude={viewport.longitude}
                             latitude={viewport.latitude}
+                            offsetLeft={-20}
+                            offsetTop={-20}
                         >
                             <Pin
                                 active={isDragging}
                                 className={'text-red-500'}
                             />
+                        </Marker>
+                    </div>
+                )}
+
+                {originPoint.length > 0 && (
+                    <div id='marker-origin'>
+                        <Marker
+                            longitude={originPoint[0]}
+                            latitude={originPoint[1]}
+                        >
+                            <Pin className={'h-16 w-16 text-blue-500'} />
                         </Marker>
                     </div>
                 )}
@@ -221,6 +234,7 @@ GoongMap.propTypes = {
     defaultViewCenter: PropTypes.array,
     startPoint: PropTypes.array,
     endPoint: PropTypes.array,
+    originPoint: PropTypes.array,
     hidecenter: PropTypes.bool,
 };
 

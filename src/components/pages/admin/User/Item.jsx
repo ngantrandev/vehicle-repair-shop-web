@@ -1,8 +1,4 @@
 import PropTypes from 'prop-types';
-import { Link } from 'react-router-dom';
-import Tippy from '@tippyjs/react';
-
-import configs from '../../../../configs';
 
 function Item({ data, className }) {
     const {
@@ -19,7 +15,7 @@ function Item({ data, className }) {
             <td>{email}</td>
             <td>{phone}</td>
             <td>{role === 'admin' ? 'Quản trị viên' : 'Người dùng'}</td>
-            <td className='flex gap-x-2'>
+            {/* <td className='flex gap-x-2'>
                 <Link to={'#'} className='flex hover:text-primary'>
                     <Tippy content='Chỉnh sửa'>
                         <div className='size-6'>
@@ -69,7 +65,7 @@ function Item({ data, className }) {
                         </div>
                     </Tippy>
                 </Link>
-            </td>
+            </td> */}
         </tr>
     );
 }

@@ -13,6 +13,7 @@ import ultils from '../../ultils';
 function Login() {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
+    const [isSaveDevice, setIsSaveDevice] = useState(false);
     const navigate = useNavigate();
 
     const handleSignIn = async () => {
@@ -37,8 +38,18 @@ function Login() {
 
         setTimeout(() => {
             const resData = result.data;
-            localStorage.setItem('token', resData.token);
-            localStorage.setItem('user', JSON.stringify(resData.data));
+
+            if (isSaveDevice) {
+                localStorage.setItem('user', JSON.stringify(resData.data));
+
+                let date = new Date();
+                date.setTime(date.getTime() + 365 * 24 * 60 * 60 * 1000);
+                let expires = 'expires=' + date.toUTCString();
+                document.cookie = `token=${resData.token}; ${expires};`;
+            } else {
+                sessionStorage.setItem('user', JSON.stringify(resData.data));
+                document.cookie = `token=${resData.token}`;
+            }
 
             navigate(configs.routes.home);
         }, 3000);
@@ -95,6 +106,8 @@ function Login() {
                                 name=''
                                 id='remember'
                                 className='h-4 w-4 cursor-pointer'
+                                value={isSaveDevice}
+                                onChange={() => setIsSaveDevice(!isSaveDevice)}
                             />
                             <label
                                 htmlFor='remember'

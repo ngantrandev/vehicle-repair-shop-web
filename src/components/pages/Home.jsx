@@ -5,16 +5,67 @@ import 'tippy.js/dist/tippy.css'; // optional
 import Button from '../button';
 import PaginatedItems from '../paginateditems';
 import ServiceList from '../servicelist';
-import DropDown from '../dropdown';
 
 import loadData from '../../services/loadData.js';
 import GoongMap from '../map/GoongMap.jsx';
 
 function Home() {
     const [serviceList, setServiceList] = useState([]);
-    const [dropdownOpenId, setDropdownOpenId] = useState(null);
     const [serviceCategories, setServiceCategories] = useState([]);
     const [motorcycleBrands, setMotorcycleBrands] = useState([]);
+
+    const [selectedServiceCategory, setSelectedServiceCategory] = useState('');
+    const [selectedMotorcycleBrand, setSelectedMotorcycleBrand] = useState('');
+
+    useEffect(() => {
+        try {
+            if (selectedServiceCategory === '') {
+                return;
+            }
+
+            let params = {};
+
+            if (selectedServiceCategory !== '#') {
+                params = {
+                    category_id: selectedServiceCategory,
+                };
+            }
+
+            const fetchServicesByCategory = async (params) => {
+                const services = await loadData.getListService(params);
+                setServiceList(services.data.data);
+            };
+
+            fetchServicesByCategory(params);
+        } catch (error) {
+            console.log(error);
+        }
+    }, [selectedServiceCategory]);
+
+    useEffect(() => {
+        try {
+            if (selectedMotorcycleBrand === '') {
+                return;
+            }
+
+            let params = {};
+
+            if (selectedMotorcycleBrand !== '#') {
+                params = {
+                    motorcycle_brand: selectedMotorcycleBrand,
+                };
+            }
+
+            const fetchServicesByCategory = async (params) => {
+                const services = await loadData.getListService(params);
+                setServiceList(services.data.data);
+            };
+
+            fetchServicesByCategory(params);
+        } catch (error) {
+            console.log(error);
+        }
+    }, [selectedMotorcycleBrand]);
 
     useEffect(() => {
         const fetchServices = async () => {
@@ -22,14 +73,8 @@ function Home() {
             const serviceCategories = await loadData.getServiceCategories();
             const motorcycleBrands = await loadData.getMotorcycleBrands();
 
-            setMotorcycleBrands([
-                { id: -1, name: 'Tất cả' },
-                ...motorcycleBrands.data,
-            ]);
-            setServiceCategories([
-                { id: -1, name: 'Tất cả' },
-                ...serviceCategories.data,
-            ]);
+            setMotorcycleBrands([...motorcycleBrands.data]);
+            setServiceCategories([...serviceCategories.data]);
             setServiceList(services.data.data);
         };
 
@@ -66,27 +111,64 @@ function Home() {
             <div id='services-container'>
                 <div
                     id='action-button'
-                    className='mx-4 mb-8 mt-10 flex flex-wrap gap-3'
+                    className='mb-8 mt-10 grid w-3/4 grid-cols-2 flex-wrap gap-4 px-4 sm:w-96'
                 >
-                    <DropDown
-                        id='service-type'
-                        name='Loại dịch vụ'
-                        data={serviceCategories}
-                        inputPlaceHolder='Tìm kiếm dịch vụ'
-                        dropdownOpenId={dropdownOpenId}
-                        setDropdownOpenId={setDropdownOpenId}
-                        visibleSearch
-                    />
-                    <DropDown
-                        id='vehicle-type'
-                        name='Loại xe'
-                        data={motorcycleBrands}
-                        className='w-'
-                        inputPlaceHolder='Tìm kiếm dịch vụ'
-                        dropdownOpenId={dropdownOpenId}
-                        setDropdownOpenId={setDropdownOpenId}
-                        visibleSearch
-                    />
+                    <div className='col-span-3 sm:col-span-1'>
+                        <label
+                            htmlFor='province'
+                            className='mb-2 block text-sm font-medium text-gray-900'
+                        >
+                            Loại dịch vụ
+                        </label>
+                        <select
+                            id='province'
+                            className='block w-full rounded-lg border-2 border-primary-light p-2.5 text-sm focus:border-primary-light'
+                            defaultValue=''
+                            onChange={(e) =>
+                                setSelectedServiceCategory(e.target.value)
+                            }
+                        >
+                            <option className='p-5' value={'#'}>
+                                Tất cả
+                            </option>
+
+                            {serviceCategories.map(({ id, name }) => {
+                                return (
+                                    <option key={id} value={id}>
+                                        {name}
+                                    </option>
+                                );
+                            })}
+                        </select>
+                    </div>
+                    <div className='col-span-3 sm:col-span-1'>
+                        <label
+                            htmlFor='province'
+                            className='mb-2 block text-sm font-medium text-gray-900'
+                        >
+                            Loại xe
+                        </label>
+                        <select
+                            id='province'
+                            className='block w-full rounded-lg border-2 border-primary-light p-2.5 text-sm focus:border-primary-light'
+                            defaultValue=''
+                            onChange={(e) =>
+                                setSelectedMotorcycleBrand(e.target.value)
+                            }
+                        >
+                            <option className='p-5' value={'#'}>
+                                Tất cả
+                            </option>
+
+                            {motorcycleBrands.map(({ id, name }) => {
+                                return (
+                                    <option key={id} value={id}>
+                                        {name}
+                                    </option>
+                                );
+                            })}
+                        </select>
+                    </div>
                 </div>
 
                 <PaginatedItems data={serviceList} itemsPerPage={5} size={8}>
@@ -98,7 +180,10 @@ function Home() {
                 <h1 className='text-2xl font-bold lg:text-3xl'>
                     Địa chỉ trụ sở chính
                 </h1>
-                <GoongMap className='h-72 w-full bg-primary' />
+                <GoongMap
+                    className='h-96 w-full bg-primary'
+                    originPoint={[106.62383478787928, 10.822608284821372]}
+                />
             </div>
         </>
     );

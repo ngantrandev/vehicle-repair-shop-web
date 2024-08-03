@@ -46,17 +46,19 @@ function ServiceDetail() {
                 <Button
                     rounded
                     onClick={() => navigate(from)}
-                    className='absolute left-0 top-0 m-5'
+                    className='absolute left-0 top-0 m-2 sm:m-5'
                 >
                     Quay lại
                 </Button>
-                <h1 className='mt-12 text-3xl font-bold'>Thông tin dịch vụ</h1>
-                <div className='mt-12 flex h-full w-3/5 flex-col'>
+                <h1 className='mt-12 text-2xl font-bold sm:text-3xl'>
+                    Thông tin dịch vụ
+                </h1>
+                <div className='mt-12 flex h-full w-full flex-col sm:w-3/5'>
                     <div className='flex h-1/2 w-full flex-col items-center justify-center rounded-md border-2 border-primary-light'>
                         <div className='flex flex-col gap-y-2 px-4'>
                             <div>
                                 <span>Tên dịch vụ: </span>
-                                <span className='text-3xl font-bold'>
+                                <span className='text-base font-bold sm:text-3xl'>
                                     {name}
                                 </span>
                             </div>

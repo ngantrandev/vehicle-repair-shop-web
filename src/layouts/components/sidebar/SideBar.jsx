@@ -7,7 +7,7 @@ import configs from '../../../configs';
 function SideBar({ className }) {
     return (
         <aside className={className}>
-            <Menu className='flex flex-col gap-y-1'>
+            <Menu className='grid w-full grid-cols-3 flex-col gap-y-1 md:flex'>
                 <SideBarItem
                     title='Danh sách dịch vụ'
                     to={configs.routes.admin.dashboard.services}

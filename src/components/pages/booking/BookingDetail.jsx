@@ -390,7 +390,8 @@ function BookingDetail() {
                 )}
 
                 {status !== configs.BOOKING_STATE.done &&
-                status !== configs.BOOKING_STATE.cancelled ? (
+                status !== configs.BOOKING_STATE.cancelled &&
+                status !== configs.BOOKING_STATE.pending ? (
                     <Button
                         rounded
                         className={`col-span-1 w-full bg-green-600 hover:bg-green-800 active:bg-green-700`}

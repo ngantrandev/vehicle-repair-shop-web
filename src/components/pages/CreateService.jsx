@@ -1,43 +1,130 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 import Button from '../button';
-import Dropdown from '../dropdown';
 import Input from '../input';
 import configs from '../../configs';
+import serviceService from '../../services/serviceService';
+import ultils from '../../ultils';
 
 function CreateService() {
     const location = useLocation();
     const navigate = useNavigate();
 
-    const { from } = location.state || {
-        from: { pathname: configs.routes.home },
+    const [listCategory, setListCategory] = useState([]);
+
+    const { from } = location.state || {};
+
+    const [inputName, setInputName] = useState('');
+    const [inputDescription, setInputDescription] = useState('');
+    const [inputPrice, setInputPrice] = useState(0);
+    const [inputTime, setInputTime] = useState(null);
+    const [categoryId, setCategoryId] = useState(null);
+
+    useEffect(() => {
+        const fetchCategories = async () => {
+            try {
+                const res = await serviceService.getServiceCategories();
+
+                if (res.status !== configs.STATUS_CODE.OK) {
+                    return;
+                }
+
+                setListCategory(res.data.data);
+            } catch (error) {
+                console.log(error);
+            }
+        };
+
+        fetchCategories();
+    }, []);
+
+    const handleCreateService = async () => {
+        try {
+            if (!inputName || inputName.trim() === '') {
+                ultils.notifyError('Tên quá ngắn', { autoClose: 5000 });
+                setTimeout(() => {
+                    ultils.notifyInfo('Tên dịch vụ không được để trống');
+                }, 1000);
+                return;
+            }
+
+            if (!inputDescription || inputDescription.trim() === '') {
+                ultils.notifyError('Mô tả quá ngắn');
+                setTimeout(() => {
+                    ultils.notifyInfo('Mô tả dịch vụ không được để trống');
+                }, 1000);
+                return;
+            }
+
+            if (!inputPrice || inputPrice <= 100000) {
+                ultils.notifyError('Giá tiền không hợp lệ');
+
+                setTimeout(() => {
+                    ultils.notifyInfo('Giá tiền tối thiểu là 100.000đ');
+                }, 1000);
+                return;
+            }
+
+            if (!inputTime || inputTime.trim() === '') {
+                ultils.notifyError('Thời gian ước tính không hợp lệ');
+                return;
+            }
+
+            if (!categoryId || categoryId.trim() === '') {
+                ultils.notifyError('Chọn loại dịch vụ');
+                return;
+            }
+
+            const res = await serviceService.createService({
+                name: inputName,
+                description: inputDescription,
+                price: inputPrice,
+                estimated_time: inputTime + ':00',
+                category_id: categoryId,
+            });
+
+            if (res.status !== configs.STATUS_CODE.OK) {
+                return;
+            }
+
+            setCategoryId('');
+            setInputName('');
+            setInputDescription('');
+            setInputPrice(0);
+            setInputTime('');
+
+            ultils.notifySuccess('Cập nhật dịch vụ thành công');
+        } catch (error) {
+            console.log(error);
+        }
     };
 
-    const [dropdownOpenId, setDropdownOpenId] = useState(null);
     return (
-        <div className='flex h-screen w-full items-center justify-center bg-primary-supper-light'>
-            <Button
-                className='fixed left-0 top-0 m-3 flex gap-1'
-                rounded
-                onClick={() => navigate(from)}
-            >
-                <svg
-                    className='fill-current text-white'
-                    baseProfile='tiny'
-                    height='24px'
-                    id='Layer_1'
-                    version='1.2'
-                    viewBox='0 0 24 24'
-                    width='24px'
-                    xmlSpace='preserve'
-                    xmlns='http://www.w3.org/2000/svg'
-                    xmlnsXlink='http://www.w3.org/1999/xlink'
+        <div className='relative flex h-screen w-full items-center justify-center'>
+            {from && (
+                <Button
+                    className='absolute left-0 top-0 m-3 flex gap-1'
+                    rounded
+                    onClick={() => navigate(from)}
                 >
-                    <path d='M12,9.059V6.5c0-0.256-0.098-0.512-0.293-0.708C11.512,5.597,11.256,5.5,11,5.5s-0.512,0.097-0.707,0.292L4,12l6.293,6.207  C10.488,18.402,10.744,18.5,11,18.5s0.512-0.098,0.707-0.293S12,17.755,12,17.5v-2.489c2.75,0.068,5.755,0.566,8,3.989v-1  C20,13.367,16.5,9.557,12,9.059z' />
-                </svg>
-                <span>Quay lại</span>
-            </Button>
+                    <svg
+                        className='fill-current text-white'
+                        baseProfile='tiny'
+                        height='24px'
+                        id='Layer_1'
+                        version='1.2'
+                        viewBox='0 0 24 24'
+                        width='24px'
+                        xmlSpace='preserve'
+                        xmlns='http://www.w3.org/2000/svg'
+                        xmlnsXlink='http://www.w3.org/1999/xlink'
+                    >
+                        <path d='M12,9.059V6.5c0-0.256-0.098-0.512-0.293-0.708C11.512,5.597,11.256,5.5,11,5.5s-0.512,0.097-0.707,0.292L4,12l6.293,6.207  C10.488,18.402,10.744,18.5,11,18.5s0.512-0.098,0.707-0.293S12,17.755,12,17.5v-2.489c2.75,0.068,5.755,0.566,8,3.989v-1  C20,13.367,16.5,9.557,12,9.059z' />
+                    </svg>
+                    <span>Quay lại</span>
+                </Button>
+            )}
             <div
                 id='container'
                 className='flex h-screen w-full flex-col items-center justify-center bg-white px-3 md:w-1/2'
@@ -56,6 +143,8 @@ function CreateService() {
                             type='text'
                             placeholder='Nhập tên dịch vụ'
                             className={'w-full p-2'}
+                            value={inputName}
+                            onChange={(e) => setInputName(e.target.value)}
                         />
                     </div>
                     <div className='mb-4'>
@@ -68,6 +157,11 @@ function CreateService() {
                             type='text'
                             placeholder='Nhập mô tả dịch vụ'
                             className={'w-full p-2'}
+                            value={inputDescription}
+                            onChange={(e) =>
+                                setInputDescription(e.target.value)
+                            }
+                            multiline
                         />
                     </div>
                     <div className='mb-4'>
@@ -80,6 +174,8 @@ function CreateService() {
                             type='number'
                             placeholder='Nhập giá tiền'
                             className={'w-full p-2'}
+                            value={`${inputPrice}`}
+                            onChange={(e) => setInputPrice(e.target.value)}
                         />
                     </div>
                     <div className='mb-4'>
@@ -92,27 +188,43 @@ function CreateService() {
                             type='time'
                             placeholder='Nhập thời gian ước tính'
                             className={'w-full p-2'}
+                            value={inputTime}
+                            onChange={(e) => setInputTime(e.target.value)}
                         />
                     </div>
                     <div className='mb-4 w-2/3'>
-                        <label htmlFor='service-type' className=''>
+                        <label
+                            htmlFor='category'
+                            className='mb-2 block text-sm font-medium text-gray-900'
+                        >
                             Loại dịch vụ
                         </label>
-                        <Dropdown
-                            id='service-type'
-                            name='Loại dịch vụ'
-                            data={[
-                                { name: 'Sửa xe', id: 1 },
-                                { name: 'Thay thế linh kiện', id: 1 },
-                                { name: 'Dịch vụ khác', id: 1 },
-                            ]}
-                            inputPlaceHolder='Tìm kiếm loại dịch vụ'
-                            dropdownOpenId={dropdownOpenId}
-                            setDropdownOpenId={setDropdownOpenId}
-                        />
+                        <select
+                            id='category'
+                            className='block w-full rounded-lg border-2 border-primary-light p-2.5 text-sm focus:border-primary-light'
+                            defaultValue=''
+                            value={`${categoryId}`}
+                            onChange={(e) => setCategoryId(e.target.value)}
+                        >
+                            <option className='p-5' value={' '}>
+                                Chọn loại dịch vụ
+                            </option>
+
+                            {listCategory.map(({ id, name }) => {
+                                return (
+                                    <option key={id} value={id}>
+                                        {name}
+                                    </option>
+                                );
+                            })}
+                        </select>
                     </div>
                 </form>
-                <Button className='w-full font-medium' rounded>
+                <Button
+                    className='w-full font-medium'
+                    rounded
+                    onClick={handleCreateService}
+                >
                     Tạo mới dịch vụ
                 </Button>
             </div>

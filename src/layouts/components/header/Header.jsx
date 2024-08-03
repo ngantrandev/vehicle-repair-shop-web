@@ -9,13 +9,12 @@ import textLogo from '/favicon_text.svg';
 
 import configs from '../../../configs';
 import ultils from '../../../ultils';
-import loadData from '../../../services/loadData';
 
 const webName = import.meta.env.VITE_WEB_NAME;
 
 function Header({ className }) {
     const [isSignedIn, setIsSignedIn] = useState(false);
-    const [carts, setCarts] = useState([]);
+    // const [carts, setCarts] = useState([]);
     const [role, setRole] = useState('');
     const navigate = useNavigate();
 
@@ -46,8 +45,9 @@ function Header({ className }) {
 
     useEffect(() => {
         const user = ultils.getUserDataLogedin();
+        const token = ultils.getAccessToken();
 
-        if (!user) {
+        if (!user || !token) {
             setIsSignedIn(false);
             return;
         }
@@ -58,35 +58,35 @@ function Header({ className }) {
         setIsSignedIn(true);
     }, []);
 
-    useEffect(() => {
-        if (role !== configs.USER_ROLES.customer) {
-            return;
-        }
+    // useEffect(() => {
+    //     if (role !== configs.USER_ROLES.customer) {
+    //         return;
+    //     }
 
-        const user = ultils.getUserDataLogedin();
+    //     const user = ultils.getUserDataLogedin();
 
-        if (!user || !user.id) {
-            return;
-        }
+    //     if (!user || !user.id) {
+    //         return;
+    //     }
 
-        const fetchData = async () => {
-            const result = await loadData.getCarts(user.id);
+    //     const fetchData = async () => {
+    //         const result = await loadData.getCarts(user.id);
 
-            if (result.status !== configs.STATUS_CODE.OK) {
-                return;
-            }
+    //         if (result.status !== configs.STATUS_CODE.OK) {
+    //             return;
+    //         }
 
-            const data = result.data;
+    //         const data = result.data;
 
-            const carts = data.data;
+    //         const carts = data.data;
 
-            setCarts(carts);
-        };
+    //         setCarts(carts);
+    //     };
 
-        if (isSignedIn) {
-            fetchData();
-        }
-    }, [isSignedIn, role]);
+    //     if (isSignedIn) {
+    //         fetchData();
+    //     }
+    // }, [isSignedIn, role]);
 
     return (
         <div className={className}>
@@ -116,7 +116,7 @@ function Header({ className }) {
                 />
             </div>
             <div className='flex flex-shrink-0 justify-center gap-x-4 lg:gap-x-6'>
-                {(!isSignedIn || role === configs.USER_ROLES.customer) && (
+                {/* {(!isSignedIn || role === configs.USER_ROLES.customer) && (
                     <Tippy content='Giỏ hàng'>
                         <div className='relative items-center self-center'>
                             <svg
@@ -140,7 +140,7 @@ function Header({ className }) {
                             ) : null}
                         </div>
                     </Tippy>
-                )}
+                )} */}
                 {isSignedIn ? (
                     <>
                         {role === configs.USER_ROLES.customer && (

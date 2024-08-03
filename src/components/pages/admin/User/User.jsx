@@ -27,19 +27,19 @@ function User() {
         fetchUsers();
     }, []);
     return (
-        <div className='flex w-full flex-col'>
+        <div className='flex w-full flex-col items-center px-0 md:px-4'>
             <h1 className='py-10 text-center text-3xl font-bold'>
                 Danh sách tài khoản
             </h1>
-            <div className='relative m-5 w-full border-collapse overflow-x-auto border-2 shadow-md sm:rounded-lg'>
+            <div className='relative m-5 w-max border-collapse overflow-x-auto border-2 shadow-md sm:rounded-lg md:w-full'>
                 <table className='w-full table-auto'>
                     <thead className='h-8 border-y-2 bg-primary-supper-light'>
                         <tr className='text-left'>
                             <th>Họ tên</th>
                             <th>Email</th>
                             <th>Số điện thoại</th>
-                            <th>Admin</th>
-                            <th>Hành động</th>
+                            <th>Vai trò</th>
+                            {/* <th>Hành động</th> */}
                         </tr>
                     </thead>
                     <tbody>

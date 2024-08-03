@@ -1,8 +1,9 @@
 import axios from 'axios';
 
 import configs from '../configs';
+import ultils from './ultils';
 
-const token = localStorage.getItem('token');
+const token = ultils.getAccessToken();
 
 const httpRequest = axios.create({
     baseURL: import.meta.env.VITE_API_BASE_URL,

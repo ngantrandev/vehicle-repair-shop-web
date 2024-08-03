@@ -35,7 +35,7 @@ function Item({ data, className }) {
 
     const handleCancel = async () => {
         try {
-            const user = JSON.parse(localStorage.getItem('user'));
+            const user = ultils.getUserDataLogedin();
 
             if (!user) {
                 ultils.notifyError('Bạn chưa đăng nhập');

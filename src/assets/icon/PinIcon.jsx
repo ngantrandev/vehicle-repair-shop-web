@@ -5,6 +5,8 @@ function PinIcon({ className, active }) {
         <svg
             fill='currentColor'
             className={`h-10 w-10 origin-bottom transition-transform duration-100 ${active ? 'scale-125' : 'scale-100'} ${className}`}
+            width={'100%'}
+            height={'100%'}
             version='1.1'
             viewBox='0 0 91 91'
             xmlSpace='preserve'

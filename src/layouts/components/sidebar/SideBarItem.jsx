@@ -8,11 +8,11 @@ function SideBarItem({ title, to, icon }) {
         <NavLink
             to={to}
             className={(nav) =>
-                `block rounded-md p-4 hover:bg-primary-supper-light ${nav.isActive && activeStyle}`
+                `block rounded-md border-2 p-4 hover:bg-primary-supper-light md:border-0 ${nav.isActive && activeStyle}`
             }
         >
             <span>{icon}</span>
-            <span>{title}</span>
+            <span className='text-sm md:text-lg'>{title}</span>
         </NavLink>
     );
 }

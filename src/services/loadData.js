@@ -20,9 +20,13 @@ const getMotorcycleBrands = async () => {
     }
 };
 
-const getListService = async () => {
+const getListService = async (params = {}) => {
     try {
-        const res = await httpRequests.get('/services');
+        const res = await httpRequests.get('/services', {
+            params: {
+                ...params,
+            },
+        });
 
         return res;
     } catch (error) {

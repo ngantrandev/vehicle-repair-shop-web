@@ -1,82 +1,154 @@
 import { useEffect, useState } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 
 import Button from '../button';
-import Dropdown from '../dropdown';
 import Input from '../input';
+import serviceService from '../../services/serviceService';
+import configs from '../../configs';
+import ultils from '../../ultils';
 
 function ModifyService() {
     const location = useLocation();
     const navigate = useNavigate();
+    const { service_id: serviceId } = useParams();
 
-    const { from, data } = location.state;
-
-    const {
-        name,
-        description,
-        price,
-        estimated_time: time,
-        category,
-        active,
-    } = data;
+    const { from } = location.state || {};
 
     const [listCategory, setListCategory] = useState([]);
-    const [serviceStatus, setServiceStatus] = useState(active === 1);
+    const [serviceStatus, setServiceStatus] = useState(false);
 
-    const [inputName, setInputName] = useState(name);
-    const [inputDescription, setInputDescription] = useState(description);
-    const [inputPrice, setInputPrice] = useState(price);
-    const [inputTime, setInputTime] = useState(time);
+    const [inputName, setInputName] = useState('');
+    const [inputDescription, setInputDescription] = useState('');
+    const [inputPrice, setInputPrice] = useState(0);
+    const [inputTime, setInputTime] = useState(null);
+    const [categoryId, setCategoryId] = useState(null);
 
     useEffect(() => {
-        setListCategory([
-            { name: 'Sửa xe', id: 1 },
-            { name: 'Thay thế linh kiện', id: 2 },
-            { name: 'Dịch vụ khác', id: 3 },
-        ]);
+        const fetchService = async () => {
+            try {
+                if (!serviceId || !ultils.isValidInteger(serviceId)) {
+                    return;
+                }
+
+                const res = await serviceService.getServiceById(serviceId);
+
+                if (res.status !== configs.STATUS_CODE.OK) {
+                    return;
+                }
+
+                const resData = res.data;
+
+                setInputName(resData.data?.name);
+                setInputDescription(resData.data?.description);
+                setInputPrice(resData.data?.price);
+                setInputTime(resData.data?.estimated_time);
+                setServiceStatus(resData.data?.active == 1);
+                setCategoryId(resData.data?.category?.id);
+            } catch (error) {
+                console.log(error);
+            }
+        };
+
+        fetchService();
+    }, [serviceId]);
+
+    useEffect(() => {
+        const fetchCategories = async () => {
+            try {
+                const res = await serviceService.getServiceCategories();
+
+                if (res.status !== configs.STATUS_CODE.OK) {
+                    return;
+                }
+
+                setListCategory(res.data.data);
+            } catch (error) {
+                console.log(error);
+            }
+        };
+
+        fetchCategories();
     }, []);
 
-    // useEffect(() => {
-    //     listCategory.forEach((item) => {
-    //         if (item.name === category.name) {
-    //             setDropdownOpenId(item.id);
-    //         }
-    //     });
-    // }, [listCategory, category]);
+    const handleUpdateService = async () => {
+        try {
+            if (!inputName || inputName.trim() === '') {
+                ultils.notifyError('Tên quá ngắn');
+                return;
+            }
 
-    const [dropdownOpenId, setDropdownOpenId] = useState(null);
+            if (!inputDescription || inputDescription.trim() === '') {
+                ultils.notifyError('Mô tả quá ngắn');
+                return;
+            }
+
+            if (!inputPrice || inputPrice <= 100000) {
+                ultils.notifyError('Giá tiền không hợp lệ');
+
+                setTimeout(() => {
+                    ultils.notifyInfo('Giá tiền tối thiểu là 100.000đ');
+                }, 1000);
+                return;
+            }
+
+            if (!inputTime || inputTime.trim() === '') {
+                ultils.notifyError('Thời gian ước tính không hợp lệ');
+                return;
+            }
+
+            const res = await serviceService.updateService({
+                id: serviceId,
+                name: inputName,
+                description: inputDescription,
+                price: inputPrice,
+                estimated_time: inputTime,
+                category_id: categoryId,
+                active: serviceStatus ? '1' : '0',
+            });
+
+            if (res.status !== configs.STATUS_CODE.OK) {
+                return;
+            }
+
+            ultils.notifySuccess('Cập nhật dịch vụ thành công');
+        } catch (error) {
+            console.log(error);
+        }
+    };
 
     return (
-        <div className='flex h-screen w-full items-center justify-center bg-primary-supper-light'>
-            <Button
-                className='fixed left-0 top-0 m-3 flex gap-1'
-                rounded
-                onClick={() => {
-                    if (
-                        window.confirm(
-                            'Bạn có chắc chắn muốn rời khỏi trang này?'
-                        )
-                    ) {
-                        navigate(from);
-                    }
-                }}
-            >
-                <svg
-                    className='fill-current text-white'
-                    baseProfile='tiny'
-                    height='24px'
-                    id='Layer_1'
-                    version='1.2'
-                    viewBox='0 0 24 24'
-                    width='24px'
-                    xmlSpace='preserve'
-                    xmlns='http://www.w3.org/2000/svg'
-                    xmlnsXlink='http://www.w3.org/1999/xlink'
+        <div className='relative flex h-screen w-full items-center justify-center'>
+            {from && (
+                <Button
+                    className='absolute left-0 top-0 m-3 flex gap-1'
+                    rounded
+                    onClick={() => {
+                        if (
+                            window.confirm(
+                                'Bạn có chắc chắn muốn rời khỏi trang này?'
+                            )
+                        ) {
+                            navigate(from);
+                        }
+                    }}
                 >
-                    <path d='M12,9.059V6.5c0-0.256-0.098-0.512-0.293-0.708C11.512,5.597,11.256,5.5,11,5.5s-0.512,0.097-0.707,0.292L4,12l6.293,6.207  C10.488,18.402,10.744,18.5,11,18.5s0.512-0.098,0.707-0.293S12,17.755,12,17.5v-2.489c2.75,0.068,5.755,0.566,8,3.989v-1  C20,13.367,16.5,9.557,12,9.059z' />
-                </svg>
-                <span>Quay lại</span>
-            </Button>
+                    <svg
+                        className='fill-current text-white'
+                        baseProfile='tiny'
+                        height='24px'
+                        id='Layer_1'
+                        version='1.2'
+                        viewBox='0 0 24 24'
+                        width='24px'
+                        xmlSpace='preserve'
+                        xmlns='http://www.w3.org/2000/svg'
+                        xmlnsXlink='http://www.w3.org/1999/xlink'
+                    >
+                        <path d='M12,9.059V6.5c0-0.256-0.098-0.512-0.293-0.708C11.512,5.597,11.256,5.5,11,5.5s-0.512,0.097-0.707,0.292L4,12l6.293,6.207  C10.488,18.402,10.744,18.5,11,18.5s0.512-0.098,0.707-0.293S12,17.755,12,17.5v-2.489c2.75,0.068,5.755,0.566,8,3.989v-1  C20,13.367,16.5,9.557,12,9.059z' />
+                    </svg>
+                    <span>Quay lại</span>
+                </Button>
+            )}
 
             <div
                 id='container'
@@ -127,7 +199,7 @@ function ModifyService() {
                             type='number'
                             placeholder='Nhập giá tiền'
                             className={'w-full p-2'}
-                            value={inputPrice}
+                            value={`${inputPrice}`}
                             onChange={(e) => setInputPrice(e.target.value)}
                         />
                     </div>
@@ -146,19 +218,31 @@ function ModifyService() {
                         />
                     </div>
                     <div className='mb-4 w-2/3'>
-                        <label htmlFor='service-type' className=''>
+                        <label
+                            htmlFor='category'
+                            className='mb-2 block text-sm font-medium text-gray-900'
+                        >
                             Loại dịch vụ
                         </label>
-                        <Dropdown
-                            id='service-type'
-                            name='Loại dịch vụ'
-                            data={listCategory}
-                            inputPlaceHolder='Tìm kiếm loại dịch vụ'
-                            dropdownOpenId={dropdownOpenId}
-                            setDropdownOpenId={setDropdownOpenId}
-                            currentIrem={category.id}
-                            visibleSearch
-                        />
+                        <select
+                            id='category'
+                            className='block w-full rounded-lg border-2 border-primary-light p-2.5 text-sm focus:border-primary-light'
+                            defaultValue=''
+                            value={`${categoryId}`}
+                            onChange={(e) => setCategoryId(e.target.value)}
+                        >
+                            <option className='p-5' value={' '}>
+                                Chọn loại dịch vụ
+                            </option>
+
+                            {listCategory.map(({ id, name }) => {
+                                return (
+                                    <option key={id} value={id}>
+                                        {name}
+                                    </option>
+                                );
+                            })}
+                        </select>
                     </div>
 
                     <div className='mb-4 flex items-center gap-2'>
@@ -183,7 +267,11 @@ function ModifyService() {
                         </label>
                     </div>
                 </form>
-                <Button className='w-full font-medium' rounded>
+                <Button
+                    className='w-full font-medium'
+                    rounded
+                    onClick={handleUpdateService}
+                >
                     Cập nhật
                 </Button>
             </div>

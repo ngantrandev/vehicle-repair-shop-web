@@ -2,24 +2,48 @@ import moment from 'moment-timezone';
 import polyline from '@mapbox/polyline';
 import { toast } from 'react-toastify';
 
+const getCookie = (cname) => {
+    var name = cname + '=';
+    var decodedCookie = decodeURIComponent(document.cookie);
+    var ca = decodedCookie.split(';');
+    for (var i = 0; i < ca.length; i++) {
+        var c = ca[i];
+        while (c.charAt(0) == ' ') {
+            c = c.substring(1);
+        }
+        if (c.indexOf(name) == 0) {
+            return c.substring(name.length, c.length);
+        }
+    }
+    return '';
+};
+
 const decodePolyline = (str) => {
     return polyline.decode(str).map(([lat, lng]) => [lng, lat]);
 };
 
 const getUserDataLogedin = () => {
-    const user = JSON.parse(localStorage.getItem('user'));
-    if (user) {
-        return user;
+    const localStorageUser = JSON.parse(localStorage.getItem('user'));
+    if (localStorageUser) {
+        return localStorageUser;
     }
+
+    const sessionStorageUser = JSON.parse(sessionStorage.getItem('user'));
+
+    if (sessionStorageUser) {
+        return sessionStorageUser;
+    }
+
     return null;
 };
 
 const getAccessToken = () => {
-    const token = localStorage.getItem('token');
+    const token = getCookie('token');
 
     if (token) {
         return token;
     }
+
     return null;
 };
 
@@ -74,6 +98,8 @@ const convertTimeToGMT7 = (time) => {
 const removeUserDataLogedin = () => {
     localStorage.removeItem('user');
     localStorage.removeItem('token');
+    sessionStorage.removeItem('user');
+    document.cookie = 'token=; expires=Thu, 01 Jan 1970 00:00:00 UTC;';
 };
 
 const isValidEmail = (email) => {
