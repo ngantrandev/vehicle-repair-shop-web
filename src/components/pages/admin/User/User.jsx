@@ -48,7 +48,9 @@ function User() {
                                 <Item
                                     key={index}
                                     data={user}
-                                    className={'hover:bg-gray-200'}
+                                    className={
+                                        'hover:cursor-pointer hover:bg-gray-200'
+                                    }
                                 />
                             );
                         })}

@@ -13,7 +13,6 @@ function MyBookings() {
                 const user = ultils.getUserDataLogedin();
 
                 if (!user) {
-                    console.log('User is not logged in');
                     return;
                 }
 
@@ -50,7 +49,7 @@ function MyBookings() {
                                 <Item
                                     key={index}
                                     data={booking}
-                                    className={'hover:bg-gray-200'}
+                                    className={'h-10 hover:bg-gray-200'}
                                 />
                             );
                         })}

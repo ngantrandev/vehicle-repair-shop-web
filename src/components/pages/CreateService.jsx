@@ -101,7 +101,7 @@ function CreateService() {
     };
 
     return (
-        <div className='relative flex h-screen w-full items-center justify-center'>
+        <div className='relative flex w-full items-center justify-center'>
             {from && (
                 <Button
                     className='absolute left-0 top-0 m-3 flex gap-1'
@@ -127,7 +127,7 @@ function CreateService() {
             )}
             <div
                 id='container'
-                className='flex h-screen w-full flex-col items-center justify-center bg-white px-3 md:w-1/2'
+                className='flex w-full flex-col items-center justify-center bg-white px-3 md:w-1/2'
             >
                 <h1 className='my-6 text-center text-2xl font-bold capitalize'>
                     Tạo mới dịch vụ

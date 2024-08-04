@@ -3,23 +3,28 @@ import axios from 'axios';
 import configs from '../configs';
 import ultils from './ultils';
 
-const token = ultils.getAccessToken();
-
 const httpRequest = axios.create({
     baseURL: import.meta.env.VITE_API_BASE_URL,
     timeout: 5000,
     headers: {
         'Content-Type': 'application/json',
-        token: 'Bearer' + ' ' + token,
     },
 });
 
 const get = async (apiPath, params = {}) => {
     try {
-        const res = await httpRequest.get(apiPath, params);
+        const token = ultils.getAccessToken();
+
+        const res = await httpRequest.get(apiPath, {
+            ...params,
+
+            headers: {
+                token: 'Bearer ' + token,
+            },
+        });
 
         if (res.status !== configs.STATUS_CODE.OK) {
-            throw new Error(res.data.message);
+            return null;
         }
 
         return res;
@@ -30,24 +35,44 @@ const get = async (apiPath, params = {}) => {
 
 const post = async (apiPath, data = {}) => {
     try {
-        const res = await httpRequest.post(apiPath, data);
+        const token = ultils.getAccessToken();
+
+        const res = await httpRequest.post(apiPath, data, {
+            headers: {
+                token: 'Bearer ' + token,
+            },
+        });
 
         if (res.status !== configs.STATUS_CODE.OK) {
-            throw new Error(res.data.message);
+            return null;
         }
 
         return res;
     } catch (error) {
-        throw new Error(error);
+        if (error.response) {
+            return error.response;
+        } else if (error.request) {
+            // Yêu cầu đã được gửi nhưng không nhận được phản hồi
+            console.error('Error request:', error.request);
+            throw new Error('No response received from server');
+        } else {
+            throw new Error(error.message);
+        }
     }
 };
 
 const patch = async (apiPath, data = {}) => {
     try {
-        const res = await httpRequest.patch(apiPath, data);
+        const token = ultils.getAccessToken();
+
+        const res = await httpRequest.patch(apiPath, data, {
+            headers: {
+                token: 'Bearer ' + token,
+            },
+        });
 
         if (res.status !== configs.STATUS_CODE.OK) {
-            throw new Error(res.data.message);
+            return null;
         }
 
         return res;

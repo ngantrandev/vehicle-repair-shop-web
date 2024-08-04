@@ -57,7 +57,7 @@ function Home() {
             }
 
             const fetchServicesByCategory = async (params) => {
-                const services = await loadData.getListService(params);
+                const services = await loadData.getListService({ ...params });
                 setServiceList(services.data.data);
             };
 

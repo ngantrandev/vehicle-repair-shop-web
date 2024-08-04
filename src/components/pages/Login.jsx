@@ -10,6 +10,9 @@ import Button from '../button';
 import authService from '../../services/authService';
 import ultils from '../../ultils';
 
+const webName = import.meta.env.VITE_WEB_NAME || 'Shop sửa xe';
+import vehicleImg from '../../assets/images/motorcycle.png';
+
 function Login() {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
@@ -30,7 +33,7 @@ function Login() {
         const result = await authService.login({ username, password });
 
         if (result.status !== configs.STATUS_CODE.OK) {
-            ultils.notifyError(result.data.message);
+            ultils.notifyError('Sai tên tài khoản hoặc mật khẩu');
             return;
         }
 
@@ -48,7 +51,7 @@ function Login() {
                 document.cookie = `token=${resData.token}; ${expires};`;
             } else {
                 sessionStorage.setItem('user', JSON.stringify(resData.data));
-                document.cookie = `token=${resData.token}`;
+                document.cookie = `token=${resData.token}; path=/`;
             }
 
             navigate(configs.routes.home);
@@ -57,11 +60,18 @@ function Login() {
 
     return (
         <div className='grid w-full grid-cols-1 text-[15px] lg:grid-cols-3'>
-            <div className='hidden h-screen lg:col-span-2 lg:block'>
+            <div className='relative hidden h-screen select-none lg:col-span-2 lg:block'>
+                <div className='absolute left-0 top-0 flex h-full w-full flex-col items-center justify-center bg-slate-300 opacity-25'></div>
+                <div className='absolute left-0 top-0 flex h-full w-full flex-col items-center justify-center'>
+                    <img src={vehicleImg} alt='' className='size-56' />
+                    <h1 className='inline-block bg-gradient-to-r from-cyan-500 to-primary bg-clip-text text-7xl font-bold capitalize text-transparent'>
+                        {webName}
+                    </h1>
+                </div>
                 <img
                     src={bannerImg}
                     alt='banner image'
-                    className='h-full w-full object-cover'
+                    className='h-full w-full bg-transparent object-cover'
                 />
             </div>
             <div className='flex h-screen content-center items-center justify-center lg:col-span-1 lg:min-h-screen lg:pl-[48px] lg:pr-[48px]'>

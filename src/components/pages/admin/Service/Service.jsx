@@ -71,6 +71,7 @@ function Service() {
                                 <th>Tên dịch vụ</th>
                                 <th>Thời gian</th>
                                 <th>Giá dịch vụ</th>
+                                <th>Trạng thái</th>
                                 <th>Hành động</th>
                             </tr>
                         </thead>
@@ -80,7 +81,9 @@ function Service() {
                                     <Item
                                         key={index}
                                         data={service}
-                                        className={'hover:bg-gray-200'}
+                                        className={
+                                            'hover:cursor-pointer hover:bg-gray-200'
+                                        }
                                     />
                                 );
                             })}

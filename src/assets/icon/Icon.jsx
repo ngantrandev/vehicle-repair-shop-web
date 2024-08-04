@@ -1,3 +1,5 @@
+import PropTypes from 'prop-types';
+
 const DotIcon = ({ className }) => (
     <svg
         className={className}
@@ -30,7 +32,6 @@ const FixingIcon = ({ className }) => (
         className={className}
         enableBackground='new 0 0 32 32'
         fill='currentColor'
-        height='139px'
         id='Setting'
         version='1.1'
         viewBox='0 0 139 139'
@@ -96,5 +97,21 @@ const DoneIcon = ({ className }) => (
         />
     </svg>
 );
+
+DotIcon.propTypes = {
+    className: PropTypes.string,
+};
+
+FixingIcon.propTypes = {
+    className: PropTypes.string,
+};
+
+CanceledIcon.propTypes = {
+    className: PropTypes.string,
+};
+
+DoneIcon.propTypes = {
+    className: PropTypes.string,
+};
 
 export { DotIcon, FixingIcon, CanceledIcon, DoneIcon };

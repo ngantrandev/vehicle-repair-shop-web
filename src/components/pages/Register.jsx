@@ -9,6 +9,9 @@ import Button from '../button';
 import ultils from '../../ultils/ultils';
 import authService from '../../services/authService';
 
+const webName = import.meta.env.VITE_WEB_NAME || 'Shop sửa xe';
+import vehicleImg from '../../assets/images/motorcycle.png';
+
 function Register() {
     const [username, setUsername] = useState('');
     const [fullName, setFullName] = useState('');
@@ -103,16 +106,23 @@ function Register() {
 
     return (
         <div className='relative grid w-full grid-cols-1 text-[15px] lg:grid-cols-3'>
-            <div className='hidden h-screen lg:col-span-2 lg:block'>
+            <div className='relative hidden h-screen select-none lg:col-span-2 lg:block'>
+                <div className='absolute left-0 top-0 flex h-full w-full flex-col items-center justify-center bg-slate-300 opacity-25'></div>
+                <div className='absolute left-0 top-0 flex h-full w-full select-none flex-col items-center justify-center'>
+                    <img src={vehicleImg} alt='' className='size-56' />
+                    <h1 className='inline-block bg-gradient-to-r from-cyan-500 to-primary bg-clip-text text-7xl font-bold capitalize text-transparent'>
+                        {webName}
+                    </h1>
+                </div>
                 <img
                     src={bannerImg}
                     alt='banner image'
-                    className='h-full w-full object-cover'
+                    className='h-full w-full bg-transparent object-cover'
                 />
             </div>
             <div className='flex h-screen content-center items-center justify-center lg:col-span-1 lg:min-h-screen lg:pl-[48px] lg:pr-[48px]'>
                 <div className='w-11/12 place-content-center bg-white sm:w-4/5 md:w-3/5 lg:w-full'>
-                    <h2 className='bold mb-4 text-center text-[40px] font-bold'>
+                    <h2 className='bold mb-4 text-center text-[40px] font-bold text-primary'>
                         Đăng ký
                     </h2>
                     <form>

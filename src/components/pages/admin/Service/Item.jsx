@@ -16,6 +16,15 @@ function Item({ data, className }) {
                 {minute && minute > 0 ? `${minute} phút` : ''}
             </td>
             <td>{ultils.getCurrencyFormat(price)}</td>
+            <td>
+                {data.active ? (
+                    <span className='font-bold text-green-600'>Hoạt động</span>
+                ) : (
+                    <span className='font-bold text-red-500'>
+                        Ngừng hoạt động
+                    </span>
+                )}
+            </td>
             <td className='flex gap-x-2'>
                 <Link
                     to={{
