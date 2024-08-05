@@ -24,9 +24,25 @@ const confirmBooking = async (userId, bookingId, note, staffId) => {
     }
 };
 
+const assignStaffToBooking = async (userId, bookingId, staffId, note) => {
+    try {
+        const res = await httpRequests.patch(
+            `/admin/users/${userId}/bookings/${bookingId}/assign`,
+            {
+                employee_id: staffId,
+                note: note,
+            }
+        );
+        return res;
+    } catch (error) {
+        throw new Error(error);
+    }
+};
+
 const adminBookingService = {
     getAllBooking,
     confirmBooking,
+    assignStaffToBooking,
 };
 
 export default adminBookingService;

@@ -189,7 +189,7 @@ const GoongMap = forwardRef(function GoongMap(
                     </div>
                 )}
 
-                {startPoint.length > 0 && (
+                {startPoint.length == 2 && (
                     <div id='marker-start'>
                         <Marker
                             longitude={startPoint[0]}
@@ -203,7 +203,7 @@ const GoongMap = forwardRef(function GoongMap(
                     </div>
                 )}
 
-                {endPoint.length > 0 && (
+                {endPoint.length == 2 && (
                     <div id='marker-end'>
                         <Marker longitude={endPoint[0]} latitude={endPoint[1]}>
                             <span className='font-bold text-red-500'>

@@ -216,6 +216,30 @@ function BookingDetail() {
         }
     };
 
+    const handleChangeStaff = async () => {
+        try {
+            if (!selectedStaff || selectedStaff.length === 0) {
+                ultils.notifyWarning('Vui lòng chọn nhân viên');
+                return;
+            }
+
+            const res = await adminBookingService.assignStaffToBooking(
+                userId,
+                bookingId,
+                selectedStaff,
+                note
+            );
+
+            if (res.status !== configs.STATUS_CODE.OK) {
+                ultils.notifyError('Đã xảy ra lỗi');
+            }
+
+            ultils.notifySuccess('Cập nhật thông tin thành công');
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
     return (
         <div className='relative flex w-full flex-col justify-center'>
             <div className='absolute top-6 flex w-full'>
@@ -230,7 +254,7 @@ function BookingDetail() {
                     Thông tin đặt lịch
                 </h1>
             </div>
-            <div className='mx-2 mt-32 grid grid-cols-4 gap-x-1 rounded-md border-2 border-primary-light p-3 md:mx-12'>
+            <div className='mx-2 mt-32 grid grid-cols-4 gap-1 rounded-md border-2 border-primary-light p-3 md:mx-12'>
                 <div className='col-span-4'>
                     <span>Khách hàng: </span>
                     <span className='text-xl font-bold'>
@@ -292,13 +316,17 @@ function BookingDetail() {
                     </label>
                     <select
                         disabled={
-                            userRole !== configs.USER_ROLES.admin ||
+                            userRole !== configs.USER_ROLES.admin &&
                             status !== configs.BOOKING_STATE.pending
                         }
                         id='station'
                         className='block w-full rounded-lg border-2 border-primary-light p-2.5 text-sm focus:border-primary-light'
                         value={selectedStation}
                         onChange={(e) => {
+                            if (userRole !== configs.USER_ROLES.admin) {
+                                return;
+                            }
+                            setSelectedStaff('');
                             setSelectedStation(e.target.value);
                         }}
                     >
@@ -321,13 +349,18 @@ function BookingDetail() {
                     </label>
                     <select
                         disabled={
-                            userRole !== configs.USER_ROLES.admin ||
+                            userRole !== configs.USER_ROLES.admin &&
                             status !== configs.BOOKING_STATE.pending
                         }
                         id='staffs'
                         className='block w-full rounded-lg border-2 border-primary-light p-2.5 text-sm focus:border-primary-light'
                         value={selectedStaff}
-                        onChange={(e) => setSelectedStaff(e.target.value)}
+                        onChange={(e) => {
+                            if (userRole !== configs.USER_ROLES.admin) {
+                                return;
+                            }
+                            setSelectedStaff(e.target.value);
+                        }}
                     >
                         <option className='p-5'></option>
                         {staffs.map(({ id, firstname, lastname }) => {
@@ -353,11 +386,17 @@ function BookingDetail() {
                             'w-full rounded-md border-2 border-primary-light p-2'
                         }
                         value={note}
-                        onChange={(e) => setNote(e.target.value)}
+                        onChange={(e) => {
+                            if (userRole !== configs.USER_ROLES.admin) {
+                                return;
+                            }
+                            setNote(e.target.value);
+                        }}
                     />
                 </div>
 
-                {status === configs.BOOKING_STATE.pending ? (
+                {status === configs.BOOKING_STATE.pending &&
+                userRole === configs.USER_ROLES.admin ? (
                     <Button
                         rounded
                         className={`col-span-1 w-full`}
@@ -427,6 +466,18 @@ function BookingDetail() {
                     >
                         Xác nhận hủy
                     </Button>
+                )}
+
+                {userRole === configs.USER_ROLES.admin && (
+                    <div className='col-span-4 flex w-full justify-center'>
+                        <Button
+                            rounded
+                            className={`w-56 bg-primary hover:bg-primary-dark active:bg-primary-light`}
+                            onClick={handleChangeStaff}
+                        >
+                            Thay đổi thông tin
+                        </Button>
+                    </div>
                 )}
             </div>
 
