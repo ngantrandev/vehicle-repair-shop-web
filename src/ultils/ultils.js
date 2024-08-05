@@ -110,6 +110,10 @@ const isValidEmail = (email) => {
         );
 };
 
+const isVietnamesePhoneNumber = (number) => {
+    return /(03|05|07|08|09|01[2|6|8|9])+([0-9]{8})\b/.test(number);
+};
+
 const notifySuccess = (message, configs = {}) => {
     toast.success(message, {
         position: 'bottom-right',
@@ -176,6 +180,7 @@ const ultils = {
     getUserRole,
     decodePolyline,
     isValidEmail,
+    isVietnamesePhoneNumber,
     notifySuccess,
     notifyError,
     notifyInfo,

@@ -8,6 +8,7 @@ import ServiceList from '../servicelist';
 
 import loadData from '../../services/loadData.js';
 import GoongMap from '../map/GoongMap.jsx';
+import serviceService from '../../services/serviceService.js';
 
 function Home() {
     const [serviceList, setServiceList] = useState([]);
@@ -32,7 +33,7 @@ function Home() {
             }
 
             const fetchServicesByCategory = async (params) => {
-                const services = await loadData.getListService(params);
+                const services = await serviceService.getListService(params);
                 setServiceList(services.data.data);
             };
 
@@ -57,7 +58,9 @@ function Home() {
             }
 
             const fetchServicesByCategory = async (params) => {
-                const services = await loadData.getListService({ ...params });
+                const services = await serviceService.getListService({
+                    ...params,
+                });
                 setServiceList(services.data.data);
             };
 
@@ -69,13 +72,22 @@ function Home() {
 
     useEffect(() => {
         const fetchServices = async () => {
-            const services = await loadData.getListService();
-            const serviceCategories = await loadData.getServiceCategories();
+            const services = await serviceService.getListService();
+            const serviceCategories =
+                await serviceService.getServiceCategories();
             const motorcycleBrands = await loadData.getMotorcycleBrands();
 
-            setMotorcycleBrands([...motorcycleBrands.data]);
-            setServiceCategories([...serviceCategories.data]);
-            setServiceList(services.data.data);
+            if (services && services.data) {
+                setServiceList(services.data?.data);
+            }
+
+            if (serviceCategories && serviceCategories.data) {
+                setServiceCategories(serviceCategories.data.data);
+            }
+
+            if (motorcycleBrands && motorcycleBrands.data) {
+                setMotorcycleBrands(motorcycleBrands.data.data);
+            }
         };
 
         fetchServices();

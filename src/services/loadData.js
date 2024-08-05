@@ -1,32 +1,8 @@
 import httpRequests from '../ultils/httpRequest';
 
-const getServiceCategories = async () => {
-    try {
-        const res = await httpRequests.get('/services/categories');
-
-        return res.data;
-    } catch (error) {
-        throw new Error(error);
-    }
-};
-
 const getMotorcycleBrands = async () => {
     try {
         const res = await httpRequests.get('/motorcycle-brands');
-
-        return res.data;
-    } catch (error) {
-        throw new Error(error);
-    }
-};
-
-const getListService = async (params = {}) => {
-    try {
-        const res = await httpRequests.get('/services', {
-            params: {
-                ...params,
-            },
-        });
 
         return res;
     } catch (error) {
@@ -89,8 +65,6 @@ const getActiveServiceStations = async () => {
 };
 
 const loadData = {
-    getListService,
-    getServiceCategories,
     getMotorcycleBrands,
     getListProvince,
     getListDistrict,

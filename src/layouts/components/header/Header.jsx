@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import Tippy from '@tippyjs/react';
+import TippyHeadless from '@tippyjs/react/headless';
 import { Link, useNavigate } from 'react-router-dom';
 
 import Button from '../../../components/button';
@@ -9,14 +10,59 @@ import textLogo from '/favicon_text.svg';
 
 import configs from '../../../configs';
 import ultils from '../../../ultils';
+import serviceService from '../../../services/serviceService';
+import useDebounce from '../../../hooks/useDebounce';
+import CloseIcon from '../../../assets/icon/CloseIcon';
 
 const webName = import.meta.env.VITE_WEB_NAME;
 
 function Header({ className }) {
+    const navigate = useNavigate();
+
     const [isSignedIn, setIsSignedIn] = useState(false);
     // const [carts, setCarts] = useState([]);
     const [role, setRole] = useState('');
-    const navigate = useNavigate();
+    const [inputSearch, setInputSearch] = useState('');
+    const [servicesFound, setServicesFound] = useState([]);
+    const debouncedInputSearch = useDebounce(inputSearch, 500);
+
+    const [isSearching, setIsSearching] = useState(false);
+    const [isFocusSearch, setIsFocusSearch] = useState(false);
+
+    const handleInputSearchChange = (e) => {
+        setInputSearch(e.target.value);
+    };
+
+    useEffect(() => {
+        const fetchServices = async () => {
+            if (debouncedInputSearch.trim() === '') {
+                setServicesFound([]);
+                return;
+            }
+
+            const result = await serviceService.getListService({
+                key: debouncedInputSearch,
+            });
+
+            if (result.status === configs.STATUS_CODE.OK) {
+                setIsSearching(false);
+
+                const resData = result.data;
+
+                setServicesFound(resData.data);
+                return;
+            }
+        };
+
+        setIsSearching(true);
+
+        fetchServices();
+    }, [debouncedInputSearch]);
+
+    const handleClickClearSearch = () => {
+        setInputSearch('');
+        setServicesFound([]);
+    };
 
     const handleClickGoToMyBooking = () => {
         const user = ultils.getUserDataLogedin();
@@ -57,6 +103,12 @@ function Header({ className }) {
         setRole(role);
         setIsSignedIn(true);
     }, []);
+
+    const handleClickGoToServiceDetail = (serviceId) => {
+        console.log('sdfsdf');
+        setServicesFound([]);
+        navigate(`/services/${serviceId}`);
+    };
 
     // useEffect(() => {
     //     if (role !== configs.USER_ROLES.customer) {
@@ -108,12 +160,70 @@ function Header({ className }) {
                     {webName || 'Shop sửa xe'}
                 </span>
             </Link>
-            <div className='flex h-full justify-center sm:flex-grow'>
-                <input
-                    type='text'
-                    className='h-full w-full rounded-full border-2 border-[#D9D9D9] px-[20px] py-2 font-medium caret-primary placeholder:text-[12px] focus:outline-primary md:placeholder:font-medium lg:w-[60%] lg:placeholder:font-bold'
-                    placeholder='Tìm kiếm dịch vụ'
-                />
+            <div className='relative flex h-full justify-center sm:flex-grow'>
+                <TippyHeadless
+                    interactive
+                    offset={[0, 0]}
+                    visible={
+                        servicesFound &&
+                        servicesFound.length > 0 &&
+                        isFocusSearch
+                    }
+                    onClickOutside={() => {
+                        setIsFocusSearch(false);
+                    }}
+                    render={(attrs) => (
+                        <div
+                            className='z-50 h-72 w-48 overflow-y-auto rounded-md border-b-2 border-[#D9D9D9] bg-white p-2 shadow-lg md:w-64 lg:w-96'
+                            tabIndex='-1'
+                            {...attrs}
+                        >
+                            {servicesFound.map((service) => {
+                                return (
+                                    <div
+                                        key={service.id}
+                                        className='flex items-center gap-x-2 px-4 py-2 hover:cursor-pointer hover:bg-primary-supper-light hover:text-white'
+                                        onClick={() =>
+                                            handleClickGoToServiceDetail(
+                                                service.id
+                                            )
+                                        }
+                                    >
+                                        <div className='flex flex-col'>
+                                            <span className='text-base'>
+                                                {service.name}
+                                            </span>
+                                            <span className='text-sm text-gray-500'>
+                                                {ultils.getCurrencyFormat(
+                                                    service.price
+                                                )}
+                                            </span>
+                                        </div>
+                                    </div>
+                                );
+                            })}
+                        </div>
+                    )}
+                >
+                    <div className='relative w-full lg:w-[60%]'>
+                        <input
+                            type='text'
+                            className='h-full w-full rounded-full border-2 border-[#D9D9D9] px-[20px] py-2 font-medium caret-primary placeholder:text-[12px] focus:outline-primary md:placeholder:font-medium lg:placeholder:font-bold'
+                            placeholder='Tìm kiếm dịch vụ'
+                            value={inputSearch}
+                            onChange={handleInputSearchChange}
+                            onFocus={() => setIsFocusSearch(true)}
+                        />
+                        {inputSearch && !isSearching && (
+                            <Button
+                                className='absolute right-0 top-1/2 -translate-x-1/2 -translate-y-1/2'
+                                onClick={handleClickClearSearch}
+                            >
+                                <CloseIcon className={'h-4'} />
+                            </Button>
+                        )}
+                    </div>
+                </TippyHeadless>
             </div>
             <div className='flex flex-shrink-0 justify-center gap-x-4 lg:gap-x-6'>
                 {/* {(!isSignedIn || role === configs.USER_ROLES.customer) && (

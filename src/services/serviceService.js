@@ -1,5 +1,19 @@
 import httpRequests from '../ultils/httpRequest';
 
+const getListService = async (params = {}) => {
+    try {
+        const res = await httpRequests.get('/services', {
+            params: {
+                ...params,
+            },
+        });
+
+        return res;
+    } catch (error) {
+        throw new Error(error);
+    }
+};
+
 const getServiceById = async (id) => {
     try {
         const res = await httpRequests.get(`/services/${id}`);
@@ -49,6 +63,7 @@ const serviceService = {
     getServiceCategories,
     updateService,
     createService,
+    getListService,
 };
 
 export default serviceService;
