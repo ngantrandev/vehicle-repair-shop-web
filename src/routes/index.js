@@ -30,7 +30,7 @@ const publicRoutes = [
         component: CreateService,
     },
     {
-        path: configs.routes.service.modify,
+        path: configs.routes.admin.service.modify,
         component: ModifyService,
     },
     {

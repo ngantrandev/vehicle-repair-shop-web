@@ -20,8 +20,8 @@ function ModifyService() {
     const [inputName, setInputName] = useState('');
     const [inputDescription, setInputDescription] = useState('');
     const [inputPrice, setInputPrice] = useState(0);
-    const [inputTime, setInputTime] = useState(null);
-    const [categoryId, setCategoryId] = useState(null);
+    const [inputTime, setInputTime] = useState('');
+    const [categoryId, setCategoryId] = useState('');
 
     useEffect(() => {
         const fetchService = async () => {
@@ -42,7 +42,7 @@ function ModifyService() {
                 setInputDescription(resData.data?.description);
                 setInputPrice(resData.data?.price);
                 setInputTime(resData.data?.estimated_time);
-                setServiceStatus(resData.data?.active == 1);
+                setServiceStatus(resData.data?.active == 1 ? true : false);
                 setCategoryId(resData.data?.category?.id);
             } catch (error) {
                 console.log(error);
@@ -123,13 +123,7 @@ function ModifyService() {
                     className='absolute left-0 top-0 m-3 flex gap-1'
                     rounded
                     onClick={() => {
-                        if (
-                            window.confirm(
-                                'Bạn có chắc chắn muốn rời khỏi trang này?'
-                            )
-                        ) {
-                            navigate(from);
-                        }
+                        navigate(from);
                     }}
                 >
                     <svg
@@ -227,7 +221,6 @@ function ModifyService() {
                         <select
                             id='category'
                             className='block w-full rounded-lg border-2 border-primary-light p-2.5 text-sm focus:border-primary-light'
-                            defaultValue=''
                             value={`${categoryId}`}
                             onChange={(e) => setCategoryId(e.target.value)}
                         >
@@ -253,7 +246,7 @@ function ModifyService() {
                                 id='active'
                                 type='checkbox'
                                 className='peer sr-only'
-                                {...(serviceStatus && { checked: true })}
+                                checked={serviceStatus}
                                 onChange={() => {
                                     setServiceStatus(!serviceStatus);
                                 }}

@@ -28,7 +28,7 @@ function Item({ data, className }) {
             <td className='flex gap-x-2'>
                 <Link
                     to={{
-                        pathname: `/services/${data.id}/modify`,
+                        pathname: `/admin/services/${data.id}/modify`,
                     }}
                     state={{
                         from: window.location.pathname,

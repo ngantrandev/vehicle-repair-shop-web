@@ -195,6 +195,9 @@ const GoongMap = forwardRef(function GoongMap(
                             longitude={startPoint[0]}
                             latitude={startPoint[1]}
                         >
+                            <span className='font-bold text-green-500'>
+                                Trạm sửa chữa
+                            </span>
                             <Pin className={'text-green-500'} />
                         </Marker>
                     </div>
@@ -203,6 +206,9 @@ const GoongMap = forwardRef(function GoongMap(
                 {endPoint.length > 0 && (
                     <div id='marker-end'>
                         <Marker longitude={endPoint[0]} latitude={endPoint[1]}>
+                            <span className='font-bold text-red-500'>
+                                Điểm đến
+                            </span>
                             <Pin className={'text-red-500'} />
                         </Marker>
                     </div>

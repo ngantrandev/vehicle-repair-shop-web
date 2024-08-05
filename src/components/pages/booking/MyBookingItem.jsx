@@ -22,17 +22,6 @@ function Item({ data, className }) {
 
     const [status, setStatus] = useState(data.status);
 
-    const getTime = (dateTime) => {
-        const date = new Date(dateTime);
-        const day = date.getDate();
-        const month = date.getMonth() + 1;
-        const year = date.getFullYear();
-        const hour = date.getHours();
-        const minute = date.getMinutes();
-        const second = date.getSeconds();
-        return `${hour}:${minute}:${second} - ${day}-${month}-${year}`;
-    };
-
     const handleCancel = async () => {
         try {
             const user = ultils.getUserDataLogedin();
@@ -66,8 +55,8 @@ function Item({ data, className }) {
     return (
         <tr className={className}>
             <td>{service.name}</td>
-            <td>{getTime(createdAt)}</td>
-            <td>{getTime(modified_at)}</td>
+            <td>{createdAt}</td>
+            <td>{modified_at}</td>
             <td>{ultils.getCurrencyFormat(service.price)}</td>
             <td>
                 <div className='flex items-center gap-2'>

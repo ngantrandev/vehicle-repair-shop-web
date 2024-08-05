@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import Item from './Item';
-import loadData from '../../../../services/loadData';
+import serviceService from '../../../../services/serviceService';
 import configs from '../../../../configs';
 import Button from '../../../button';
 
@@ -13,7 +13,7 @@ function Service() {
     useEffect(() => {
         const fetchServices = async () => {
             try {
-                const res = await loadData.getListService({});
+                const res = await serviceService.getListService({});
 
                 if (res.status !== configs.STATUS_CODE.OK) {
                     return;

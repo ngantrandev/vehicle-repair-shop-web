@@ -27,7 +27,7 @@ function MyBookings() {
         fetchBookings();
     }, []);
     return (
-        <div className='flex w-full flex-col items-center'>
+        <div className='mb-10 flex w-full flex-col items-center'>
             <h1 className='py-6 text-center text-3xl font-bold text-primary-dark'>
                 Dịch vụ đã đặt
             </h1>

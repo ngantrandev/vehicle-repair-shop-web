@@ -6,7 +6,6 @@ const routes = {
     service: {
         list: '/services/',
         create: '/services/new',
-        modify: '/services/:service_id/modify',
         detail: '/services/:service_id',
     },
     booking: {
@@ -21,6 +20,9 @@ const routes = {
             services: '/admin/dashboard/service',
             users: '/admin/dashboard/user',
             bookings: '/admin/dashboard/booking',
+        },
+        service: {
+            modify: 'admin/services/:service_id/modify',
         },
     },
     staff: {
