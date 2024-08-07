@@ -5,15 +5,36 @@ import { useNavigate } from 'react-router-dom';
 import adminBookingService from '../../../../services/admin.bookingService';
 import configs from '../../../../configs';
 import Item from './Item';
+import ArrowFilterIcon from '../../../../assets/icon/ArrowFilterIcon';
 
 function BookingMagager() {
     const [bookings, setBookings] = useState([]);
     const navigate = useNavigate();
+    const [isSortedByDate, setIsSortedByDate] = useState(false);
 
     const handleClickDetail = (booking) => {
         navigate(`/users/${booking.user?.id}/bookings/${booking.id}`, {
             state: { from: window.location.pathname },
         });
+    };
+
+    const handleSortByDate = () => {
+        // sort by date
+        if (isSortedByDate) {
+            setBookings((prevBookings) => {
+                return prevBookings.sort((a, b) => {
+                    return new Date(a.created_at) - new Date(b.created_at);
+                });
+            });
+        } else {
+            setBookings((prevBookings) => {
+                return prevBookings.sort((a, b) => {
+                    return new Date(b.created_at) - new Date(a.created_at);
+                });
+            });
+        }
+
+        setIsSortedByDate(!isSortedByDate);
     };
 
     useEffect(() => {
@@ -40,16 +61,29 @@ function BookingMagager() {
             <h1 className='py-10 text-center text-3xl font-bold'>
                 Danh sách lịch hẹn của khách
             </h1>
-            <div className='relative m-5 w-max border-collapse overflow-x-auto border-2 bg-white shadow-md sm:rounded-lg md:w-full'>
-                <table className='w-full table-auto'>
-                    <thead className='h-8 border-y-2 bg-primary-supper-light'>
+            <div className='m-5 w-max bg-white md:w-full'>
+                <div className='left-0 top-0 -translate-y-full'></div>
+                <table className='w-full table-auto border-collapse border-2 border-primary-light p-8'>
+                    <thead className='h-8 bg-primary-supper-light'>
                         <tr className='text-left'>
                             <th>Khách hàng</th>
-                            <th>Dịch vụ</th>
+                            <th className='flex items-center justify-center'>
+                                Dịch vụ
+                            </th>
                             <th>SDT khách</th>
-                            <th>Ngày tạo</th>
+                            <th className='flex items-center justify-center'>
+                                <p>Ngày tạo</p>
+                                <ArrowFilterIcon
+                                    className={
+                                        'h-6 w-6 hover:cursor-pointer hover:text-white active:text-primary-dark'
+                                    }
+                                    onClick={handleSortByDate}
+                                />
+                            </th>
                             <th>Ghi chú</th>
-                            <th>Trạng thái</th>
+                            <th className='flex items-center justify-center'>
+                                <p>Trạng thái</p>
+                            </th>
                         </tr>
                     </thead>
                     <tbody>

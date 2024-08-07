@@ -7,6 +7,9 @@ import bookingService from '../../services/bookingService';
 import configs from '../../configs';
 import GoongMap from '../map/GoongMap';
 import Input from '../input';
+import PlusIcon from '../../assets/icon/PlusIcon';
+import Button from '../button';
+import CameraIcon from '../../assets/icon/CameraIcon';
 
 function FormCreateBooking({ service, onClose, onSuccess }) {
     const [provinces, setProvinces] = useState([]);
@@ -17,6 +20,7 @@ function FormCreateBooking({ service, onClose, onSuccess }) {
     const [selectedDistrict, setSelectedDistrict] = useState(null);
     const [selectedWard, setSelectedWard] = useState(null);
     const [street, setStreet] = useState('');
+    const [image, setImage] = useState(null);
 
     const mapRef = useRef();
 
@@ -55,6 +59,28 @@ function FormCreateBooking({ service, onClose, onSuccess }) {
         getWards(selectedDistrict);
     }, [selectedDistrict]);
 
+    const handleChooseImage = (e) => {
+        const file = e.target.files[0];
+
+        setImage({
+            data: file,
+            preview: URL.createObjectURL(file),
+        });
+    };
+
+    useEffect(() => {
+        return () => {
+            image && URL.revokeObjectURL(image.preview);
+        };
+    }, [image]);
+
+    const handleDeleteImage = () => {
+        if (image) {
+            URL.revokeObjectURL(image.preview);
+            setImage(null);
+        }
+    };
+
     const handleCreateBooking = async () => {
         if (!selectedProvince || !ultils.isValidInteger(selectedProvince)) {
             ultils.notifyError('Không được để trống tỉnh thành');
@@ -85,6 +111,7 @@ function FormCreateBooking({ service, onClose, onSuccess }) {
             street: street,
             latitude: latitude,
             longitude: longitude,
+            file: image?.data,
         };
 
         try {
@@ -234,25 +261,64 @@ function FormCreateBooking({ service, onClose, onSuccess }) {
                                 </select>
                             </div>
                         </div>
-                        <button
+
+                        <div className='relative mb-2 grid h-20 grid-cols-3 grid-rows-2'>
+                            <div className='relative col-span-1 row-span-2 size-20 overflow-hidden border-2 border-primary-supper-light object-cover'>
+                                {image && (
+                                    <img
+                                        className='h-full w-full'
+                                        src={image.preview || null}
+                                        alt=''
+                                    />
+                                )}
+
+                                <label
+                                    htmlFor='img'
+                                    className='h-full w-full bg-primary hover:cursor-pointer'
+                                >
+                                    <CameraIcon
+                                        className={
+                                            'absolute left-1/2 top-1/2 size-6 -translate-x-1/2 -translate-y-1/2'
+                                        }
+                                    />
+                                </label>
+                            </div>
+                            <label
+                                htmlFor='img'
+                                className='col-span-2 row-span-1 text-sm lg:text-base'
+                            >
+                                Gửi ảnh tình trạng phương tiện
+                            </label>
+
+                            <input
+                                type='file'
+                                id='img'
+                                name='img'
+                                className='absolute hidden'
+                                accept='image/*'
+                                onChange={handleChooseImage}
+                            />
+
+                            {image && (
+                                <Button
+                                    type='button'
+                                    className='rounded-lg'
+                                    onClick={handleDeleteImage}
+                                    outlined
+                                >
+                                    Xóa
+                                </Button>
+                            )}
+                        </div>
+                        <Button
                             type='button'
-                            className='inline-flex items-center rounded-lg bg-blue-700 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800'
+                            rounded
+                            className='inline-flex items-center bg-blue-700 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-blue-800 focus:outline-none dark:bg-blue-600'
                             onClick={() => handleCreateBooking()}
                         >
-                            <svg
-                                className='-ms-1 me-1 h-5 w-5'
-                                fill='currentColor'
-                                viewBox='0 0 20 20'
-                                xmlns='http://www.w3.org/2000/svg'
-                            >
-                                <path
-                                    fillRule='evenodd'
-                                    d='M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z'
-                                    clipRule='evenodd'
-                                ></path>
-                            </svg>
+                            <PlusIcon className='mr-2 h-5 w-5' />
                             Đặt lịch
-                        </button>
+                        </Button>
                     </form>
 
                     <GoongMap ref={mapRef} className='h-56 w-full bg-primary' />

@@ -20,6 +20,10 @@ function SideBar({ className }) {
                     title='Danh sách đặt lịch'
                     to={configs.routes.admin.dashboard.bookings}
                 />
+                <SideBarItem
+                    title='Danh sách trạm dịch vụ'
+                    to={configs.routes.admin.dashboard.stations}
+                />
             </Menu>
         </aside>
     );

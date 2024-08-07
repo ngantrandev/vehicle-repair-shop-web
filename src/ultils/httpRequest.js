@@ -61,6 +61,27 @@ const post = async (apiPath, data = {}) => {
     }
 };
 
+const postFormData = async (apiPath, data = {}) => {
+    try {
+        const token = ultils.getAccessToken();
+
+        const res = await httpRequest.post(apiPath, data, {
+            headers: {
+                token: 'Bearer ' + token,
+                'Content-Type': 'multipart/form-data',
+            },
+        });
+
+        if (res.status !== configs.STATUS_CODE.OK) {
+            return null;
+        }
+
+        return res;
+    } catch (error) {
+        throw new Error(error);
+    }
+};
+
 const patch = async (apiPath, data = {}) => {
     try {
         const token = ultils.getAccessToken();
@@ -87,6 +108,7 @@ const requests = {
     get,
     post,
     patch,
+    postFormData,
 };
 
 export default requests;

@@ -54,23 +54,12 @@ const getCarts = async (userId) => {
     }
 };
 
-const getActiveServiceStations = async () => {
-    try {
-        const res = await httpRequests.get('/stations');
-
-        return res;
-    } catch (error) {
-        throw new Error(error);
-    }
-};
-
 const loadData = {
     getMotorcycleBrands,
     getListProvince,
     getListDistrict,
     getListWard,
     getCarts,
-    getActiveServiceStations,
 };
 
 export default loadData;

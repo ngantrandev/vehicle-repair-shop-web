@@ -24,10 +24,13 @@ function Home() {
                 return;
             }
 
-            let params = {};
+            let params = {
+                active: 1,
+            };
 
             if (selectedServiceCategory !== '#') {
                 params = {
+                    ...params,
                     category_id: selectedServiceCategory,
                 };
             }
@@ -49,10 +52,13 @@ function Home() {
                 return;
             }
 
-            let params = {};
+            let params = {
+                active: 1,
+            };
 
             if (selectedMotorcycleBrand !== '#') {
                 params = {
+                    ...params,
                     motorcycle_brand: selectedMotorcycleBrand,
                 };
             }
@@ -72,7 +78,7 @@ function Home() {
 
     useEffect(() => {
         const fetchServices = async () => {
-            const services = await serviceService.getListService();
+            const services = await serviceService.getListService({ active: 1 });
             const serviceCategories =
                 await serviceService.getServiceCategories();
             const motorcycleBrands = await loadData.getMotorcycleBrands();

@@ -97,18 +97,27 @@ function ServiceDetail() {
                             <h3>
                                 Thời gian ước tính: {service.estimated_time}
                             </h3>
+                            {service.active === 0 && (
+                                <h3 className='mt-4'>
+                                    Trạng thái:{' '}
+                                    <span className='font-bold text-red-500'>
+                                        Dịch vụ tạm ngưng phục vụ
+                                    </span>
+                                </h3>
+                            )}
                         </div>
-                        {role === configs.USER_ROLES.customer && (
-                            <div className='mt-16 flex gap-2'>
-                                <Button
-                                    rounded
-                                    className='px-10'
-                                    onClick={() => setIsSubmitting(true)}
-                                >
-                                    Đặt lịch
-                                </Button>
-                            </div>
-                        )}
+                        {role === configs.USER_ROLES.customer &&
+                            service.active === 1 && (
+                                <div className='mt-16 flex gap-2'>
+                                    <Button
+                                        rounded
+                                        className='px-10'
+                                        onClick={() => setIsSubmitting(true)}
+                                    >
+                                        Đặt lịch
+                                    </Button>
+                                </div>
+                            )}
                     </div>
                 </div>
             </div>

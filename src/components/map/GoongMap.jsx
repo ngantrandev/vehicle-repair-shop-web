@@ -24,9 +24,9 @@ import configs from '../../configs';
 
 const MAPTILE_KEY = import.meta.env.VITE_GOONG_MAP_TILE_KEY;
 const DEFAULT_LATITUDE =
-    Number(import.meta.env.VITE_DEFAULT_LATITUDE) || 10.822608284821372;
+    Number(import.meta.env.VITE_DEFAULT_LATITUDE) || 10.83030972407638;
 const DEFAULT_LONGITUDE =
-    Number(import.meta.env.VITE_DEFAULT_LONGITUDE) || 106.62383478787928;
+    Number(import.meta.env.VITE_DEFAULT_LONGITUDE) || 106.61831156002576;
 
 const geolocateStyle = {
     top: 0,
@@ -47,7 +47,14 @@ const positionOptions = { enableHighAccuracy: true };
  *
  */
 const GoongMap = forwardRef(function GoongMap(
-    { className, originPoint = [], startPoint = [], endPoint = [], hidecenter },
+    {
+        className,
+        originPoint = [],
+        startPoint = [],
+        endPoint = [],
+        currentPoint = [],
+        hidecenter,
+    },
     ref
 ) {
     const mapRef = useRef();
@@ -77,6 +84,17 @@ const GoongMap = forwardRef(function GoongMap(
             longitude: longitude,
         }));
     }, [startPoint]);
+    useEffect(() => {
+        const [longitude, latitude] = currentPoint;
+
+        if (!longitude || !latitude) return;
+
+        setViewport((pre) => ({
+            ...pre,
+            latitude: latitude,
+            longitude: longitude,
+        }));
+    }, [currentPoint]);
 
     useEffect(() => {
         const fetchDirection = async () => {
@@ -177,6 +195,16 @@ const GoongMap = forwardRef(function GoongMap(
                         </Marker>
                     </div>
                 )}
+                {currentPoint.length > 0 && (
+                    <div id='marker-current'>
+                        <Marker
+                            longitude={currentPoint[0]}
+                            latitude={currentPoint[1]}
+                        >
+                            <Pin className={'h-16 w-16 text-blue-500'} />
+                        </Marker>
+                    </div>
+                )}
 
                 {originPoint.length > 0 && (
                     <div id='marker-origin'>
@@ -242,6 +270,7 @@ GoongMap.propTypes = {
     endPoint: PropTypes.array,
     originPoint: PropTypes.array,
     hidecenter: PropTypes.bool,
+    currentPoint: PropTypes.array,
 };
 
 export default memo(GoongMap);

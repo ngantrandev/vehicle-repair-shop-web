@@ -12,6 +12,9 @@ import configs from '../configs';
 import SidebarLayout from '../layouts/sidebarLayout/SidebarLayout.jsx';
 import BookingDetail from '../components/pages/booking/BookingDetail.jsx';
 import ListTask from '../components/pages/staff/ListTask.jsx';
+import StationDetail from '../components/pages/admin/Station/StationDetail.jsx';
+import Stations from '../components/pages/admin/Station';
+import CreateStation from '../components/pages/admin/Station/CreateStation.jsx';
 
 const publicRoutes = [
     { path: configs.routes.login, component: Login, layout: null },
@@ -51,6 +54,19 @@ const publicRoutes = [
         path: configs.routes.admin.dashboard.bookings,
         component: BookingMagager,
         layout: SidebarLayout,
+    },
+    {
+        path: configs.routes.admin.dashboard.stations,
+        component: Stations,
+        layout: SidebarLayout,
+    },
+    {
+        path: configs.routes.admin.station.modify,
+        component: StationDetail,
+    },
+    {
+        path: configs.routes.admin.station.create,
+        component: CreateStation,
     },
 
     {

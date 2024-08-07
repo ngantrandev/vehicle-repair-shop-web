@@ -2,7 +2,7 @@ import httpRequests from '../ultils/httpRequest';
 
 const createBooking = async (userId, bookingData) => {
     try {
-        const res = await httpRequests.post(
+        const res = await httpRequests.postFormData(
             `users/${userId}/bookings`,
             bookingData
         );

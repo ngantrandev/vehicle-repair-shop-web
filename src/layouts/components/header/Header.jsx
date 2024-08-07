@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
-import Tippy from '@tippyjs/react';
 import TippyHeadless from '@tippyjs/react/headless';
 import { Link, useNavigate } from 'react-router-dom';
 
@@ -13,6 +12,8 @@ import ultils from '../../../ultils';
 import serviceService from '../../../services/serviceService';
 import useDebounce from '../../../hooks/useDebounce';
 import CloseIcon from '../../../assets/icon/CloseIcon';
+import PersonIcon from '../../../assets/icon/PersonIcon';
+import SignOutIcon from '../../../assets/icon/SignOutIcon';
 
 const webName = import.meta.env.VITE_WEB_NAME;
 
@@ -30,7 +31,11 @@ function Header({ className }) {
     const [isFocusSearch, setIsFocusSearch] = useState(false);
 
     const handleInputSearchChange = (e) => {
-        setInputSearch(e.target.value);
+        const value = e.target.value;
+        // if (value.startWith(' ')) {
+        //     return;
+        // }
+        setInputSearch(value);
     };
 
     useEffect(() => {
@@ -105,7 +110,6 @@ function Header({ className }) {
     }, []);
 
     const handleClickGoToServiceDetail = (serviceId) => {
-        console.log('sdfsdf');
         setServicesFound([]);
         navigate(`/services/${serviceId}`);
     };
@@ -182,7 +186,7 @@ function Header({ className }) {
                                 return (
                                     <div
                                         key={service.id}
-                                        className='flex items-center gap-x-2 px-4 py-2 hover:cursor-pointer hover:bg-primary-supper-light hover:text-white'
+                                        className='flex items-center gap-x-2 border-b-2 border-primary-supper-light px-4 py-2 hover:cursor-pointer hover:bg-primary hover:text-white'
                                         onClick={() =>
                                             handleClickGoToServiceDetail(
                                                 service.id
@@ -193,7 +197,7 @@ function Header({ className }) {
                                             <span className='text-base'>
                                                 {service.name}
                                             </span>
-                                            <span className='text-sm text-gray-500'>
+                                            <span className='text-sm'>
                                                 {ultils.getCurrencyFormat(
                                                     service.price
                                                 )}
@@ -209,7 +213,7 @@ function Header({ className }) {
                         <input
                             type='text'
                             className='h-full w-full rounded-full border-2 border-[#D9D9D9] px-[20px] py-2 font-medium caret-primary placeholder:text-[12px] focus:outline-primary md:placeholder:font-medium lg:placeholder:font-bold'
-                            placeholder='Tìm kiếm dịch vụ'
+                            placeholder='Tìm kiếm dịch vụ theo tên dịch vụ, loại xe...'
                             value={inputSearch}
                             onChange={handleInputSearchChange}
                             onFocus={() => setIsFocusSearch(true)}
@@ -287,12 +291,33 @@ function Header({ className }) {
                             </Button>
                         )}
 
-                        <Tippy content='Đăng xuất'>
-                            <Button
-                                circle
-                                className='size-10 overflow-hidden'
-                                onClick={() => handleClickSignOut()}
-                            >
+                        <TippyHeadless
+                            interactive
+                            offset={[20, 10]}
+                            delay={[0, 200]}
+                            placement='bottom-end'
+                            render={(attrs) => (
+                                <div
+                                    className='z-50 w-48 overflow-y-auto rounded-md border-2 border-[#D9D9D9] bg-white p-2 shadow-lg'
+                                    tabIndex='-1'
+                                    {...attrs}
+                                >
+                                    <div className='flex h-10 items-center gap-2 px-4 hover:cursor-pointer hover:bg-slate-300'>
+                                        <PersonIcon className='h-6 w-6' />
+                                        <p>Xem hồ sơ</p>
+                                    </div>
+                                    <div
+                                        className='flex h-10 items-center gap-2 px-4 hover:cursor-pointer hover:bg-slate-300'
+                                        onClick={handleClickSignOut}
+                                    >
+                                        <SignOutIcon className='h-6 w-6' />
+
+                                        <p>Đăng xuất</p>
+                                    </div>
+                                </div>
+                            )}
+                        >
+                            <Button circle className='size-10 overflow-hidden'>
                                 <svg
                                     id='default-avatar'
                                     className='size-[80%] fill-current text-gray-500'
@@ -305,7 +330,7 @@ function Header({ className }) {
                                     <path d='M432,480H80A31,31,0,0,1,55.8,468.87c-6.5-7.77-9.12-18.38-7.18-29.11C57.06,392.94,83.4,353.61,124.8,326c36.78-24.51,83.37-38,131.2-38s94.42,13.5,131.2,38c41.4,27.6,67.74,66.93,76.18,113.75,1.94,10.73-.68,21.34-7.18,29.11A31,31,0,0,1,432,480Z' />
                                 </svg>
                             </Button>
-                        </Tippy>
+                        </TippyHeadless>
                     </>
                 ) : (
                     <>

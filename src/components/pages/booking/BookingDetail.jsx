@@ -4,12 +4,14 @@ import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import bookingService from '../../../services/bookingService';
 import configs from '../../../configs';
 import ultils from '../../../ultils';
-import loadData from '../../../services/loadData';
 import adminStaffService from '../../../services/admin.staff.service';
 import Button from '../../button';
 import adminBookingService from '../../../services/admin.bookingService';
 import Input from '../../input';
 import GoongMap from '../../map/GoongMap';
+import stationsService from '../../../services/stationsService';
+
+const baseApiEnpoint = import.meta.env.VITE_API_BASE_URL;
 
 function BookingDetail() {
     const { booking_id: bookingId, user_id: userId } = useParams();
@@ -17,7 +19,7 @@ function BookingDetail() {
     const navigate = useNavigate();
     const { from } = location.state;
 
-    const [status, setStatus] = useState('');
+    const [status, setStatus] = useState();
     const [userRole, setUserRole] = useState('');
 
     const [selectedStaff, setSelectedStaff] = useState('');
@@ -85,7 +87,7 @@ function BookingDetail() {
     useEffect(() => {
         const fetchStations = async () => {
             try {
-                const res = await loadData.getActiveServiceStations();
+                const res = await stationsService.getActiveServiceStations();
 
                 if (res.status !== configs.STATUS_CODE.OK) {
                     throw new Error(res.data.message);
@@ -216,13 +218,8 @@ function BookingDetail() {
         }
     };
 
-    const handleChangeStaff = async () => {
+    const handleChangeBookingInfo = async () => {
         try {
-            if (!selectedStaff || selectedStaff.length === 0) {
-                ultils.notifyWarning('Vui lòng chọn nhân viên');
-                return;
-            }
-
             const res = await adminBookingService.assignStaffToBooking(
                 userId,
                 bookingId,
@@ -287,6 +284,12 @@ function BookingDetail() {
                             booking.address?.district +
                             ', ' +
                             booking.address?.province}
+                    </span>
+                </div>
+                <div className='col-span-4 pb-2'>
+                    <span>Trạm dịch vụ: </span>
+                    <span className='font-bold'>
+                        {booking.station?.name|| '---'}
                     </span>
                 </div>
 
@@ -468,18 +471,33 @@ function BookingDetail() {
                     </Button>
                 )}
 
-                {userRole === configs.USER_ROLES.admin && (
-                    <div className='col-span-4 flex w-full justify-center'>
-                        <Button
-                            rounded
-                            className={`w-56 bg-primary hover:bg-primary-dark active:bg-primary-light`}
-                            onClick={handleChangeStaff}
-                        >
-                            Thay đổi thông tin
-                        </Button>
-                    </div>
-                )}
+                {userRole === configs.USER_ROLES.admin &&
+                    status &&
+                    status !== configs.BOOKING_STATE.pending && (
+                        <div className='col-span-4 flex w-full justify-center'>
+                            <Button
+                                rounded
+                                className={`w-56 bg-primary hover:bg-primary-dark active:bg-primary-light`}
+                                onClick={handleChangeBookingInfo}
+                            >
+                                Thay đổi thông tin
+                            </Button>
+                        </div>
+                    )}
             </div>
+
+            {booking.image_url && (
+                <div className='mt-6 flex w-full flex-col items-center justify-center gap-y-2'>
+                    <h1 className='text-2xl font-bold lg:text-3xl'>
+                        Tình trạng của xe
+                    </h1>
+                    <img
+                        className='w-full border-2 border-primary object-cover md:w-2/3 lg:w-2/5'
+                        src={`${baseApiEnpoint}${booking.image_url}`}
+                        alt=''
+                    />
+                </div>
+            )}
 
             <div className='my-20 flex flex-col gap-y-8 text-center'>
                 <h1 className='text-2xl font-bold lg:text-3xl'>

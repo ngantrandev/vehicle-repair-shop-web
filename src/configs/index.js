@@ -20,9 +20,14 @@ const routes = {
             services: '/admin/dashboard/service',
             users: '/admin/dashboard/user',
             bookings: '/admin/dashboard/booking',
+            stations: '/admin/dashboard/station',
         },
         service: {
             modify: 'admin/services/:service_id/modify',
+        },
+        station: {
+            modify: '/admin/dashboard/stations/:station_id/modify',
+            create: '/admin/dashboard/stations/new',
         },
     },
     staff: {

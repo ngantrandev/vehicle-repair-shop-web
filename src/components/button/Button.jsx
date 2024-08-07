@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 
 const Button = forwardRef(function Button(
     {
+        type,
         to,
         href,
         rounded,
@@ -63,7 +64,12 @@ const Button = forwardRef(function Button(
     }
 
     return (
-        <Component ref={ref} className={customClassName.join(' ')} {...props}>
+        <Component
+            ref={ref}
+            type={type}
+            className={customClassName.join(' ')}
+            {...props}
+        >
             {children}
         </Component>
     );
@@ -82,6 +88,7 @@ Button.propTypes = {
     children: PropTypes.node.isRequired,
     className: PropTypes.string,
     hidden: PropTypes.bool,
+    type: PropTypes.oneOf(['button', 'submit', 'reset']),
 };
 
 export default Button;
