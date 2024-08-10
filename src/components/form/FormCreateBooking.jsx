@@ -10,6 +10,7 @@ import Input from '../input';
 import PlusIcon from '../../assets/icon/PlusIcon';
 import Button from '../button';
 import CameraIcon from '../../assets/icon/CameraIcon';
+import Image from '../image/Image';
 
 function FormCreateBooking({ service, onClose, onSuccess }) {
     const [provinces, setProvinces] = useState([]);
@@ -265,10 +266,10 @@ function FormCreateBooking({ service, onClose, onSuccess }) {
                         <div className='relative mb-2 grid h-20 grid-cols-3 grid-rows-2'>
                             <div className='relative col-span-1 row-span-2 size-20 overflow-hidden border-2 border-primary-supper-light object-cover'>
                                 {image && (
-                                    <img
+                                    <Image
                                         className='h-full w-full'
                                         src={image.preview || null}
-                                        alt=''
+                                        alt='Ảnh tình trạng phương tiện'
                                     />
                                 )}
 

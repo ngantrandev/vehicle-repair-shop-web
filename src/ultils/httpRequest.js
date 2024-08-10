@@ -43,17 +43,11 @@ const post = async (apiPath, data = {}) => {
             },
         });
 
-        if (res.status !== configs.STATUS_CODE.OK) {
-            return null;
-        }
-
         return res;
     } catch (error) {
         if (error.response) {
             return error.response;
         } else if (error.request) {
-            // Yêu cầu đã được gửi nhưng không nhận được phản hồi
-            console.error('Error request:', error.request);
             throw new Error('No response received from server');
         } else {
             throw new Error(error.message);
@@ -72,13 +66,38 @@ const postFormData = async (apiPath, data = {}) => {
             },
         });
 
-        if (res.status !== configs.STATUS_CODE.OK) {
-            return null;
+        return res;
+    } catch (error) {
+        if (error.response) {
+            return error.response;
+        } else if (error.request) {
+            throw new Error('No response received from server');
+        } else {
+            throw new Error(error.message);
         }
+    }
+};
+
+const patchFormData = async (apiPath, data = {}) => {
+    try {
+        const token = ultils.getAccessToken();
+
+        const res = await httpRequest.patch(apiPath, data, {
+            headers: {
+                token: 'Bearer ' + token,
+                'Content-Type': 'multipart/form-data',
+            },
+        });
 
         return res;
     } catch (error) {
-        throw new Error(error);
+        if (error.response) {
+            return error.response;
+        } else if (error.request) {
+            throw new Error('No response received from server');
+        } else {
+            throw new Error(error.message);
+        }
     }
 };
 
@@ -92,13 +111,15 @@ const patch = async (apiPath, data = {}) => {
             },
         });
 
-        if (res.status !== configs.STATUS_CODE.OK) {
-            return null;
-        }
-
         return res;
     } catch (error) {
-        throw new Error(error);
+        if (error.response) {
+            return error.response;
+        } else if (error.request) {
+            throw new Error('No response received from server');
+        } else {
+            throw new Error(error.message);
+        }
     }
 };
 
@@ -109,6 +130,7 @@ const requests = {
     post,
     patch,
     postFormData,
+    patchFormData,
 };
 
 export default requests;

@@ -15,6 +15,7 @@ import ListTask from '../components/pages/staff/ListTask.jsx';
 import StationDetail from '../components/pages/admin/Station/StationDetail.jsx';
 import Stations from '../components/pages/admin/Station';
 import CreateStation from '../components/pages/admin/Station/CreateStation.jsx';
+import Profile from '../components/pages/Profile.jsx';
 
 const publicRoutes = [
     { path: configs.routes.login, component: Login, layout: null },
@@ -72,6 +73,10 @@ const publicRoutes = [
     {
         path: configs.routes.staff.task,
         component: ListTask,
+    },
+    {
+        path: configs.routes.profile,
+        component: Profile,
     },
 ];
 

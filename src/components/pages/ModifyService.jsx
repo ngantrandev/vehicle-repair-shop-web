@@ -208,7 +208,9 @@ function ModifyService() {
                             placeholder='Nhập thời gian ước tính'
                             className={'w-full p-2'}
                             value={inputTime}
-                            onChange={(e) => setInputTime(e.target.value)}
+                            onChange={(e) => {
+                                setInputTime(e.target.value);
+                            }}
                         />
                     </div>
                     <div className='mb-4 w-2/3'>

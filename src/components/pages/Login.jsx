@@ -12,6 +12,7 @@ import ultils from '../../ultils';
 
 const webName = import.meta.env.VITE_WEB_NAME || 'Shop sửa xe';
 import vehicleImg from '../../assets/images/motorcycle.png';
+import Image from '../image/Image';
 
 function Login() {
     const [username, setUsername] = useState('');
@@ -63,12 +64,12 @@ function Login() {
             <div className='relative hidden h-screen select-none lg:col-span-2 lg:block'>
                 <div className='absolute left-0 top-0 flex h-full w-full flex-col items-center justify-center bg-slate-300 opacity-25'></div>
                 <div className='absolute left-0 top-0 flex h-full w-full flex-col items-center justify-center'>
-                    <img src={vehicleImg} alt='' className='size-56' />
+                    <Image src={vehicleImg} alt='' className='size-56' />
                     <h1 className='inline-block bg-gradient-to-r from-cyan-500 to-primary bg-clip-text text-7xl font-bold capitalize text-transparent'>
                         {webName}
                     </h1>
                 </div>
-                <img
+                <Image
                     src={bannerImg}
                     alt='banner image'
                     className='h-full w-full bg-transparent object-cover'

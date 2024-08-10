@@ -28,7 +28,9 @@ function Input({
         [type]
     );
 
-    const customClassName = ['focus:outline-primary-light'];
+    const customClassName = [
+        'focus:outline-primary-light bg-white border-2 border-neutral-400 p-2 rounded-lg w-full',
+    ];
     const [isShowPassword, setIsShowPassword] = useState(false);
     const [inputType, setInputType] = useState(
         password ? INPUT_TYPES.PASSWORD : type

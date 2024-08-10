@@ -10,6 +10,7 @@ import adminBookingService from '../../../services/admin.bookingService';
 import Input from '../../input';
 import GoongMap from '../../map/GoongMap';
 import stationsService from '../../../services/stationsService';
+import Image from '../../image/Image';
 
 const baseApiEnpoint = import.meta.env.VITE_API_BASE_URL;
 
@@ -220,6 +221,16 @@ function BookingDetail() {
 
     const handleChangeBookingInfo = async () => {
         try {
+            if (!selectedStation || selectedStation.length === 0) {
+                ultils.notifyWarning('Vui lòng chọn chi nhánh');
+                return;
+            }
+
+            if (!selectedStaff || selectedStaff.length === 0) {
+                ultils.notifyWarning('Vui lòng chọn nhân viên');
+                return;
+            }
+
             const res = await adminBookingService.assignStaffToBooking(
                 userId,
                 bookingId,
@@ -229,6 +240,7 @@ function BookingDetail() {
 
             if (res.status !== configs.STATUS_CODE.OK) {
                 ultils.notifyError('Đã xảy ra lỗi');
+                return;
             }
 
             ultils.notifySuccess('Cập nhật thông tin thành công');
@@ -289,7 +301,7 @@ function BookingDetail() {
                 <div className='col-span-4 pb-2'>
                     <span>Trạm dịch vụ: </span>
                     <span className='font-bold'>
-                        {booking.station?.name|| '---'}
+                        {booking.station?.name || '---'}
                     </span>
                 </div>
 
@@ -491,7 +503,7 @@ function BookingDetail() {
                     <h1 className='text-2xl font-bold lg:text-3xl'>
                         Tình trạng của xe
                     </h1>
-                    <img
+                    <Image
                         className='w-full border-2 border-primary object-cover md:w-2/3 lg:w-2/5'
                         src={`${baseApiEnpoint}${booking.image_url}`}
                         alt=''

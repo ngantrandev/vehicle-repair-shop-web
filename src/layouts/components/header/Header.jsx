@@ -14,11 +14,16 @@ import useDebounce from '../../../hooks/useDebounce';
 import CloseIcon from '../../../assets/icon/CloseIcon';
 import PersonIcon from '../../../assets/icon/PersonIcon';
 import SignOutIcon from '../../../assets/icon/SignOutIcon';
+import DefaultAvatar from '../../../assets/icon/DefaultAvatar';
+import Image from '../../../components/image/Image';
 
 const webName = import.meta.env.VITE_WEB_NAME;
+const baseApiEnpoint = import.meta.env.VITE_API_BASE_URL;
 
 function Header({ className }) {
     const navigate = useNavigate();
+
+    const [avatar, setAvatar] = useState();
 
     const [isSignedIn, setIsSignedIn] = useState(false);
     // const [carts, setCarts] = useState([]);
@@ -37,6 +42,19 @@ function Header({ className }) {
         // }
         setInputSearch(value);
     };
+
+    useEffect(() => {
+        const userLogged = ultils.getUserDataLogedin();
+
+        if (!userLogged || !userLogged.image_url) {
+            return;
+        }
+
+        setAvatar((pre) => ({
+            ...pre,
+            preview: baseApiEnpoint + userLogged.image_url,
+        }));
+    }, []);
 
     useEffect(() => {
         const fetchServices = async () => {
@@ -114,6 +132,26 @@ function Header({ className }) {
         navigate(`/services/${serviceId}`);
     };
 
+    const handleClickGoToProfile = () => {
+        const user = ultils.getUserDataLogedin();
+
+        if (!user || !isSignedIn || !user.id) {
+            ultils.notifyError('Bạn chưa đăng nhập');
+            setTimeout(() => {
+                ultils.notifyWarning(
+                    'Vui lòng đăng nhập để thực hiện chức năng'
+                );
+            }, 500);
+
+            return;
+        }
+
+        if (!isSignedIn) {
+            navigate('/login');
+        }
+        navigate(`/profile`);
+    };
+
     // useEffect(() => {
     //     if (role !== configs.USER_ROLES.customer) {
     //         return;
@@ -150,12 +188,12 @@ function Header({ className }) {
                 to='/'
                 className='flex flex-shrink-0 items-center gap-x-2 font-bold text-primary'
             >
-                <img
+                <Image
                     src={logo}
                     alt='logo'
                     className='hidden h-10 w-10 sm:block'
                 />
-                <img
+                <Image
                     src={textLogo}
                     alt='logo'
                     className='block h-10 w-10 sm:hidden'
@@ -302,7 +340,10 @@ function Header({ className }) {
                                     tabIndex='-1'
                                     {...attrs}
                                 >
-                                    <div className='flex h-10 items-center gap-2 px-4 hover:cursor-pointer hover:bg-slate-300'>
+                                    <div
+                                        className='flex h-10 items-center gap-2 px-4 hover:cursor-pointer hover:bg-slate-300'
+                                        onClick={handleClickGoToProfile}
+                                    >
                                         <PersonIcon className='h-6 w-6' />
                                         <p>Xem hồ sơ</p>
                                     </div>
@@ -317,19 +358,22 @@ function Header({ className }) {
                                 </div>
                             )}
                         >
-                            <Button circle className='size-10 overflow-hidden'>
-                                <svg
-                                    id='default-avatar'
-                                    className='size-[80%] fill-current text-gray-500'
-                                    viewBox='0 0 512 512'
-                                    width='512'
-                                    xmlns='http://www.w3.org/2000/svg'
-                                >
-                                    <title />
-                                    <path d='M332.64,64.58C313.18,43.57,286,32,256,32c-30.16,0-57.43,11.5-76.8,32.38-19.58,21.11-29.12,49.8-26.88,80.78C156.76,206.28,203.27,256,256,256s99.16-49.71,103.67-110.82C361.94,114.48,352.34,85.85,332.64,64.58Z' />
-                                    <path d='M432,480H80A31,31,0,0,1,55.8,468.87c-6.5-7.77-9.12-18.38-7.18-29.11C57.06,392.94,83.4,353.61,124.8,326c36.78-24.51,83.37-38,131.2-38s94.42,13.5,131.2,38c41.4,27.6,67.74,66.93,76.18,113.75,1.94,10.73-.68,21.34-7.18,29.11A31,31,0,0,1,432,480Z' />
-                                </svg>
-                            </Button>
+                            <div className='size-10 overflow-hidden rounded-full'>
+                                {avatar && avatar.preview ? (
+                                    <Image
+                                        src={avatar?.preview}
+                                        alt='avatar'
+                                        className={
+                                            'size-full rounded-full object-cover'
+                                        }
+                                        fallback={
+                                            'https://cdn2.iconfinder.com/data/icons/user-interface-169/32/about-512.png'
+                                        }
+                                    />
+                                ) : (
+                                    <DefaultAvatar className='h-4/5 w-4/5 rounded-full object-cover' />
+                                )}
+                            </div>
                         </TippyHeadless>
                     </>
                 ) : (

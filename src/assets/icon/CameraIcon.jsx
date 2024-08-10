@@ -4,6 +4,7 @@ function CameraIcon({ className }) {
     return (
         <svg
             className={className}
+            stroke='currentColor'
             enableBackground='new 0 0 32 32'
             version='1.1'
             viewBox='0 0 32 32'
