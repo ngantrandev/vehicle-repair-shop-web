@@ -1,11 +1,13 @@
 import { useEffect, useState } from 'react';
-import Tippy from '@tippyjs/react';
+
 import { useNavigate } from 'react-router-dom';
 
 import configs from '../../../../configs';
-import Item from './Item.jsx';
+
 import stationsService from '../../../../services/stationsService';
 import Button from '../../../button/Button.jsx';
+import PaginatedItems from '../../../paginateditems/PaginatedItems.jsx';
+import StationList from './StationList.jsx';
 
 function Stations() {
     const [stations, setStations] = useState([]);
@@ -30,12 +32,6 @@ function Stations() {
 
         getAllStations();
     }, []);
-
-    const handleClickDetail = (station) => {
-        navigate(`/admin/dashboard/stations/${station.id}/modify`, {
-            state: { from: window.location.pathname },
-        });
-    };
 
     return (
         <div className='flex w-full flex-col items-center px-0 md:px-4'>
@@ -71,33 +67,9 @@ function Stations() {
                     </Button>
                     <span>Thêm mới</span>
                 </div>
-                <div className='left-0 top-0 -translate-y-full'></div>
-                <table className='w-full table-auto border-collapse border-2 border-primary-light p-8'>
-                    <thead className='h-8 bg-primary-supper-light'>
-                        <tr className='text-left'>
-                            <th>Tên trạm</th>
-                            <th>Địch chỉ</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {stations.map((station, index) => (
-                            <Tippy
-                                key={index}
-                                content='Xem chi tiết'
-                                animation='fade'
-                                hideOnClick={false}
-                            >
-                                <Item
-                                    data={station}
-                                    className={
-                                        'hover:cursor-pointer hover:bg-gray-200'
-                                    }
-                                    onClick={() => handleClickDetail(station)}
-                                />
-                            </Tippy>
-                        ))}
-                    </tbody>
-                </table>
+                <PaginatedItems data={stations} itemsPerPage={6} size={8}>
+                    <StationList className='w-full table-auto border-collapse border-2 border-primary-light p-8' />
+                </PaginatedItems>
             </div>
         </div>
     );

@@ -1,10 +1,11 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import Item from './Item';
 import serviceService from '../../../../services/serviceService';
 import configs from '../../../../configs';
 import Button from '../../../button';
+import Paginateditems from '../../../paginateditems';
+import ServiceList from './ServiceList';
 
 function Service() {
     const [services, setServices] = useState([]);
@@ -64,32 +65,9 @@ function Service() {
                     </Button>
                     <span>Thêm mới</span>
                 </div>
-                <div className='relative w-max border-collapse overflow-x-auto border-2 shadow-md sm:rounded-lg md:w-full'>
-                    <table className='w-full table-auto'>
-                        <thead className='h-8 border-y-2 bg-primary-supper-light'>
-                            <tr className='text-left'>
-                                <th>Tên dịch vụ</th>
-                                <th>Thời gian</th>
-                                <th>Giá dịch vụ</th>
-                                <th>Trạng thái</th>
-                                <th>Hành động</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {services.map((service, index) => {
-                                return (
-                                    <Item
-                                        key={index}
-                                        data={service}
-                                        className={
-                                            'hover:cursor-pointer hover:bg-gray-200'
-                                        }
-                                    />
-                                );
-                            })}
-                        </tbody>
-                    </table>
-                </div>
+                <Paginateditems data={services} itemsPerPage={10} size={8}>
+                    <ServiceList className='relative w-max border-collapse overflow-x-auto md:w-full' />
+                </Paginateditems>
             </div>
         </div>
     );

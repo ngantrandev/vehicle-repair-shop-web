@@ -189,7 +189,7 @@ function Home() {
                     </div>
                 </div>
 
-                <PaginatedItems data={serviceList} itemsPerPage={5} size={8}>
+                <PaginatedItems data={serviceList} itemsPerPage={6} size={8}>
                     <ServiceList />
                 </PaginatedItems>
             </div>

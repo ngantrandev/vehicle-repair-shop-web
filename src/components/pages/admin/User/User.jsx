@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react';
 
-import Item from './Item';
 import userService from '../../../../services/userService';
 import configs from '../../../../configs';
+import Paginateditems from '../../../paginateditems';
+import UserList from './UserList';
 
 function User() {
     const [users, setUsers] = useState([]);
@@ -31,32 +32,10 @@ function User() {
             <h1 className='py-10 text-center text-3xl font-bold'>
                 Danh sách tài khoản
             </h1>
-            <div className='relative m-5 w-max border-collapse overflow-x-auto border-2 shadow-md sm:rounded-lg md:w-full'>
-                <table className='w-full table-auto'>
-                    <thead className='h-8 border-y-2 bg-primary-supper-light'>
-                        <tr className='text-left'>
-                            <th>Họ tên</th>
-                            <th>Email</th>
-                            <th>Số điện thoại</th>
-                            <th>Vai trò</th>
-                            {/* <th>Hành động</th> */}
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {users.map((user, index) => {
-                            return (
-                                <Item
-                                    key={index}
-                                    data={user}
-                                    className={
-                                        'hover:cursor-pointer hover:bg-gray-200'
-                                    }
-                                />
-                            );
-                        })}
-                    </tbody>
-                </table>
-            </div>
+
+            <Paginateditems data={users} itemsPerPage={10} size={8}>
+                <UserList className='relative m-5 w-max border-collapse overflow-x-auto md:w-full' />
+            </Paginateditems>
         </div>
     );
 }
