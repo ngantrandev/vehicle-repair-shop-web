@@ -82,7 +82,7 @@ function ModifyService() {
                 return;
             }
 
-            if (!inputPrice || inputPrice <= 100000) {
+            if (!inputPrice || inputPrice < 100000) {
                 ultils.notifyError('Giá tiền không hợp lệ');
 
                 setTimeout(() => {

@@ -90,7 +90,11 @@ function Login() {
         ultils.notifySuccess('Đăng nhập thành công');
 
         setTimeout(() => {
-            navigate(from);
+            if (from === configs.routes.register) {
+                navigate(configs.routes.home);
+            } else {
+                navigate(from);
+            }
         }, 2000);
     };
 
@@ -162,7 +166,7 @@ function Login() {
                                 Ghi nhớ thiết bị
                             </label>
                         </div>
-                        <div>
+                        {/* <div>
                             <Button
                                 textonly
                                 to={configs.routes.resetPassword}
@@ -170,7 +174,7 @@ function Login() {
                             >
                                 Quên mật khẩu?
                             </Button>
-                        </div>
+                        </div> */}
                     </div>
                     <Button
                         className='w-full font-medium'

@@ -19,13 +19,15 @@ function Register() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
+    const [phone, setPhone] = useState('');
 
     const resetForm = useCallback(() => {
-        setUsername(null);
+        setUsername('');
         setFullName('');
         setEmail('');
         setPassword('');
         setConfirmPassword('');
+        setPhone('');
     }, []);
 
     const handleRegister = useCallback(() => {
@@ -46,6 +48,11 @@ function Register() {
                     return;
                 }
 
+                if (!ultils.isVietnamesePhoneNumber(phone)) {
+                    ultils.notifyError('Số điện thoại không hợp lệ');
+                    return;
+                }
+
                 if (password.length < 6) {
                     ultils.notifyError('Mật khẩu phải có ít nhất 6 ký tự');
                     return;
@@ -61,6 +68,7 @@ function Register() {
                     password,
                     fullName,
                     email,
+                    phone,
                 });
 
                 if (res.status === configs.STATUS_CODE.OK) {
@@ -83,7 +91,15 @@ function Register() {
         };
 
         createAccount();
-    }, [username, fullName, email, password, confirmPassword, resetForm]);
+    }, [
+        username,
+        fullName,
+        email,
+        phone,
+        password,
+        confirmPassword,
+        resetForm,
+    ]);
 
     const handleFullNameChange = useCallback((e) => {
         setFullName(e.target.value.replace(/\s+/g, ' '));
@@ -103,6 +119,10 @@ function Register() {
 
     const handleConfirmPasswordChange = useCallback((e) => {
         setConfirmPassword(e.target.value);
+    }, []);
+
+    const handlePhoneChange = useCallback((e) => {
+        setPhone(e.target.value);
     }, []);
 
     return (
@@ -167,6 +187,20 @@ function Register() {
                                 className={'w-full p-2'}
                                 value={email}
                                 onChange={handleEmailChange}
+                            />
+                        </div>
+                        <div className='mb-4'>
+                            <label htmlFor='phone' className=''>
+                                Số điện thoại
+                            </label>
+                            <Input
+                                rounded
+                                id='phone'
+                                type='text'
+                                placeholder='Nhập số điện thoại'
+                                className={'w-full p-2'}
+                                value={phone}
+                                onChange={handlePhoneChange}
                             />
                         </div>
                         <div className='mb-4'>

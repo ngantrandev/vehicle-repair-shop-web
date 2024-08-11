@@ -13,7 +13,7 @@ const login = async ({ username, password }) => {
     }
 };
 
-const register = async ({ username, password, fullName, email }) => {
+const register = async ({ username, password, fullName, email, phone }) => {
     try {
         const words = fullName.split(' ');
 
@@ -26,6 +26,7 @@ const register = async ({ username, password, fullName, email }) => {
             firstname,
             lastname,
             email,
+            phone,
         });
 
         return res;
