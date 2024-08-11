@@ -7,6 +7,7 @@ import ultils from '../../ultils';
 import FormCreateBooking from '../form/FormCreateBooking';
 import configs from '../../configs';
 import serviceService from '../../services/serviceService';
+import useUser from '../../hooks/useUser';
 
 function ServiceDetail() {
     const location = useLocation();
@@ -14,12 +15,14 @@ function ServiceDetail() {
     const { service_id: serviceId } = useParams();
     const { from } = location.state || {};
 
+    const {user} = useUser();
+
     const [isSuccessPopupOpen, setIsSuccessPopupOpen] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
 
     const [service, setService] = useState({});
 
-    const [role, setRole] = useState('');
+ 
 
     useEffect(() => {
         const fetchService = async () => {
@@ -51,17 +54,7 @@ function ServiceDetail() {
         setIsSuccessPopupOpen(true);
     };
 
-    useEffect(() => {
-        try {
-            const role = ultils.getUserRole();
-
-            if (role && role.trim().length > 0) {
-                setRole(role);
-            }
-        } catch (error) {
-            console.log(error);
-        }
-    }, []);
+   
 
     return (
         <div className='relative'>
@@ -106,7 +99,7 @@ function ServiceDetail() {
                                 </h3>
                             )}
                         </div>
-                        {role === configs.USER_ROLES.customer &&
+                        {user?.role === configs.USER_ROLES.customer &&
                             service.active === 1 && (
                                 <div className='mt-16 flex gap-2'>
                                     <Button

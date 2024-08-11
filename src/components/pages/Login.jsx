@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 
 import bannerImg from '../../assets/images/login_banner.jpg';
@@ -13,12 +13,20 @@ import ultils from '../../ultils';
 const webName = import.meta.env.VITE_WEB_NAME || 'Shop sửa xe';
 import vehicleImg from '../../assets/images/motorcycle.png';
 import Image from '../image/Image';
+import useUser from '../../hooks/useUser';
 
 function Login() {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [isSaveDevice, setIsSaveDevice] = useState(false);
     const navigate = useNavigate();
+    const location = useLocation();
+
+    const { setUser } = useUser();
+
+    const { from } = location.state || {
+        from: { pathname: configs.routes.home },
+    };
 
     const handleSignIn = async () => {
         if (!username) {
@@ -35,28 +43,55 @@ function Login() {
 
         if (result.status !== configs.STATUS_CODE.OK) {
             ultils.notifyError('Sai tên tài khoản hoặc mật khẩu');
+
+            setUser({
+                data: null,
+                token: null,
+                role: null,
+                isLoggedin: false,
+            });
             return;
         }
+
+        const resData = result.data;
+
+        if (!resData || !resData.data || !resData.token) {
+            ultils.notifyError('Đăng nhập thất bại');
+            setUser({
+                data: null,
+                token: null,
+                role: null,
+                isLoggedin: false,
+            });
+            return;
+        }
+
+        if (isSaveDevice) {
+            localStorage.setItem('user', JSON.stringify(resData.data));
+
+            let date = new Date();
+            date.setTime(date.getTime() + 365 * 24 * 60 * 60 * 1000);
+            let expires = 'expires=' + date.toUTCString();
+            document.cookie = `token=${resData.token}; ${expires};`;
+        } else {
+            sessionStorage.setItem('user', JSON.stringify(resData.data));
+            document.cookie = `token=${resData.token}; path=/`;
+        }
+
+        const userRole = ultils.getUserRole(resData.token);
+
+        setUser({
+            data: resData.data,
+            token: resData.token,
+            role: userRole,
+            isLoggedin: true,
+        });
 
         ultils.notifySuccess('Đăng nhập thành công');
 
         setTimeout(() => {
-            const resData = result.data;
-
-            if (isSaveDevice) {
-                localStorage.setItem('user', JSON.stringify(resData.data));
-
-                let date = new Date();
-                date.setTime(date.getTime() + 365 * 24 * 60 * 60 * 1000);
-                let expires = 'expires=' + date.toUTCString();
-                document.cookie = `token=${resData.token}; ${expires};`;
-            } else {
-                sessionStorage.setItem('user', JSON.stringify(resData.data));
-                document.cookie = `token=${resData.token}; path=/`;
-            }
-
-            navigate(configs.routes.home);
-        }, 3000);
+            navigate(from);
+        }, 2000);
     };
 
     return (

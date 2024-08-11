@@ -11,6 +11,7 @@ import {
 import configs from '../../../configs/index.js';
 import bookingService from '../../../services/bookingService.js';
 import ultils from '../../../ultils/ultils.js';
+import useUser from '../../../hooks/useUser.js';
 
 function Item({ data, className }) {
     const {
@@ -20,13 +21,13 @@ function Item({ data, className }) {
         service,
     } = data;
 
+    const { user } = useUser();
+
     const [status, setStatus] = useState(data.status);
 
     const handleCancel = async () => {
         try {
-            const user = ultils.getUserDataLogedin();
-
-            if (!user) {
+            if (!user?.isLoggedin) {
                 ultils.notifyError('Bạn chưa đăng nhập');
 
                 setTimeout(() => {
@@ -37,9 +38,14 @@ function Item({ data, className }) {
 
                 return;
             }
-            const res = await bookingService.cancelBooking(user.id, bookingId, {
-                note: 'Hủy bởi',
-            });
+
+            const res = await bookingService.cancelBooking(
+                user?.data?.id,
+                bookingId,
+                {
+                    note: 'Hủy bởi',
+                }
+            );
 
             if (res.status !== configs.STATUS_CODE.OK) {
                 ultils.notifyError('Hủy đặt lịch thất bại');

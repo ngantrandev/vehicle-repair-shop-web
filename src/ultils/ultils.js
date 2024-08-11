@@ -47,9 +47,7 @@ const getAccessToken = () => {
     return null;
 };
 
-const getUserRole = () => {
-    const token = getAccessToken();
-
+const getUserRole = (token) => {
     if (!token) {
         return '';
     }

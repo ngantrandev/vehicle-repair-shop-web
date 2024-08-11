@@ -16,6 +16,7 @@ import PersonIcon from '../../../assets/icon/PersonIcon';
 import SignOutIcon from '../../../assets/icon/SignOutIcon';
 import DefaultAvatar from '../../../assets/icon/DefaultAvatar';
 import Image from '../../../components/image/Image';
+import useUser from '../../../hooks/useUser';
 
 const webName = import.meta.env.VITE_WEB_NAME;
 const baseApiEnpoint = import.meta.env.VITE_API_BASE_URL;
@@ -25,9 +26,8 @@ function Header({ className }) {
 
     const [avatar, setAvatar] = useState();
 
-    const [isSignedIn, setIsSignedIn] = useState(false);
-    // const [carts, setCarts] = useState([]);
-    const [role, setRole] = useState('');
+    const { user, setUser } = useUser();
+
     const [inputSearch, setInputSearch] = useState('');
     const [servicesFound, setServicesFound] = useState([]);
     const debouncedInputSearch = useDebounce(inputSearch, 500);
@@ -44,17 +44,15 @@ function Header({ className }) {
     };
 
     useEffect(() => {
-        const userLogged = ultils.getUserDataLogedin();
-
-        if (!userLogged || !userLogged.image_url) {
+        if (!user || !user?.data?.image_url) {
             return;
         }
 
         setAvatar((pre) => ({
             ...pre,
-            preview: baseApiEnpoint + userLogged.image_url,
+            preview: baseApiEnpoint + user?.data?.image_url,
         }));
-    }, []);
+    }, [user]);
 
     useEffect(() => {
         const fetchServices = async () => {
@@ -88,9 +86,7 @@ function Header({ className }) {
     };
 
     const handleClickGoToMyBooking = () => {
-        const user = ultils.getUserDataLogedin();
-
-        if (!user || !isSignedIn || !user.id) {
+        if (!user?.isLoggedin) {
             ultils.notifyError('Bạn chưa đăng nhập');
             setTimeout(() => {
                 ultils.notifyWarning(
@@ -101,31 +97,19 @@ function Header({ className }) {
             return;
         }
 
-        if (!isSignedIn) {
-            navigate('/login');
-        }
-        navigate(`/users/${user.id}/bookings`);
+        navigate(`/users/${user?.data?.id}/bookings`);
     };
 
     const handleClickSignOut = () => {
         ultils.removeUserDataLogedin();
+        setUser({
+            data: null,
+            token: null,
+            role: null,
+            isLoggedin: false,
+        });
         navigate(configs.routes.login);
     };
-
-    useEffect(() => {
-        const user = ultils.getUserDataLogedin();
-        const token = ultils.getAccessToken();
-
-        if (!user || !token) {
-            setIsSignedIn(false);
-            return;
-        }
-
-        const role = ultils.getUserRole();
-
-        setRole(role);
-        setIsSignedIn(true);
-    }, []);
 
     const handleClickGoToServiceDetail = (serviceId) => {
         setServicesFound([]);
@@ -133,9 +117,7 @@ function Header({ className }) {
     };
 
     const handleClickGoToProfile = () => {
-        const user = ultils.getUserDataLogedin();
-
-        if (!user || !isSignedIn || !user.id) {
+        if (!user?.isLoggedin) {
             ultils.notifyError('Bạn chưa đăng nhập');
             setTimeout(() => {
                 ultils.notifyWarning(
@@ -146,14 +128,11 @@ function Header({ className }) {
             return;
         }
 
-        if (!isSignedIn) {
-            navigate('/login');
-        }
-        navigate(`/profile`);
+        navigate(configs.routes.profile);
     };
 
     // useEffect(() => {
-    //     if (role !== configs.USER_ROLES.customer) {
+    //     if (user?.role !== configs.USER_ROLES.customer) {
     //         return;
     //     }
 
@@ -180,7 +159,7 @@ function Header({ className }) {
     //     if (isSignedIn) {
     //         fetchData();
     //     }
-    // }, [isSignedIn, role]);
+    // }, [isSignedIn, user?.role]);
 
     return (
         <div className={className}>
@@ -248,14 +227,16 @@ function Header({ className }) {
                     )}
                 >
                     <div className='relative w-full lg:w-[60%]'>
-                        <input
-                            type='text'
-                            className='h-full w-full rounded-full border-2 border-[#D9D9D9] px-[20px] py-2 font-medium caret-primary placeholder:text-[12px] focus:outline-primary md:placeholder:font-medium lg:placeholder:font-bold'
-                            placeholder='Tìm kiếm dịch vụ theo tên dịch vụ, loại xe...'
-                            value={inputSearch}
-                            onChange={handleInputSearchChange}
-                            onFocus={() => setIsFocusSearch(true)}
-                        />
+                        {window.location.pathname === configs.routes.home && (
+                            <input
+                                type='text'
+                                className='h-full w-full rounded-full border-2 border-[#D9D9D9] px-[20px] py-2 font-medium caret-primary placeholder:text-[12px] focus:outline-primary md:placeholder:font-medium lg:placeholder:font-bold'
+                                placeholder='Tìm kiếm dịch vụ theo tên dịch vụ, loại xe...'
+                                value={inputSearch}
+                                onChange={handleInputSearchChange}
+                                onFocus={() => setIsFocusSearch(true)}
+                            />
+                        )}
                         {inputSearch && !isSearching && (
                             <Button
                                 className='absolute right-0 top-1/2 -translate-x-1/2 -translate-y-1/2'
@@ -268,7 +249,7 @@ function Header({ className }) {
                 </TippyHeadless>
             </div>
             <div className='flex flex-shrink-0 justify-center gap-x-4 lg:gap-x-6'>
-                {/* {(!isSignedIn || role === configs.USER_ROLES.customer) && (
+                {/* {(!isSignedIn || user?.role === configs.USER_ROLES.customer) && (
                     <Tippy content='Giỏ hàng'>
                         <div className='relative items-center self-center'>
                             <svg
@@ -293,9 +274,9 @@ function Header({ className }) {
                         </div>
                     </Tippy>
                 )} */}
-                {isSignedIn ? (
+                {user?.isLoggedin ? (
                     <>
-                        {role === configs.USER_ROLES.customer && (
+                        {user?.role === configs.USER_ROLES.customer && (
                             <Button
                                 className=''
                                 rounded
@@ -305,7 +286,7 @@ function Header({ className }) {
                             </Button>
                         )}
 
-                        {role === configs.USER_ROLES.admin && (
+                        {user?.role === configs.USER_ROLES.admin && (
                             <Button
                                 rounded
                                 onClick={() =>
@@ -318,7 +299,7 @@ function Header({ className }) {
                             </Button>
                         )}
 
-                        {role === configs.USER_ROLES.staff && (
+                        {user?.role === configs.USER_ROLES.staff && (
                             <Button
                                 rounded
                                 onClick={() =>
@@ -358,7 +339,7 @@ function Header({ className }) {
                                 </div>
                             )}
                         >
-                            <div className='size-10 overflow-hidden rounded-full'>
+                            <div className='flex size-10 items-center justify-center overflow-hidden rounded-full border-2'>
                                 {avatar && avatar.preview ? (
                                     <Image
                                         src={avatar?.preview}

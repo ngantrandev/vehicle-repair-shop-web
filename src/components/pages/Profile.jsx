@@ -7,10 +7,12 @@ import Input from '../input/Input';
 import Avatar from '../../assets/icon/DefaultAvatar.jsx';
 import profileService from '../../services/profileService';
 import Image from '../image/Image.jsx';
+import useUser from '../../hooks/useUser.js';
 
 const baseApiEnpoint = import.meta.env.VITE_API_BASE_URL;
 
 function Profile() {
+    const { user } = useUser();
     const [avatar, setAvatar] = useState();
 
     const [userName, setUserName] = useState('');
@@ -22,34 +24,32 @@ function Profile() {
 
     useEffect(() => {
         const fetchUser = async () => {
-            const loggedUser = ultils.getUserDataLogedin();
-
-            if (!loggedUser) return;
+            if (!user || !user?.isLoggedin) return;
 
             const res = await profileService.getProfileByUsername(
-                loggedUser.username
+                user?.data?.username
             );
 
             const resData = res.data;
-            const user = resData.data;
+            const userData = resData.data;
 
-            setUserName(user.username);
-            setLastname(user.lastname);
-            setFirstname(user.firstname);
-            setBirthday(user.birthday);
-            setEmail(user.email);
-            setPhone(user.phone);
+            setUserName(userData.username);
+            setLastname(userData.lastname);
+            setFirstname(userData.firstname);
+            setBirthday(userData.birthday);
+            setEmail(userData.email);
+            setPhone(userData.phone);
 
-            if (user.image_url) {
+            if (userData.image_url) {
                 setAvatar((pre) => ({
                     ...pre,
-                    preview: baseApiEnpoint + user.image_url,
+                    preview: baseApiEnpoint + userData.image_url,
                 }));
             }
         };
 
         fetchUser();
-    }, []);
+    }, [user]);
 
     const handleChooseImage = useCallback((e) => {
         const file = e.target.files[0];
@@ -86,11 +86,48 @@ function Profile() {
     }, []);
 
     const handleClickChangeProfile = useCallback(async () => {
-        const loggedUser = ultils.getUserDataLogedin();
-        const token = ultils.getAccessToken();
-
-        if (!loggedUser || !token) {
+        if (!user?.isLoggedin) {
             ultils.notifyError('Vui lòng đăng nhập để cập nhật thông tin');
+            return;
+        }
+
+        if (!userName || userName === '') {
+            ultils.notifyError('Vui lòng nhập tên tài khoản');
+            return;
+        }
+
+        if (!lastname || lastname === '') {
+            ultils.notifyError('Vui lòng nhập họ');
+            return;
+        }
+
+        if (!firstname || firstname === '') {
+            ultils.notifyError('Vui lòng nhập tên');
+            return;
+        }
+
+        if (!birthday || birthday === '') {
+            ultils.notifyError('Vui lòng nhập ngày sinh');
+            return;
+        }
+
+        if (!email || email === '') {
+            ultils.notifyError('Vui lòng nhập email');
+            return;
+        }
+
+        if (!phone || phone === '') {
+            ultils.notifyError('Vui lòng nhập số điện thoại');
+            return;
+        }
+
+        if (!ultils.isValidEmail(email)) {
+            ultils.notifyError('Email không hợp lệ');
+            return;
+        }
+
+        if (!ultils.isVietnamesePhoneNumber(phone)) {
+            ultils.notifyError('Số điện thoại không hợp lệ');
             return;
         }
 
@@ -104,14 +141,14 @@ function Profile() {
             file: avatar?.data,
         };
 
-        const res = await profileService.updateProfile(loggedUser.id, userData);
+        const res = await profileService.updateProfile(user?.data.id, userData);
 
         if (res.status === 200) {
             ultils.notifySuccess('Cập nhật thông tin thành công');
         } else {
             ultils.notifyError('Cập nhật thông tin thất bại');
         }
-    }, [userName, lastname, birthday, email, phone, avatar, firstname]);
+    }, [userName, lastname, birthday, email, phone, avatar, firstname, user]);
 
     return (
         <div className='inset-0 mb-20 mt-4 flex h-full min-h-screen w-full flex-col items-center gap-y-4 px-3'>

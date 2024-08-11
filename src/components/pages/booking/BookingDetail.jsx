@@ -11,6 +11,7 @@ import Input from '../../input';
 import GoongMap from '../../map/GoongMap';
 import stationsService from '../../../services/stationsService';
 import Image from '../../image/Image';
+import useUser from '../../../hooks/useUser';
 
 const baseApiEnpoint = import.meta.env.VITE_API_BASE_URL;
 
@@ -20,8 +21,9 @@ function BookingDetail() {
     const navigate = useNavigate();
     const { from } = location.state;
 
+    const { user } = useUser();
+
     const [status, setStatus] = useState();
-    const [userRole, setUserRole] = useState('');
 
     const [selectedStaff, setSelectedStaff] = useState('');
     const [selectedStation, setSelectedStation] = useState('');
@@ -51,16 +53,6 @@ function BookingDetail() {
 
         return [longitude, latitude];
     }, [booking]);
-
-    useEffect(() => {
-        const role = ultils.getUserRole();
-
-        if (!role) {
-            return;
-        }
-
-        setUserRole(role);
-    }, []);
 
     useEffect(() => {
         const fetchStaffs = async (stationId) => {
@@ -331,14 +323,14 @@ function BookingDetail() {
                     </label>
                     <select
                         disabled={
-                            userRole !== configs.USER_ROLES.admin &&
+                            user?.role !== configs.USER_ROLES.admin &&
                             status !== configs.BOOKING_STATE.pending
                         }
                         id='station'
                         className='block w-full rounded-lg border-2 border-primary-light p-2.5 text-sm focus:border-primary-light'
                         value={selectedStation}
                         onChange={(e) => {
-                            if (userRole !== configs.USER_ROLES.admin) {
+                            if (user?.role !== configs.USER_ROLES.admin) {
                                 return;
                             }
                             setSelectedStaff('');
@@ -364,14 +356,14 @@ function BookingDetail() {
                     </label>
                     <select
                         disabled={
-                            userRole !== configs.USER_ROLES.admin &&
+                            user?.role !== configs.USER_ROLES.admin &&
                             status !== configs.BOOKING_STATE.pending
                         }
                         id='staffs'
                         className='block w-full rounded-lg border-2 border-primary-light p-2.5 text-sm focus:border-primary-light'
                         value={selectedStaff}
                         onChange={(e) => {
-                            if (userRole !== configs.USER_ROLES.admin) {
+                            if (user?.role !== configs.USER_ROLES.admin) {
                                 return;
                             }
                             setSelectedStaff(e.target.value);
@@ -395,14 +387,14 @@ function BookingDetail() {
                         Ghi chú
                     </label>
                     <Input
-                        disabled={userRole !== configs.USER_ROLES.admin}
+                        disabled={user?.role !== configs.USER_ROLES.admin}
                         multiline
                         className={
                             'w-full rounded-md border-2 border-primary-light p-2'
                         }
                         value={note}
                         onChange={(e) => {
-                            if (userRole !== configs.USER_ROLES.admin) {
+                            if (user?.role !== configs.USER_ROLES.admin) {
                                 return;
                             }
                             setNote(e.target.value);
@@ -411,7 +403,7 @@ function BookingDetail() {
                 </div>
 
                 {status === configs.BOOKING_STATE.pending &&
-                userRole === configs.USER_ROLES.admin ? (
+                user?.role === configs.USER_ROLES.admin ? (
                     <Button
                         rounded
                         className={`col-span-1 w-full`}
@@ -463,7 +455,7 @@ function BookingDetail() {
                     </Button>
                 )}
 
-                {userRole === configs.USER_ROLES.admin &&
+                {user?.role === configs.USER_ROLES.admin &&
                 status !== configs.BOOKING_STATE.done &&
                 status !== configs.BOOKING_STATE.cancelled ? (
                     <Button
@@ -483,7 +475,7 @@ function BookingDetail() {
                     </Button>
                 )}
 
-                {userRole === configs.USER_ROLES.admin &&
+                {user?.role === configs.USER_ROLES.admin &&
                     status &&
                     status !== configs.BOOKING_STATE.pending && (
                         <div className='col-span-4 flex w-full justify-center'>

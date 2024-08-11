@@ -68,6 +68,9 @@ const Button = forwardRef(function Button(
             ref={ref}
             type={type}
             className={customClassName.join(' ')}
+            state={{
+                from: window.location.pathname,
+            }}
             {...props}
         >
             {children}

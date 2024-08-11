@@ -1,6 +1,7 @@
 import { memo, useCallback, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
-import ErrorImage from '../../assets/images/ErrorImage.webp';
+
+import ErrorImage from '../../assets/images/ErrorImage.jpg';
 
 function Image({ src, alt, className, fallback }) {
     const [_src, setSrc] = useState(src);

@@ -11,6 +11,7 @@ import PlusIcon from '../../assets/icon/PlusIcon';
 import Button from '../button';
 import CameraIcon from '../../assets/icon/CameraIcon';
 import Image from '../image/Image';
+import useUser from '../../hooks/useUser';
 
 function FormCreateBooking({ service, onClose, onSuccess }) {
     const [provinces, setProvinces] = useState([]);
@@ -24,6 +25,8 @@ function FormCreateBooking({ service, onClose, onSuccess }) {
     const [image, setImage] = useState(null);
 
     const mapRef = useRef();
+
+    const { user } = useUser();
 
     useEffect(() => {
         const getProvinces = async () => {
@@ -98,9 +101,8 @@ function FormCreateBooking({ service, onClose, onSuccess }) {
             return;
         }
 
-        const user = ultils.getUserDataLogedin();
-
-        if (!user) {
+        if (!user?.isLoggedin) {
+            ultils.notifyError('Vui lòng đăng nhập để thực hiện chức năng này');
             return;
         }
 
@@ -117,7 +119,7 @@ function FormCreateBooking({ service, onClose, onSuccess }) {
 
         try {
             const result = await bookingService.createBooking(
-                user.id,
+                user?.data?.id,
                 bookingData
             );
 
