@@ -200,6 +200,8 @@ const GoongMap = forwardRef(function GoongMap(
                         <Marker
                             longitude={currentPoint[0]}
                             latitude={currentPoint[1]}
+                            offsetLeft={-20}
+                            offsetTop={-20}
                         >
                             <Pin className={'h-16 w-16 text-blue-500'} />
                         </Marker>
@@ -211,6 +213,8 @@ const GoongMap = forwardRef(function GoongMap(
                         <Marker
                             longitude={originPoint[0]}
                             latitude={originPoint[1]}
+                            offsetLeft={-20}
+                            offsetTop={-20}
                         >
                             <Pin className={'h-16 w-16 text-blue-500'} />
                         </Marker>
@@ -222,6 +226,8 @@ const GoongMap = forwardRef(function GoongMap(
                         <Marker
                             longitude={startPoint[0]}
                             latitude={startPoint[1]}
+                            offsetLeft={-20}
+                            offsetTop={-20}
                         >
                             <span className='font-bold text-green-500'>
                                 Trạm sửa chữa
@@ -233,7 +239,12 @@ const GoongMap = forwardRef(function GoongMap(
 
                 {endPoint.length == 2 && (
                     <div id='marker-end'>
-                        <Marker longitude={endPoint[0]} latitude={endPoint[1]}>
+                        <Marker
+                            longitude={endPoint[0]}
+                            latitude={endPoint[1]}
+                            offsetLeft={-20}
+                            offsetTop={-20}
+                        >
                             <span className='font-bold text-red-500'>
                                 Điểm đến
                             </span>

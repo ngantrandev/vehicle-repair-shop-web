@@ -15,14 +15,12 @@ function ServiceDetail() {
     const { service_id: serviceId } = useParams();
     const { from } = location.state || {};
 
-    const {user} = useUser();
+    const { user } = useUser();
 
     const [isSuccessPopupOpen, setIsSuccessPopupOpen] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
 
     const [service, setService] = useState({});
-
- 
 
     useEffect(() => {
         const fetchService = async () => {
@@ -54,8 +52,6 @@ function ServiceDetail() {
         setIsSuccessPopupOpen(true);
     };
 
-   
-
     return (
         <div className='relative'>
             <div className='relative flex h-screen w-full flex-col items-center justify-center'>
@@ -82,9 +78,9 @@ function ServiceDetail() {
                             </div>
                             <h3>Mô tả: {service.description}</h3>
                             <h3>
-                                Phí dịch vụ:
+                                Chi phí tạm tính:
                                 <span className='font-bold'>
-                                    {ultils.getCurrencyFormat(service.price)}
+                                    {` ${ultils.getCurrencyFormat(service.price)}`}
                                 </span>
                             </h3>
                             <h3>

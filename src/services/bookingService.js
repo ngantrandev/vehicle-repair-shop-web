@@ -84,6 +84,18 @@ const getAllBookingsOfStaff = async (staffId) => {
     }
 };
 
+const undoBooking = async (bookingId) => {
+    try {
+        const res = await httpRequests.patch(
+            `admin/bookings/${bookingId}/undo`
+        );
+
+        return res;
+    } catch (error) {
+        throw new Error(error);
+    }
+};
+
 const bookingService = {
     createBooking,
     getAllBookings,
@@ -92,6 +104,7 @@ const bookingService = {
     getBookingByID,
     setBookingStatusToFixing,
     getAllBookingsOfStaff,
+    undoBooking,
 };
 
 export default bookingService;

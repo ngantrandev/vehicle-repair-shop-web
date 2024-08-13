@@ -166,7 +166,7 @@ function CreateService() {
                     </div>
                     <div className='mb-4'>
                         <label htmlFor='price' className=''>
-                            Giá tiền
+                            Chi phí tạm tính
                         </label>
                         <Input
                             rounded

@@ -18,10 +18,10 @@ function Item({ data, className }) {
             <td>{ultils.getCurrencyFormat(price)}</td>
             <td>
                 {data.active ? (
-                    <span className='font-bold text-green-600'>Hoạt động</span>
+                    <span className='font-bold text-green-600'>Sẵn có</span>
                 ) : (
                     <span className='font-bold text-red-500'>
-                        Ngừng hoạt động
+                        Ngừng cung cấp
                     </span>
                 )}
             </td>

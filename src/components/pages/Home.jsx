@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 
 import 'tippy.js/dist/tippy.css'; // optional
 
-import Button from '../button';
 import PaginatedItems from '../paginateditems';
 import ServiceList from '../servicelist';
 
@@ -111,18 +110,18 @@ function Home() {
                     </div>
                     <div
                         id='subtitle'
-                        className='mt-3 text-xs lg:ml-[4rem] lg:mr-[10rem] lg:mt-4 lg:text-sm'
+                        className='mt-3 text-xs lg:ml-[4rem] lg:mr-[10rem] lg:mt-10 lg:text-base'
                     >
                         Chúng tôi cung cấp dịch vụ bảo dưỡng xe cao cấp, áp dụng
                         đối với nhiều dòng xe. Cam kết bảo đảm chất lượng cho
                         quý khách hàng.
                     </div>
-                    <Button
+                    {/* <Button
                         outlined
                         className='absolute bottom-0 mb-8 border-white text-xs text-white hover:bg-white hover:text-primary active:bg-opacity-0 active:text-white lg:mb-5 lg:ml-[4rem] lg:mr-[8rem] lg:text-sm'
                     >
                         Tìm dịch vụ
-                    </Button>
+                    </Button> */}
                 </div>
             </div>
 

@@ -25,6 +25,8 @@ function BookingDetail() {
 
     const [status, setStatus] = useState();
 
+    const [isChangeStatus, setIsChangeStatus] = useState(false);
+
     const [selectedStaff, setSelectedStaff] = useState('');
     const [selectedStation, setSelectedStation] = useState('');
     const [note, setNote] = useState('');
@@ -114,13 +116,15 @@ function BookingDetail() {
                 setBooking(resData.data);
 
                 setSelectedStation(resData.data?.station?.id);
+
+                setIsChangeStatus(false);
             } catch (error) {
                 console.log(error);
             }
         };
 
         fetchBookingDetail();
-    }, [bookingId, userId]);
+    }, [bookingId, userId, isChangeStatus]);
 
     const handleConfirmBooking = async () => {
         try {
@@ -192,8 +196,10 @@ function BookingDetail() {
 
     const handleCancelBooking = async () => {
         try {
-            if (note.length === 0) {
-                ultils.notifyWarning('Vui lòng nhập lý do hủy đặt lịch');
+            if (note.trim().length === 0) {
+                ultils.notifyError(
+                    'Vui lòng nhập ghi chú trước khí hủy đặt lịch'
+                );
                 return;
             }
             const res = await bookingService.cancelBooking(userId, bookingId, {
@@ -204,8 +210,24 @@ function BookingDetail() {
                 throw new Error(res.data.message);
             }
 
+            setIsChangeStatus(false);
             setStatus(configs.BOOKING_STATE.cancelled);
             ultils.notifySuccess('Đã xác nhận hủy đặt lịch');
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
+    const handleUndoBooking = async () => {
+        try {
+            const res = await bookingService.undoBooking(bookingId);
+
+            if (res.status !== configs.STATUS_CODE.OK) {
+                ultils.notifyError('Đã xảy ra lỗi');
+                throw new Error(res.data.message);
+            }
+
+            setIsChangeStatus(true);
         } catch (error) {
             console.log(error);
         }
@@ -265,13 +287,19 @@ function BookingDetail() {
                     </span>
                 </div>
                 <div className='col-span-4'>
+                    <span>SDT khách hàng: </span>
+                    <span className='text-xl font-bold'>
+                        {booking.user?.phone || '---'}
+                    </span>
+                </div>
+                <div className='col-span-4'>
                     <span>Tên dịch vụ: </span>
                     <span className='text-xl font-bold'>
                         {booking.service?.name || '---'}
                     </span>
                 </div>
                 <div className='col-span-4'>
-                    <span>Giá tiền: </span>
+                    <span>Chi phí tạm tính: </span>
                     <span className='font-bold'>
                         {ultils.getCurrencyFormat(booking.service?.price) ||
                             '---'}
@@ -323,8 +351,9 @@ function BookingDetail() {
                     </label>
                     <select
                         disabled={
-                            user?.role !== configs.USER_ROLES.admin &&
-                            status !== configs.BOOKING_STATE.pending
+                            user?.role !== configs.USER_ROLES.admin ||
+                            status === configs.BOOKING_STATE.cancelled ||
+                            status === configs.BOOKING_STATE.done
                         }
                         id='station'
                         className='block w-full rounded-lg border-2 border-primary-light p-2.5 text-sm focus:border-primary-light'
@@ -356,8 +385,9 @@ function BookingDetail() {
                     </label>
                     <select
                         disabled={
-                            user?.role !== configs.USER_ROLES.admin &&
-                            status !== configs.BOOKING_STATE.pending
+                            user?.role !== configs.USER_ROLES.admin ||
+                            status === configs.BOOKING_STATE.cancelled ||
+                            status === configs.BOOKING_STATE.done
                         }
                         id='staffs'
                         className='block w-full rounded-lg border-2 border-primary-light p-2.5 text-sm focus:border-primary-light'
@@ -387,7 +417,11 @@ function BookingDetail() {
                         Ghi chú
                     </label>
                     <Input
-                        disabled={user?.role !== configs.USER_ROLES.admin}
+                        disabled={
+                            user?.role !== configs.USER_ROLES.admin ||
+                            status === configs.BOOKING_STATE.cancelled ||
+                            status === configs.BOOKING_STATE.done
+                        }
                         multiline
                         className={
                             'w-full rounded-md border-2 border-primary-light p-2'
@@ -456,38 +490,53 @@ function BookingDetail() {
                 )}
 
                 {user?.role === configs.USER_ROLES.admin &&
-                status !== configs.BOOKING_STATE.done &&
-                status !== configs.BOOKING_STATE.cancelled ? (
-                    <Button
-                        rounded
-                        className={`col-span-1 w-full bg-red-500 hover:bg-red-600 active:bg-red-700`}
-                        onClick={() => handleCancelBooking()}
-                    >
-                        Xác nhận hủy
-                    </Button>
-                ) : (
-                    <Button
-                        rounded
-                        className={`col-span-1 w-full bg-red-500 hover:bg-red-600 active:bg-red-700`}
-                        disabled
-                    >
-                        Xác nhận hủy
-                    </Button>
-                )}
+                    status !== configs.BOOKING_STATE.done &&
+                    status !== configs.BOOKING_STATE.cancelled && (
+                        <Button
+                            rounded
+                            className={`col-span-1 w-full bg-red-500 hover:bg-red-600 active:bg-red-700`}
+                            onClick={() => handleCancelBooking()}
+                        >
+                            Xác nhận hủy
+                        </Button>
+                    )}
+                {user?.role === configs.USER_ROLES.admin &&
+                    status === configs.BOOKING_STATE.cancelled && (
+                        <Button
+                            rounded
+                            className={`col-span-1 w-full bg-red-500 hover:bg-red-600 active:bg-red-700`}
+                            disabled
+                        >
+                            Đã hủy
+                        </Button>
+                    )}
 
                 {user?.role === configs.USER_ROLES.admin &&
-                    status &&
-                    status !== configs.BOOKING_STATE.pending && (
-                        <div className='col-span-4 flex w-full justify-center'>
+                    (status === configs.BOOKING_STATE.accepted ||
+                        status === configs.BOOKING_STATE.fixing) && (
+                        <div className='col-span-1 flex w-full justify-center'>
                             <Button
                                 rounded
-                                className={`w-56 bg-primary hover:bg-primary-dark active:bg-primary-light`}
+                                className={`w-full bg-primary hover:bg-primary-dark active:bg-primary-light`}
                                 onClick={handleChangeBookingInfo}
                             >
                                 Thay đổi thông tin
                             </Button>
                         </div>
                     )}
+
+                {(status === configs.BOOKING_STATE.cancelled ||
+                    status === configs.BOOKING_STATE.done) && (
+                    <div className='col-span-1 flex w-full justify-center'>
+                        <Button
+                            rounded
+                            className={`w-56 bg-primary hover:bg-primary-dark active:bg-primary-light`}
+                            onClick={handleUndoBooking}
+                        >
+                            Hoàn tác
+                        </Button>
+                    </div>
+                )}
             </div>
 
             {booking.image_url && (
