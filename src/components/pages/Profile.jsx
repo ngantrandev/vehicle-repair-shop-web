@@ -12,7 +12,7 @@ import useUser from '../../hooks/useUser.js';
 const baseApiEnpoint = import.meta.env.VITE_API_BASE_URL;
 
 function Profile() {
-    const { user } = useUser();
+    const { user, setUser } = useUser();
     const [avatar, setAvatar] = useState();
 
     const [userName, setUserName] = useState('');
@@ -40,6 +40,13 @@ function Profile() {
             setEmail(userData.email);
             setPhone(userData.phone);
 
+            setUser((pre) => {
+                return {
+                    ...pre,
+                    data: userData,
+                };
+            });
+
             if (userData.image_url) {
                 setAvatar((pre) => ({
                     ...pre,
@@ -49,7 +56,7 @@ function Profile() {
         };
 
         fetchUser();
-    }, [user]);
+    }, []);
 
     const handleChooseImage = useCallback((e) => {
         const file = e.target.files[0];
