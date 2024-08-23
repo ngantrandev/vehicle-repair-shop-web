@@ -1,6 +1,10 @@
-# Motorcycle Repair Shop Website
+# Motorcycle Repair Shop Website 👋
 
-This project is a website for a motorcycle repair shop. It is built using [Vite](https://vitejs.dev/), [React](https://reactjs.org/), and [Tailwind CSS](https://tailwindcss.com/).
+A website that allows you to schedule motorcycle repairs at home. It is built using:
+* [Vite](https://vitejs.dev/)
+* [React](https://reactjs.org/)
+* [Tailwind CSS](https://tailwindcss.com/).
+* [Goong Map React](https://docs.goong.io/goong-map-react/)
 
 ## 1. Installation and Usage
 
@@ -42,3 +46,31 @@ npm run build
 # Preview the production build
 npm run preview
 ```
+
+## 2. Website Preview
+###  **Login Page**
+![Login Page](./docs//images//login.png)
+    
+###  **Home Page**
+![Home Page](./docs//images//home.png)
+
+###  **Service Detail Page**
+![Service Page](./docs//images//service.detail.png)
+
+### **Create Service Page**
+![Create Booking Page](./docs//images//create.service.png)
+
+### **Create Booking Page**
+![Create Booking Page](./docs//images//create.booking.png)
+
+### **Booking List Page User role**
+![Booking List Page](./docs//images//booking.list.png)
+
+### **Booking List Page Admin role**
+![Booking List Page](./docs//images//booking.list.admin.png)
+
+### **Booking Detail Page**
+![Booking List Page](./docs//images/booking.info.png)
+
+### **Booking Detail Map Page**
+![Booking List Page](./docs//images/booking.info.map.png)
