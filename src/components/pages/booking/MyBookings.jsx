@@ -16,7 +16,7 @@ function MyBookings() {
                     return;
                 }
 
-                const res = await bookingService.getAllBookings(user?.data?.id);
+                const res = await bookingService.getAllBookings();
 
                 setBookings(res.data.data);
             } catch (error) {

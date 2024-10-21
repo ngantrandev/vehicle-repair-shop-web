@@ -1,9 +1,9 @@
 import httpRequests from '../ultils/httpRequest';
 
-const createBooking = async (userId, bookingData) => {
+const createBooking = async (bookingData) => {
     try {
         const res = await httpRequests.postFormData(
-            `users/${userId}/bookings`,
+            `users/bookings`,
             bookingData
         );
 
@@ -13,9 +13,9 @@ const createBooking = async (userId, bookingData) => {
     }
 };
 
-const getAllBookings = async (userId) => {
+const getAllBookings = async () => {
     try {
-        const res = await httpRequests.get(`users/${userId}/bookings`);
+        const res = await httpRequests.get(`users/bookings`);
 
         return res;
     } catch (error) {
@@ -23,10 +23,10 @@ const getAllBookings = async (userId) => {
     }
 };
 
-const cancelBooking = async (userId, bookingId, data) => {
+const cancelBooking = async (bookingId, data) => {
     try {
         const res = await httpRequests.patch(
-            `users/${userId}/bookings/${bookingId}/cancel`,
+            `users/bookings/${bookingId}/cancel`,
             data
         );
 

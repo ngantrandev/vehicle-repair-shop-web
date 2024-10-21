@@ -1,8 +1,7 @@
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 
 import ultils from '../../ultils';
-import loadData from '../../services/loadData';
 import bookingService from '../../services/bookingService';
 import configs from '../../configs';
 import GoongMap from '../map/GoongMap';
@@ -12,56 +11,131 @@ import Button from '../button';
 import CameraIcon from '../../assets/icon/CameraIcon';
 import Image from '../image/Image';
 import useUser from '../../hooks/useUser';
+import goongMapService from '../../services/goongMapService';
+import useDebounce from '../../hooks/useDebounce';
+
+const SearchResult = ({ data, onItemClick }) => {
+    return (
+        <div className='border-3 absolute z-10 h-36 w-full overflow-y-auto rounded-md border-0 border-gray-300 bg-white p-4 shadow-lg'>
+            {data.map((item, index) => {
+                return (
+                    <div
+                        key={index}
+                        className='w-full cursor-pointer'
+                        onClick={() => {
+                            onItemClick(item);
+                        }}
+                    >
+                        <div className='w-full font-semibold text-black'>
+                            {item.address_name}
+                        </div>
+                        <div className='w-full'>{item.full_address}</div>
+                        <p className='h-px w-full bg-red-200' />
+                    </div>
+                );
+            })}
+        </div>
+    );
+};
 
 function FormCreateBooking({ service, onClose, onSuccess }) {
-    const [provinces, setProvinces] = useState([]);
-    const [districts, setDistricts] = useState([]);
-    const [wards, setWards] = useState([]);
-
-    const [selectedProvince, setSelectedProvince] = useState(null);
-    const [selectedDistrict, setSelectedDistrict] = useState(null);
-    const [selectedWard, setSelectedWard] = useState(null);
-    const [street, setStreet] = useState('');
+    const [addressInput, setAddressInput] = useState('');
     const [image, setImage] = useState(null);
+    const debouncedInputSearch = useDebounce(addressInput, 500);
+    const [isProgrammaticChange, setIsProgrammaticChange] = useState(false);
+
+    const [isFirstRender, setIsFirstRender] = useState(true);
+
+    // address
+    const [showSearchResult, setShowSearchResult] = useState(false);
+    const [suggestAddresses, setSuggestAddresses] = useState([]);
+    const [selectedAddress, setSelectedAddress] = useState(null);
+    const [isDragging, setIsDragging] = useState(false);
+
+    const [mapCenter, setMapcenter] = useState(null);
+    const debouncedMapCenter = useDebounce(mapCenter, 1000);
 
     const mapRef = useRef();
 
     const { user } = useUser();
 
-    useEffect(() => {
-        const getProvinces = async () => {
-            const provinces = await loadData.getListProvince();
-            setProvinces(provinces.data);
-        };
-
-        getProvinces();
+    const handleDraggingMap = useCallback((isDragging) => {
+        setIsDragging(isDragging);
     }, []);
 
     useEffect(() => {
-        if (!selectedProvince || selectedProvince.trim().length === 0) {
+        if(isFirstRender) {
+            setIsFirstRender(false);
+            return;
+        }
+        if (isProgrammaticChange) {
+            setIsProgrammaticChange(false);
             return;
         }
 
-        const getDistricts = async (provinceId) => {
-            const districts = await loadData.getListDistrict(provinceId);
-            setDistricts(districts.data);
-        };
-
-        getDistricts(selectedProvince);
-    }, [selectedProvince]);
+        setMapcenter(mapRef.current.center);
+    }, [isDragging]);
 
     useEffect(() => {
-        if (!selectedDistrict || selectedDistrict.trim().length === 0) {
+        if (isProgrammaticChange || !debouncedMapCenter) {
             return;
         }
 
-        const getWards = async (districtId) => {
-            const wards = await loadData.getListWard(districtId);
-            setWards(wards.data);
+        const fetchReverseGeocode = async () => {
+            const res = await goongMapService.getReverseGeocoding(
+                debouncedMapCenter.latitude,
+                debouncedMapCenter.longitude
+            );
+
+            setSuggestAddresses(res.data?.data || []);
+            setShowSearchResult(true);
+        };
+        fetchReverseGeocode();
+    }, [debouncedMapCenter]);
+
+    useEffect(() => {
+        if (
+            isProgrammaticChange ||
+            !debouncedInputSearch ||
+            debouncedInputSearch.trim() === ''
+        ) {
+            return;
+        }
+
+        const fetchAddress = async () => {
+            if (debouncedInputSearch.trim() === '') {
+                setSelectedAddress(null);
+                return;
+            }
+
+            const res = await goongMapService.autoCompleteAddress(
+                debouncedInputSearch.trim()
+            );
+
+            setSuggestAddresses(res.data?.data || []);
+            setShowSearchResult(true);
+        };
+        fetchAddress();
+    }, [debouncedInputSearch]);
+
+    const handleChooseAddressItem = (address) => {
+        const fetchAddressDetail = async () => {
+            const res = await goongMapService.getAddressInfoByPlaceId(
+                address.place_id
+            );
+
+            const resData = res.data?.data || null;
+
+            setAddressInput(resData.address_name + ', ' + resData.full_address);
+
+            setSelectedAddress(resData);
+            setIsProgrammaticChange(true);
+            setShowSearchResult(false);
+            mapRef.current.setCenter(resData.latitude, resData.longitude);
         };
 
-        getWards(selectedDistrict);
-    }, [selectedDistrict]);
+        fetchAddressDetail();
+    };
 
     const handleChooseImage = (e) => {
         const file = e.target.files[0];
@@ -86,42 +160,28 @@ function FormCreateBooking({ service, onClose, onSuccess }) {
     };
 
     const handleCreateBooking = async () => {
-        if (!selectedProvince || !ultils.isValidInteger(selectedProvince)) {
-            ultils.notifyError('Không được để trống tỉnh thành');
-            return;
-        }
-
-        if (!selectedDistrict || !ultils.isValidInteger(selectedDistrict)) {
-            ultils.notifyError('Không được để trống quận huyện');
-            return;
-        }
-
-        if (!selectedWard || !ultils.isValidInteger(selectedWard)) {
-            ultils.notifyError('Không được để trống phường xã');
-            return;
-        }
-
         if (!user?.isLoggedin) {
             ultils.notifyError('Vui lòng đăng nhập để thực hiện chức năng này');
             return;
         }
 
-        const { latitude, longitude } = mapRef.current.center;
+        if (!selectedAddress) {
+            ultils.notifyError('Vui lòng chọn địa chỉ nhà');
+            return;
+        }
 
         const bookingData = {
             service_id: service.id,
-            ward_id: selectedWard,
-            street: street,
-            latitude: latitude,
-            longitude: longitude,
+            address_name: selectedAddress?.address_name,
+            full_address: selectedAddress?.full_address,
+            place_id: selectedAddress?.place_id,
+            latitude: selectedAddress?.latitude,
+            longitude: selectedAddress?.longitude,
             file: image?.data,
         };
 
         try {
-            const result = await bookingService.createBooking(
-                user?.data?.id,
-                bookingData
-            );
+            const result = await bookingService.createBooking(bookingData);
 
             if (result.status === configs.STATUS_CODE.OK) {
                 onSuccess();
@@ -129,6 +189,15 @@ function FormCreateBooking({ service, onClose, onSuccess }) {
         } catch (error) {
             console.log(error);
         }
+    };
+
+    const handleChangeAddressInput = (e) => {
+        if (isProgrammaticChange) {
+            setIsProgrammaticChange(false);
+            return;
+        }
+
+        setAddressInput(e.target.value);
     };
 
     return (
@@ -168,13 +237,14 @@ function FormCreateBooking({ service, onClose, onSuccess }) {
                     </div>
                     <form className='p-4 md:p-5'>
                         <div className='mb-4 grid grid-cols-3 gap-4'>
-                            <div className='col-span-3'>
+                            <div className='relative col-span-3'>
                                 <label
                                     htmlFor='ward'
                                     className='mb-2 block text-sm font-medium text-gray-900'
                                 >
                                     Địa chỉ nhà
                                 </label>
+
                                 <Input
                                     rounded
                                     id='ward'
@@ -182,86 +252,19 @@ function FormCreateBooking({ service, onClose, onSuccess }) {
                                     placeholder='Nhập địa chỉ nhà, tên đường'
                                     className={'w-full bg-white p-2'}
                                     multiline
-                                    value={street}
-                                    onChange={(e) => setStreet(e.target.value)}
+                                    value={addressInput}
+                                    onChange={handleChangeAddressInput}
                                 />
-                            </div>
 
-                            <div className='col-span-3 sm:col-span-1'>
-                                <label
-                                    htmlFor='province'
-                                    className='mb-2 block text-sm font-medium text-gray-900'
-                                >
-                                    Tỉnh thành
-                                </label>
-                                <select
-                                    id='province'
-                                    className='block w-full rounded-lg border-2 border-primary-light p-2.5 text-sm focus:border-primary-light'
-                                    onChange={(e) =>
-                                        setSelectedProvince(e.target.value)
-                                    }
-                                    defaultValue=''
-                                >
-                                    <option className='p-5'>Tỉnh thành</option>
-
-                                    {provinces.map(({ id, name }) => {
-                                        return (
-                                            <option key={id} value={id}>
-                                                {name}
-                                            </option>
-                                        );
-                                    })}
-                                </select>
-                            </div>
-                            <div className='col-span-3 sm:col-span-1'>
-                                <label
-                                    htmlFor='district'
-                                    className='mb-2 block text-sm font-medium text-gray-900'
-                                >
-                                    Quận huyện
-                                </label>
-                                <select
-                                    id='district'
-                                    className='block w-full rounded-lg border-2 border-primary-light p-2.5 text-sm focus:border-primary-light'
-                                    onChange={(e) =>
-                                        setSelectedDistrict(e.target.value)
-                                    }
-                                    defaultValue=''
-                                >
-                                    <option className='p-5'>Quận huyện</option>
-                                    {districts.map(({ id, name }) => {
-                                        return (
-                                            <option key={id} value={id}>
-                                                {name}
-                                            </option>
-                                        );
-                                    })}
-                                </select>
-                            </div>
-                            <div className='col-span-3 sm:col-span-1'>
-                                <label
-                                    htmlFor='ward'
-                                    className='mb-2 block text-sm font-medium text-gray-900'
-                                >
-                                    Phường xã
-                                </label>
-                                <select
-                                    id='ward'
-                                    className='block w-full rounded-lg border-2 border-primary-light p-2.5 text-sm focus:border-primary-light'
-                                    onChange={(e) =>
-                                        setSelectedWard(e.target.value)
-                                    }
-                                    defaultValue=''
-                                >
-                                    <option className='p-5'>Phường xã</option>
-                                    {wards.map(({ id, name }) => {
-                                        return (
-                                            <option key={id} value={id}>
-                                                {name}
-                                            </option>
-                                        );
-                                    })}
-                                </select>
+                                {suggestAddresses.length > 0 &&
+                                    showSearchResult && (
+                                        <SearchResult
+                                            data={suggestAddresses}
+                                            onItemClick={
+                                                handleChooseAddressItem
+                                            }
+                                        />
+                                    )}
                             </div>
                         </div>
 
@@ -324,7 +327,11 @@ function FormCreateBooking({ service, onClose, onSuccess }) {
                         </Button>
                     </form>
 
-                    <GoongMap ref={mapRef} className='h-56 w-full bg-primary' />
+                    <GoongMap
+                        ref={mapRef}
+                        className='h-56 w-full bg-primary'
+                        onDragging={handleDraggingMap}
+                    />
                 </div>
             </div>
         </div>
@@ -335,6 +342,11 @@ FormCreateBooking.propTypes = {
     service: PropTypes.object,
     onClose: PropTypes.func,
     onSuccess: PropTypes.func,
+};
+
+SearchResult.propTypes = {
+    data: PropTypes.array,
+    onItemClick: PropTypes.func,
 };
 
 export default FormCreateBooking;

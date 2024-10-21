@@ -40,7 +40,6 @@ function Item({ data, className }) {
             }
 
             const res = await bookingService.cancelBooking(
-                user?.data?.id,
                 bookingId,
                 {
                     note: 'Hủy bởi',

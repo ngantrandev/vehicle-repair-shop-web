@@ -54,6 +54,7 @@ const GoongMap = forwardRef(function GoongMap(
         endPoint = [],
         currentPoint = [],
         hidecenter,
+        onDragging,
     },
     ref
 ) {
@@ -136,11 +137,13 @@ const GoongMap = forwardRef(function GoongMap(
 
     const hanleOnMouseUp = useCallback(() => {
         setIsDragging(false);
-    }, []);
+        onDragging && onDragging(false);
+    }, [isDragging]);
 
     const handleOnMouseDown = useCallback(() => {
         setIsDragging(true);
-    }, []);
+        onDragging && onDragging(true);
+    }, [isDragging]);
 
     const handleOnTouchMove = useCallback(() => {
         setIsDragging(true);
@@ -154,6 +157,13 @@ const GoongMap = forwardRef(function GoongMap(
         center: {
             latitude: viewport.latitude,
             longitude: viewport.longitude,
+        },
+        setCenter:(latitude,longitude)=>{
+            setViewport((pre)=>({
+                ...pre,
+                latitude,
+                longitude
+            }))
         },
     }));
 
@@ -282,6 +292,7 @@ GoongMap.propTypes = {
     originPoint: PropTypes.array,
     hidecenter: PropTypes.bool,
     currentPoint: PropTypes.array,
+    onDragging: PropTypes.func,
 };
 
 export default memo(GoongMap);

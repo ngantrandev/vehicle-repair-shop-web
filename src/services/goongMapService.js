@@ -23,8 +23,44 @@ const getDirections = async (
     return res;
 };
 
+const autoCompleteAddress = async (input, latitude, longitude) => {
+    const res = await httpRequest.get('address/autocomplete', {
+        params: {
+            input,
+            latitude,
+            longitude,
+        },
+    });
+
+    return res;
+};
+
+const getAddressInfoByPlaceId = async (placeId) => {
+    const res = await httpRequest.get('address/detail', {
+        params: {
+            place_id: placeId,
+        },
+    });
+
+    return res;
+};
+
+const getReverseGeocoding = async (latitude, longitude) => {
+    const res = await httpRequest.get('address/reverse', {
+        params: {
+            lat: latitude,
+            lng: longitude,
+        },
+    });
+
+    return res;
+};
+
 const goongMapService = {
     getDirections,
+    autoCompleteAddress,
+    getAddressInfoByPlaceId,
+    getReverseGeocoding,
 };
 
 export default goongMapService;
