@@ -64,7 +64,7 @@ function FormCreateBooking({ service, onClose, onSuccess }) {
     }, []);
 
     useEffect(() => {
-        if(isFirstRender) {
+        if (isFirstRender) {
             setIsFirstRender(false);
             return;
         }
@@ -170,13 +170,15 @@ function FormCreateBooking({ service, onClose, onSuccess }) {
             return;
         }
 
+        const { latitude, longitude } = mapRef.current.center;
+
         const bookingData = {
             service_id: service.id,
             address_name: selectedAddress?.address_name,
             full_address: selectedAddress?.full_address,
             place_id: selectedAddress?.place_id,
-            latitude: selectedAddress?.latitude,
-            longitude: selectedAddress?.longitude,
+            latitude,
+            longitude,
             file: image?.data,
         };
 

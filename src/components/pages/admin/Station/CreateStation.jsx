@@ -1,65 +1,114 @@
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
+import PropTypes from 'prop-types';
 
 import Button from '../../../button';
 import stationsService from '../../../../services/stationsService';
 import configs from '../../../../configs';
 import Input from '../../../input';
-import loadData from '../../../../services/loadData';
 import GoongMap from '../../../map/GoongMap';
 import ultils from '../../../../ultils';
+import goongMapService from '../../../../services/goongMapService';
+import useDebounce from '../../../../hooks/useDebounce';
+
+const SearchResult = ({ data, onItemClick }) => {
+    return (
+        <div className='border-3 absolute z-10 h-36 overflow-y-auto rounded-md border-0 border-gray-300 bg-white p-4 shadow-lg'>
+            {data.map((item, index) => {
+                return (
+                    <div
+                        key={index}
+                        className='w-full cursor-pointer'
+                        onClick={() => {
+                            onItemClick(item);
+                        }}
+                    >
+                        <div className='w-full font-semibold text-black'>
+                            {item.address_name}
+                        </div>
+                        <div className='w-full'>{item.full_address}</div>
+                        <p className='h-px w-full bg-red-200' />
+                    </div>
+                );
+            })}
+        </div>
+    );
+};
 
 function CreateStation() {
     const location = useLocation();
     const navigate = useNavigate();
     const { from } = location.state || { from: '/' };
 
-    const [provinces, setProvinces] = useState([]);
-    const [districts, setDistricts] = useState([]);
-    const [wards, setWards] = useState([]);
-
     const [stationName, setStationName] = useState('');
-    const [stationStreet, setStationStreet] = useState('');
-    const [selectedWard, setSelectedWard] = useState('');
-    const [selectedDistrict, setSelectedDistrict] = useState('');
-    const [selectedProvince, setSelectedProvince] = useState('');
+    const [addressStationInput, setStationAddressInput] = useState('');
+    const [selectedAddress, setSelectedAddress] = useState(null);
+
+    const [isProgrammaticChange, setIsProgrammaticChange] = useState(false);
+
+    const [suggestAddresses, setSuggestAddresses] = useState([]);
+    const [showSearchResult, setShowSearchResult] = useState(false);
+
+    const addressInputDebounce = useDebounce(addressStationInput, 500);
 
     const mapRef = useRef(null);
 
-    useEffect(() => {
-        const getProvinces = async () => {
-            const provinces = await loadData.getListProvince();
-            setProvinces(provinces.data);
-        };
+    const handleChangeAddressInput = useCallback((e) => {
+        const value = e.target.value;
 
-        getProvinces();
+        setStationAddressInput(value);
+    }, []);
+
+    const handleChangeStationName = useCallback((e) => {
+        const value = e.target.value;
+
+        setStationName(value);
     }, []);
 
     useEffect(() => {
-        if (!selectedProvince || selectedProvince.trim().length === 0) {
+        if (
+            isProgrammaticChange ||
+            !addressInputDebounce ||
+            addressInputDebounce.trim() === ''
+        ) {
             return;
         }
 
-        const getDistricts = async (provinceId) => {
-            const districts = await loadData.getListDistrict(provinceId);
-            setDistricts(districts.data);
+        const fetchAddress = async () => {
+            if (addressInputDebounce.trim() === '') {
+                setSelectedAddress(null);
+                return;
+            }
+
+            const res = await goongMapService.autoCompleteAddress(
+                addressInputDebounce.trim()
+            );
+
+            setSuggestAddresses(res.data?.data || []);
+            setShowSearchResult(true);
         };
+        fetchAddress();
+    }, [addressInputDebounce]);
 
-        getDistricts(selectedProvince);
-    }, [selectedProvince]);
+    const handleChooseAddressItem = useCallback((address) => {
+        const fetchAddressDetail = async () => {
+            const res = await goongMapService.getAddressInfoByPlaceId(
+                address.place_id
+            );
 
-    useEffect(() => {
-        if (!selectedDistrict || selectedDistrict.trim().length === 0) {
-            return;
-        }
+            const resData = res.data?.data || null;
 
-        const getWards = async (districtId) => {
-            const wards = await loadData.getListWard(districtId);
-            setWards(wards.data);
+            setStationAddressInput(
+                resData.address_name + ', ' + resData.full_address
+            );
+
+            setSelectedAddress(resData);
+            setIsProgrammaticChange(true);
+            setShowSearchResult(false);
+            mapRef.current.setCenter(resData.latitude, resData.longitude);
         };
-
-        getWards(selectedDistrict);
-    }, [selectedDistrict]);
+        fetchAddressDetail();
+    }, []);
 
     const handleCreateStation = async () => {
         const createStation = async () => {
@@ -68,41 +117,27 @@ function CreateStation() {
                 return;
             }
 
-            if (!stationStreet || stationStreet.trim().length === 0) {
-                ultils.notifyWarning('Vui lòng nhập tên đường');
+            if (!selectedAddress) {
+                ultils.notifyWarning('Vui lòng chọn địa chỉ trạm dịch vụ');
                 return;
             }
 
-            if (!selectedProvince || selectedProvince.trim().length === 0) {
-                ultils.notifyWarning('Vui lòng chọn tỉnh thành');
-                return;
-            }
-            if (!selectedDistrict || selectedDistrict.trim().length === 0) {
-                ultils.notifyWarning('Vui lòng chọn quận huyện');
-                return;
-            }
-            if (!selectedWard || selectedWard.trim().length === 0) {
-                ultils.notifyWarning('Vui lòng chọn phường xã');
-                return;
-            }
+            const { longitude, latitude } = mapRef.current.center;
 
-            const { lng, lat } = mapRef.current.center;
             const data = {
                 name: stationName,
-                street: stationStreet,
-                ward_id: selectedWard,
-                lng: lng,
-                lat: lat,
+                place_id: selectedAddress.place_id,
+                longitude,
+                latitude,
+                address_name: selectedAddress.address_name,
+                full_address: selectedAddress.full_address,
             };
             const response = await stationsService.createStation(data);
             if (response.status === configs.STATUS_CODE.OK) {
                 ultils.notifySuccess('Tạo trạm dịch vụ thành công');
 
                 setStationName('');
-                setStationStreet('');
-                setSelectedWard('');
-                setSelectedDistrict('');
-                setSelectedProvince('');
+                setStationAddressInput('');
             } else {
                 ultils.notifyError('Tạo trạm dịch vụ thất bại');
             }
@@ -127,90 +162,27 @@ function CreateStation() {
             </div>
             <div className='mx-2 mb-10 mt-32 grid grid-cols-3 gap-1 rounded-md border-2 border-primary-light p-3 md:mx-40'>
                 <div className='col-span-3'>
-                    <h3>Tên dịch vụ</h3>
+                    <h3>Tên trạm dịch vụ</h3>
                     <Input
                         className={'w-full border-2 border-primary p-2'}
                         value={stationName}
-                        onChange={(e) => setStationName(e.target.value)}
+                        onChange={handleChangeStationName}
                     />
                 </div>
-                <div className='col-span-3'>
-                    <h3>Tên đường</h3>
+                <div className='relative col-span-3'>
+                    <h3>Địa chỉ</h3>
                     <Input
                         className={'w-full border-2 border-primary p-2'}
-                        value={stationStreet}
-                        onChange={(e) => setStationStreet(e.target.value)}
+                        value={addressStationInput}
+                        onChange={handleChangeAddressInput}
                     />
-                </div>
-                <div className='col-span-3 sm:col-span-1'>
-                    <label
-                        htmlFor='province'
-                        className='mb-2 block text-sm font-medium text-gray-900'
-                    >
-                        Tỉnh thành
-                    </label>
-                    <select
-                        id='province'
-                        className='block w-full rounded-lg border-2 border-primary-light p-2.5 text-sm focus:border-primary-light'
-                        onChange={(e) => setSelectedProvince(e.target.value)}
-                        value={selectedProvince}
-                    >
-                        <option className='p-5'>Tỉnh thành</option>
 
-                        {provinces.map(({ id, name }) => {
-                            return (
-                                <option key={id} value={id}>
-                                    {name}
-                                </option>
-                            );
-                        })}
-                    </select>
-                </div>
-                <div className='col-span-3 sm:col-span-1'>
-                    <label
-                        htmlFor='district'
-                        className='mb-2 block text-sm font-medium text-gray-900'
-                    >
-                        Quận huyện
-                    </label>
-                    <select
-                        id='district'
-                        className='block w-full rounded-lg border-2 border-primary-light p-2.5 text-sm focus:border-primary-light'
-                        onChange={(e) => setSelectedDistrict(e.target.value)}
-                        value={selectedDistrict}
-                    >
-                        <option className='p-5'>Quận huyện</option>
-                        {districts.map(({ id, name }) => {
-                            return (
-                                <option key={id} value={id}>
-                                    {name}
-                                </option>
-                            );
-                        })}
-                    </select>
-                </div>
-                <div className='col-span-3 sm:col-span-1'>
-                    <label
-                        htmlFor='ward'
-                        className='mb-2 block text-sm font-medium text-gray-900'
-                    >
-                        Phường xã
-                    </label>
-                    <select
-                        id='ward'
-                        className='block w-full rounded-lg border-2 border-primary-light p-2.5 text-sm focus:border-primary-light'
-                        onChange={(e) => setSelectedWard(e.target.value)}
-                        value={selectedWard}
-                    >
-                        <option className='p-5'>Phường xã</option>
-                        {wards.map(({ id, name }) => {
-                            return (
-                                <option key={id} value={id}>
-                                    {name}
-                                </option>
-                            );
-                        })}
-                    </select>
+                    {suggestAddresses.length > 0 && showSearchResult && (
+                        <SearchResult
+                            data={suggestAddresses}
+                            onItemClick={handleChooseAddressItem}
+                        />
+                    )}
                 </div>
 
                 <div className='col-span-3 mt-10'>
@@ -235,5 +207,10 @@ function CreateStation() {
 }
 
 CreateStation.propTypes = {};
+
+SearchResult.propTypes = {
+    data: PropTypes.array,
+    onItemClick: PropTypes.func,
+};
 
 export default CreateStation;

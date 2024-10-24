@@ -57,6 +57,7 @@ const privateRoutes = [
         path: configs.routes.admin.station.modify,
         component: StationDetail,
         role: configs.USER_ROLES.admin,
+        layout: SidebarLayout,
     },
     {
         path: configs.routes.admin.station.create,
