@@ -90,6 +90,10 @@ function Login() {
         ultils.notifySuccess('Đăng nhập thành công');
 
         setTimeout(() => {
+            if (userRole == configs.USER_ROLES.admin) {
+                navigate(configs.routes.admin.dashboard.services);
+                return;
+            }
             if (from === configs.routes.register) {
                 navigate(configs.routes.home);
             } else {

@@ -67,6 +67,7 @@ const privateRoutes = [
         path: configs.routes.booking.detail,
         component: BookingDetail,
         role: configs.USER_ROLES.staff,
+        layout: SidebarLayout,
     },
     {
         path: configs.routes.service.create,

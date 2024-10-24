@@ -9,10 +9,10 @@ const getAllBooking = async () => {
     }
 };
 
-const confirmBooking = async (userId, bookingId, note, staffId) => {
+const confirmBooking = async (bookingId, note, staffId) => {
     try {
         const res = await httpRequests.patch(
-            `/admin/users/${userId}/bookings/${bookingId}/confirm`,
+            `/admin/bookings/${bookingId}/confirm`,
             {
                 employee_id: staffId,
                 note: note,
@@ -24,10 +24,10 @@ const confirmBooking = async (userId, bookingId, note, staffId) => {
     }
 };
 
-const assignStaffToBooking = async (userId, bookingId, staffId, note) => {
+const assignStaffToBooking = async ( bookingId, staffId, note) => {
     try {
         const res = await httpRequests.patch(
-            `/admin/users/${userId}/bookings/${bookingId}/assign`,
+            `/admin/bookings/${bookingId}/assign`,
             {
                 employee_id: staffId,
                 note: note,

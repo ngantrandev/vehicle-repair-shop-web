@@ -8,27 +8,17 @@ import {
     DoneIcon,
 } from '../../../../assets/icon/Icon.jsx';
 import configs from '../../../../configs/index.js';
+import utils from '../../../../ultils/ultils.js';
 
 const Item = forwardRef(function Item({ data, className, onClick }, ref) {
     const { created_at: createdAt, note, service, user } = data;
-
-    const getTime = (dateTime) => {
-        const date = new Date(dateTime);
-        const day = date.getDate();
-        const month = date.getMonth() + 1;
-        const year = date.getFullYear();
-        const hour = date.getHours();
-        const minute = date.getMinutes();
-        const second = date.getSeconds();
-        return `${hour}:${minute}:${second} - ${day}-${month}-${year}`;
-    };
 
     return (
         <tr className={className} ref={ref} onClick={onClick}>
             <td>{user.lastname + ' ' + user.firstname}</td>
             <td>{service.name}</td>
             <td>{user.phone}</td>
-            <td>{getTime(createdAt)}</td>
+            <td>{utils.getFormatedTime(createdAt)}</td>
             <td>{note}</td>
             <td>
                 <div className='flex items-center gap-2'>

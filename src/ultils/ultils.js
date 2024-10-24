@@ -93,6 +93,16 @@ const convertTimeToGMT7 = (time) => {
     return localDateTime.format('HH:mm:ss DD/MM/YYYY');
 };
 
+const getFormatedTime = (time) => {
+    const gmt7Time = convertTimeToGMT7(time); // Lấy thời gian đã được chuyển về GMT+7
+    const specificDate = moment.tz(
+        gmt7Time,
+        'HH:mm:ss DD/MM/YYYY',
+        'Asia/Bangkok'
+    );
+    return specificDate.format('DD/MM/YYYY H[h]mm[p]ss[s]');
+};
+
 const removeUserDataLogedin = () => {
     localStorage.removeItem('user');
     localStorage.removeItem('token');
@@ -168,6 +178,10 @@ const notifyWarning = (message, configs = {}) => {
     });
 };
 
+const getFormatedAddress = (address) => {
+    return address?.address_name + ', ' + address?.full_address;
+};
+
 const ultils = {
     getUserDataLogedin,
     isValidInteger,
@@ -183,6 +197,8 @@ const ultils = {
     notifyError,
     notifyInfo,
     notifyWarning,
+    getFormatedAddress,
+    getFormatedTime,
 };
 
 export default ultils;

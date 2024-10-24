@@ -24,19 +24,6 @@ const Button = forwardRef(function Button(
     let Component = 'button';
     const customClassName = ['flex items-center justify-center select-none'];
 
-    const props = {
-        onClick,
-        ...otherProps,
-    };
-
-    if (to) {
-        Component = Link;
-        props.to = to;
-    } else if (href) {
-        Component = 'a';
-        props.href = href;
-    }
-
     if (rounded) {
         customClassName.push(
             'rounded-md bg-primary text-white hover:bg-primary-dark active:bg-primary p-2'
@@ -61,6 +48,22 @@ const Button = forwardRef(function Button(
 
     if (hidden) {
         customClassName.push('hidden');
+    }
+
+    const props = {
+        ...otherProps,
+    };
+
+    if (to) {
+        Component = Link;
+        props.to = to;
+    } else if (href) {
+        Component = 'a';
+        props.href = href;
+    }
+
+    if (!disabled) {
+        props.onClick = onClick;
     }
 
     return (
