@@ -39,12 +39,9 @@ function Item({ data, className }) {
                 return;
             }
 
-            const res = await bookingService.cancelBooking(
-                bookingId,
-                {
-                    note: 'Hủy bởi',
-                }
-            );
+            const res = await bookingService.cancelBooking(bookingId, {
+                note: 'Hủy bởi',
+            });
 
             if (res.status !== configs.STATUS_CODE.OK) {
                 ultils.notifyError('Hủy đặt lịch thất bại');

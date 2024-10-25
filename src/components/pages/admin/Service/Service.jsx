@@ -32,7 +32,7 @@ function Service() {
     }, []);
 
     return (
-        <div className='relative flex w-full flex-col items-center px-0 md:px-4'>
+        <div className='relative flex flex-1 flex-col items-center px-0 md:px-4'>
             <h1 className='py-10 text-center text-3xl font-bold'>
                 Danh sách dịch vụ của cửa hàng
             </h1>

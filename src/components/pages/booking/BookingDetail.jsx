@@ -312,7 +312,7 @@ function BookingDetail() {
     ];
 
     return (
-        <div className='w-full justify-center overflow-auto px-4'>
+        <div className='flex-1 justify-center overflow-auto px-4'>
             <div className='mt-3 w-full'>
                 <Button className='' rounded onClick={() => navigate(from)}>
                     Quay lại

@@ -28,7 +28,7 @@ function BookingMagager() {
         fetchBooking();
     }, []);
     return (
-        <div className='flex w-full flex-col items-center px-0 md:px-4'>
+        <div className='flex flex-1 flex-col items-center px-0 md:px-4'>
             <h1 className='py-10 text-center text-3xl font-bold'>
                 Danh sách lịch hẹn của khách
             </h1>

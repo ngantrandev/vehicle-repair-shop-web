@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 
-
 import bookingService from '../../../services/bookingService';
 import configs from '../../../configs';
 
@@ -12,8 +11,6 @@ function MyTasks() {
     const [bookings, setBookings] = useState([]);
 
     const { user } = useUser();
-
-   
 
     useEffect(() => {
         try {
@@ -49,8 +46,6 @@ function MyTasks() {
         }
     }, [user?.data?.id, user?.isLoggedin]);
 
-  
-
     return (
         <div className='flex w-full flex-col'>
             <h1 className='mt-4 text-center text-3xl font-bold'>
@@ -58,7 +53,7 @@ function MyTasks() {
             </h1>
 
             <Paginateditems data={bookings} itemsPerPage={6} size={8}>
-                <ListTask className='relative m-5 border-collapse overflow-x-auto border-2 shadow-md sm:rounded-lg'/>
+                <ListTask className='relative m-5 border-collapse overflow-x-auto border-2 shadow-md sm:rounded-lg' />
             </Paginateditems>
         </div>
     );

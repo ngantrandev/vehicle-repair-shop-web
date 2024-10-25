@@ -1,1 +1,1 @@
-export {default} from './Image.jsx'
+export { default } from './Image.jsx';

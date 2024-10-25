@@ -63,6 +63,7 @@ const privateRoutes = [
         path: configs.routes.admin.station.create,
         component: CreateStation,
         role: configs.USER_ROLES.admin,
+        layout: SidebarLayout,
     },
     {
         path: configs.routes.booking.detail,
@@ -74,11 +75,13 @@ const privateRoutes = [
         path: configs.routes.service.create,
         component: CreateService,
         role: configs.USER_ROLES.admin,
+        layout: SidebarLayout,
     },
     {
         path: configs.routes.admin.service.modify,
         component: ModifyService,
         role: configs.USER_ROLES.admin,
+        layout: SidebarLayout,
     },
     {
         path: configs.routes.booking.list,

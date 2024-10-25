@@ -8,7 +8,7 @@ function SideBarItem({ title, to, icon }) {
         <NavLink
             to={to}
             className={(nav) =>
-                `block rounded-md border-2 p-4 hover:bg-primary-supper-light md:border-0 ${nav.isActive && activeStyle}`
+                `block border-2 px-4 py-2 hover:bg-primary-supper-light md:border-0 ${nav.isActive && activeStyle}`
             }
         >
             <span>{icon}</span>

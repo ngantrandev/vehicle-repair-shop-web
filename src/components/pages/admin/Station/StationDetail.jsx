@@ -178,7 +178,7 @@ function StationDetail() {
     };
 
     return (
-        <div className='relative flex w-full flex-col justify-center'>
+        <div className='relative mx-2 flex flex-1 flex-col justify-center'>
             <div className='absolute top-6 flex w-full'>
                 <Button
                     className='absolute'

@@ -8,6 +8,9 @@ import ServiceList from '../servicelist';
 import loadData from '../../services/loadData.js';
 import GoongMap from '../map/GoongMap.jsx';
 import serviceService from '../../services/serviceService.js';
+import useUser from '../../hooks/useUser.js';
+import { useNavigate } from 'react-router-dom';
+import configs from '../../configs';
 
 function Home() {
     const [serviceList, setServiceList] = useState([]);
@@ -17,6 +20,18 @@ function Home() {
     const [selectedServiceCategory, setSelectedServiceCategory] = useState('');
     const [selectedMotorcycleBrand, setSelectedMotorcycleBrand] = useState('');
 
+    const user = useUser();
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        if (!user || !navigate) {
+            return;
+        }
+
+        if (user.user.role === configs.USER_ROLES.admin) {
+            navigate(configs.routes.admin.dashboard.services);
+        }
+    }, [user, navigate]);
     useEffect(() => {
         try {
             if (selectedServiceCategory === '') {

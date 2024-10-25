@@ -24,7 +24,7 @@ const confirmBooking = async (bookingId, note, staffId) => {
     }
 };
 
-const assignStaffToBooking = async ( bookingId, staffId, note) => {
+const assignStaffToBooking = async (bookingId, staffId, note) => {
     try {
         const res = await httpRequests.patch(
             `/admin/bookings/${bookingId}/assign`,

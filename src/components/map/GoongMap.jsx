@@ -158,12 +158,12 @@ const GoongMap = forwardRef(function GoongMap(
             latitude: viewport.latitude,
             longitude: viewport.longitude,
         },
-        setCenter:(latitude,longitude)=>{
-            setViewport((pre)=>({
+        setCenter: (latitude, longitude) => {
+            setViewport((pre) => ({
                 ...pre,
                 latitude,
-                longitude
-            }))
+                longitude,
+            }));
         },
     }));
 
