@@ -14,6 +14,20 @@ const getListService = async (params = {}) => {
     }
 };
 
+const getListTopService = async (params = {}) => {
+    try {
+        const res = await httpRequests.get('/services/top', {
+            params: {
+                ...params,
+            },
+        });
+
+        return res;
+    } catch (error) {
+        throw new Error(error);
+    }
+};
+
 const getServiceById = async (id) => {
     try {
         const res = await httpRequests.get(`/services/${id}`);
@@ -36,9 +50,12 @@ const getServiceCategories = async () => {
 
 const updateService = async (service) => {
     try {
-        const res = await httpRequests.patchFormData(`admin/services/${service.id}`, {
-            ...service,
-        });
+        const res = await httpRequests.patchFormData(
+            `admin/services/${service.id}`,
+            {
+                ...service,
+            }
+        );
 
         return res;
     } catch (error) {
@@ -64,6 +81,7 @@ const serviceService = {
     updateService,
     createService,
     getListService,
+    getListTopService
 };
 
 export default serviceService;

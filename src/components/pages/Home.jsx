@@ -8,12 +8,14 @@ import ServiceList from '../servicelist';
 import GoongMap from '../map/GoongMap.jsx';
 import serviceService from '../../services/serviceService.js';
 import useUser from '../../hooks/useUser.js';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import configs from '../../configs';
 import loadData from '../../services/loadData.js';
+import ultils from '../../ultils/ultils.js';
 
 function Home() {
     const [serviceList, setServiceList] = useState([]);
+    const [topServices, setTopServices] = useState([]);
     const [serviceCategories, setServiceCategories] = useState([]);
     const [stations, setStations] = useState([]);
 
@@ -59,6 +61,7 @@ function Home() {
     useEffect(() => {
         const fetchServices = async () => {
             const services = await serviceService.getListService({ active: 1 });
+            const topServices = await serviceService.getListTopService();
             const serviceCategories =
                 await serviceService.getServiceCategories();
             const stations = await loadData.getListServiceStation();
@@ -74,10 +77,16 @@ function Home() {
             if (stations && stations.data) {
                 setStations(stations.data.data);
             }
+
+            if (topServices && topServices.data) {
+                setTopServices(topServices.data.data);
+            }
         };
 
         fetchServices();
     }, []);
+
+    console.log(topServices);
 
     return (
         <div className='mx-20'>
@@ -145,35 +154,81 @@ function Home() {
                         )}
                     </div>
                 </div>
-                <div className='h-full w-60'>
-                    <div className='w-full bg-[#484848] py-1 text-center text-white'>
-                        Địa chỉ trạm dịch vụ
+                <div className='w-60'>
+                    <div className=''>
+                        <div className='w-full bg-[#484848] py-1 text-center text-white'>
+                            Địa chỉ trạm dịch vụ
+                        </div>
+                        <div className='mt-2 flex flex-col gap-y-2 px-2 hover:cursor-pointer'>
+                            {stations.map(({ id, name, address }) => {
+                                const {
+                                    latitude,
+                                    longitude,
+                                    address_name,
+                                    full_address,
+                                } = address;
+                                return (
+                                    <div key={id} className='group'>
+                                        <a
+                                            href={`https://www.google.com/maps/search/?api=1&query=${latitude},${longitude}`}
+                                            target='_blank'
+                                            rel='noreferrer'
+                                        >
+                                            <p className='text-md font-bold text-primary'>
+                                                {name}
+                                            </p>
+                                            <p className='text-xs'>
+                                                {address_name +
+                                                    ' ' +
+                                                    full_address}
+                                            </p>
+                                        </a>
+                                    </div>
+                                );
+                            })}
+                        </div>
                     </div>
-                    <div className='mt-2 flex flex-col gap-y-2 px-2 hover:cursor-pointer'>
-                        {stations.map(({ id, name, address }) => {
-                            const {
-                                latitude,
-                                longitude,
-                                address_name,
-                                full_address,
-                            } = address;
-                            return (
-                                <div key={id} className='group'>
-                                    <a
-                                        href={`https://www.google.com/maps/search/?api=1&query=${latitude},${longitude}`}
-                                        target='_blank'
-                                        rel='noreferrer'
-                                    >
-                                        <p className='text-md font-bold text-primary'>
-                                            {name}
+
+                    <div className='mt-8'>
+                        <p className='mb-8 inline p-1 text-lg font-bold uppercase text-black'>
+                            Được quan tâm nhiều
+                        </p>
+                        <div className='mt-2 flex flex-col gap-2 border-2 p-2'>
+                            {topServices.map((service) => (
+                                <div
+                                    key={service.id}
+                                    className='flex hover:cursor-pointer'
+                                >
+                                    <div className='size-20'>
+                                        <img
+                                            src={ultils.getFormatedImageUrl(
+                                                service.image_url
+                                            )}
+                                            alt={service.name}
+                                            className='h-full w-full object-cover'
+                                        />
+                                    </div>
+                                    <div className='ml-2 flex-1'>
+                                        <Link
+                                            to={`/services/${service.id}/`}
+                                            state={{
+                                                data: service,
+                                                from: window.location.pathname,
+                                            }}
+                                        >
+                                            <p className='hover:text-primary'>
+                                                {service.name}
+                                            </p>
+                                        </Link>
+                                        <p>
+                                            {ultils.getCurrencyFormat(
+                                                service.price
+                                            )}
                                         </p>
-                                        <p className='text-xs'>
-                                            {address_name + ' ' + full_address}
-                                        </p>
-                                    </a>
+                                    </div>
                                 </div>
-                            );
-                        })}
+                            ))}
+                        </div>
                     </div>
                 </div>
             </div>

@@ -2,6 +2,8 @@ import moment from 'moment-timezone';
 import polyline from '@mapbox/polyline';
 import { toast } from 'react-toastify';
 
+const baseApiEnpoint = import.meta.env.VITE_API_BASE_URL;
+
 const getCookie = (cname) => {
     var name = cname + '=';
     var decodedCookie = decodeURIComponent(document.cookie);
@@ -182,6 +184,17 @@ const getFormatedAddress = (address) => {
     return address?.address_name + ', ' + address?.full_address;
 };
 
+const getFormatedImageUrl=url=>{
+     // Kiểm tra xem URL có bắt đầu bằng "http" hoặc "https" không
+     if (/^https?:\/\//i.test(url)) {
+        return url;
+    }
+    // Nếu không, ghép API endpoint với URL
+    return `${baseApiEnpoint}${url}`;
+
+
+}
+
 const ultils = {
     getUserDataLogedin,
     isValidInteger,
@@ -199,6 +212,7 @@ const ultils = {
     notifyWarning,
     getFormatedAddress,
     getFormatedTime,
+    getFormatedImageUrl
 };
 
 export default ultils;
