@@ -36,7 +36,7 @@ const getServiceCategories = async () => {
 
 const updateService = async (service) => {
     try {
-        const res = await httpRequests.patch(`admin/services/${service.id}`, {
+        const res = await httpRequests.patchFormData(`admin/services/${service.id}`, {
             ...service,
         });
 
@@ -48,7 +48,7 @@ const updateService = async (service) => {
 
 const createService = async (service) => {
     try {
-        const res = await httpRequests.post('admin/services', {
+        const res = await httpRequests.postFormData('admin/services', {
             ...service,
         });
 

@@ -1,11 +1,17 @@
 import { useEffect, useState } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import { TimePicker } from 'antd';
+import dayjs from 'dayjs';
 
 import Button from '../button';
 import Input from '../input';
 import serviceService from '../../services/serviceService';
 import configs from '../../configs';
 import ultils from '../../ultils';
+import CameraIcon from '../../assets/icon/CameraIcon';
+import Image from '../image/Image';
+
+const baseApiEnpoint = import.meta.env.VITE_API_BASE_URL;
 
 function ModifyService() {
     const location = useLocation();
@@ -22,6 +28,7 @@ function ModifyService() {
     const [inputPrice, setInputPrice] = useState(0);
     const [inputTime, setInputTime] = useState('');
     const [categoryId, setCategoryId] = useState('');
+    const [image, setImage] = useState(null);
 
     useEffect(() => {
         const fetchService = async () => {
@@ -41,9 +48,15 @@ function ModifyService() {
                 setInputName(resData.data?.name);
                 setInputDescription(resData.data?.description);
                 setInputPrice(resData.data?.price);
-                setInputTime(resData.data?.estimated_time);
                 setServiceStatus(resData.data?.active == 1 ? true : false);
                 setCategoryId(resData.data?.category?.id);
+
+                setInputTime(dayjs(resData.data?.estimated_time, 'HH:mm'));
+
+                 setImage({
+                    data: null,
+                    preview: baseApiEnpoint + resData.data.image_url,
+                });
             } catch (error) {
                 console.log(error);
             }
@@ -70,6 +83,28 @@ function ModifyService() {
         fetchCategories();
     }, []);
 
+    const handleChooseImage = (e) => {
+        const file = e.target.files[0];
+
+        setImage({
+            data: file,
+            preview: URL.createObjectURL(file),
+        });
+    };
+
+    const handleDeleteImage = () => {
+        if (image) {
+            URL.revokeObjectURL(image.preview);
+            setImage(null);
+        }
+    };
+
+    useEffect(() => {
+        return () => {
+            image && URL.revokeObjectURL(image.preview);
+        };
+    }, [image]);
+
     const handleUpdateService = async () => {
         try {
             if (!inputName || inputName.trim() === '') {
@@ -77,33 +112,31 @@ function ModifyService() {
                 return;
             }
 
-            if (!inputDescription || inputDescription.trim() === '') {
-                ultils.notifyError('Mô tả quá ngắn');
-                return;
-            }
-
-            if (!inputPrice || inputPrice < 100000) {
+            if (!inputPrice || inputPrice < 10000) {
                 ultils.notifyError('Giá tiền không hợp lệ');
 
                 setTimeout(() => {
-                    ultils.notifyInfo('Giá tiền tối thiểu là 100.000đ');
+                    ultils.notifyInfo('Giá tiền tối thiểu là 10.000đ');
                 }, 1000);
                 return;
             }
 
-            if (!inputTime || inputTime.trim() === '') {
-                ultils.notifyError('Thời gian ước tính không hợp lệ');
+            if (!inputTime) {
+                ultils.notifyError('Phải nhập thời gian ước tính');
                 return;
             }
+
+            const formatedTime = dayjs(inputTime).format('HH:mm');
 
             const res = await serviceService.updateService({
                 id: serviceId,
                 name: inputName,
                 description: inputDescription,
                 price: inputPrice,
-                estimated_time: inputTime,
+                estimated_time: formatedTime,
                 category_id: categoryId,
                 active: serviceStatus ? '1' : '0',
+                file: image?.data,
             });
 
             if (res.status !== configs.STATUS_CODE.OK) {
@@ -114,6 +147,10 @@ function ModifyService() {
         } catch (error) {
             console.log(error);
         }
+    };
+
+    const handleChangeTime = (e) => {
+        setInputTime(e);
     };
 
     return (
@@ -204,16 +241,12 @@ function ModifyService() {
                         <label htmlFor='time' className=''>
                             Thời gian ước tính
                         </label>
-                        <Input
-                            rounded
-                            id='time'
-                            type='time'
-                            placeholder='Nhập thời gian ước tính'
-                            className={'w-full p-2'}
+
+                        <TimePicker
                             value={inputTime}
-                            onChange={(e) => {
-                                setInputTime(e.target.value);
-                            }}
+                            onChange={handleChangeTime}
+                            format={'HH:mm'}
+                            className='ml-4 border-primary'
                         />
                     </div>
                     <div className='mb-4 w-2/3'>
@@ -261,6 +294,49 @@ function ModifyService() {
                                 {serviceStatus ? 'Sẵn có' : 'Ngừng cung cấp'}
                             </span>
                         </label>
+                    </div>
+
+                    <div className='mb-4 flex items-center'>
+                        <div className='relative col-span-1 row-span-2 size-20 overflow-hidden border-2 border-primary-supper-light object-cover'>
+                            {image && (
+                                <Image
+                                    className='h-full w-full'
+                                    src={image.preview || null}
+                                    alt='Ảnh tình trạng phương tiện'
+                                />
+                            )}
+
+                            <label
+                                htmlFor='img'
+                                className='h-full w-full bg-primary hover:cursor-pointer'
+                            >
+                                <CameraIcon
+                                    className={
+                                        'absolute left-1/2 top-1/2 size-6 -translate-x-1/2 -translate-y-1/2'
+                                    }
+                                />
+                            </label>
+                        </div>
+
+                        <input
+                            type='file'
+                            id='img'
+                            name='img'
+                            className='absolute hidden'
+                            accept='Image/*'
+                            onChange={handleChooseImage}
+                        />
+
+                        {image && (
+                            <Button
+                                type='button'
+                                className='ml-4 h-10'
+                                onClick={handleDeleteImage}
+                                outlined
+                            >
+                                Xóa
+                            </Button>
+                        )}
                     </div>
                 </form>
                 <Button

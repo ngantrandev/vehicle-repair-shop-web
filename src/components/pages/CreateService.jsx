@@ -1,11 +1,15 @@
 import { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { TimePicker } from 'antd';
+import dayjs from 'dayjs';
 
 import Button from '../button';
 import Input from '../input';
 import configs from '../../configs';
 import serviceService from '../../services/serviceService';
 import ultils from '../../ultils';
+import CameraIcon from '../../assets/icon/CameraIcon';
+import Image from '../image/Image';
 
 function CreateService() {
     const location = useLocation();
@@ -20,6 +24,7 @@ function CreateService() {
     const [inputPrice, setInputPrice] = useState(0);
     const [inputTime, setInputTime] = useState(null);
     const [categoryId, setCategoryId] = useState(null);
+    const [image, setImage] = useState(null);
 
     useEffect(() => {
         const fetchCategories = async () => {
@@ -49,25 +54,19 @@ function CreateService() {
                 return;
             }
 
-            if (!inputDescription || inputDescription.trim() === '') {
-                ultils.notifyError('Mô tả quá ngắn');
-                setTimeout(() => {
-                    ultils.notifyInfo('Mô tả dịch vụ không được để trống');
-                }, 1000);
-                return;
-            }
+        
 
-            if (!inputPrice || inputPrice < 100000) {
+            if (!inputPrice || inputPrice < 10000) {
                 ultils.notifyError('Giá tiền không hợp lệ');
 
                 setTimeout(() => {
-                    ultils.notifyInfo('Giá tiền tối thiểu là 100.000đ');
+                    ultils.notifyInfo('Giá tiền tối thiểu là 10.000đ');
                 }, 1000);
                 return;
             }
 
-            if (!inputTime || inputTime.trim() === '') {
-                ultils.notifyError('Thời gian ước tính không hợp lệ');
+            if (!inputTime ) {
+                ultils.notifyError('Phải nhập thời gian ước tính');
                 return;
             }
 
@@ -76,12 +75,15 @@ function CreateService() {
                 return;
             }
 
+            const formatedTime = dayjs(inputTime).format('HH:mm');
+
             const res = await serviceService.createService({
                 name: inputName,
                 description: inputDescription,
                 price: inputPrice,
-                estimated_time: inputTime + ':00',
+                estimated_time: formatedTime,
                 category_id: categoryId,
+                file: image?.data,
             });
 
             if (res.status !== configs.STATUS_CODE.OK) {
@@ -94,10 +96,39 @@ function CreateService() {
             setInputPrice(0);
             setInputTime('');
 
+            image && URL.revokeObjectURL(image.preview);
+            setImage(null);
+
             ultils.notifySuccess('Cập nhật dịch vụ thành công');
         } catch (error) {
             console.log(error);
         }
+    };
+
+    const handleChooseImage = (e) => {
+        const file = e.target.files[0];
+
+        setImage({
+            data: file,
+            preview: URL.createObjectURL(file),
+        });
+    };
+
+    const handleDeleteImage = () => {
+        if (image) {
+            URL.revokeObjectURL(image.preview);
+            setImage(null);
+        }
+    };
+
+    useEffect(() => {
+        return () => {
+            image && URL.revokeObjectURL(image.preview);
+        };
+    }, [image]);
+
+    const handleChangeTime = (e) => {
+        setInputTime(e);
     };
 
     return (
@@ -185,14 +216,12 @@ function CreateService() {
                         <label htmlFor='time' className=''>
                             Thời gian ước tính
                         </label>
-                        <Input
-                            rounded
-                            id='time'
-                            type='time'
-                            placeholder='Nhập thời gian ước tính'
-                            className={'w-full p-2'}
+
+                        <TimePicker
                             value={inputTime}
-                            onChange={(e) => setInputTime(e.target.value)}
+                            onChange={handleChangeTime}
+                            format={'HH:mm'}
+                            className='ml-4 border-primary'
                         />
                     </div>
                     <div className='w-1/42 mb-4'>
@@ -221,6 +250,49 @@ function CreateService() {
                                 );
                             })}
                         </select>
+                    </div>
+
+                    <div className='mb-4 flex items-center'>
+                        <div className='relative col-span-1 row-span-2 size-20 overflow-hidden border-2 border-primary-supper-light object-cover'>
+                            {image && (
+                                <Image
+                                    className='h-full w-full'
+                                    src={image.preview || null}
+                                    alt='Ảnh tình trạng phương tiện'
+                                />
+                            )}
+
+                            <label
+                                htmlFor='img'
+                                className='h-full w-full bg-primary hover:cursor-pointer'
+                            >
+                                <CameraIcon
+                                    className={
+                                        'absolute left-1/2 top-1/2 size-6 -translate-x-1/2 -translate-y-1/2'
+                                    }
+                                />
+                            </label>
+                        </div>
+
+                        <input
+                            type='file'
+                            id='img'
+                            name='img'
+                            className='absolute hidden'
+                            accept='Image/*'
+                            onChange={handleChooseImage}
+                        />
+
+                        {image && (
+                            <Button
+                                type='button'
+                                className='ml-4 h-10'
+                                onClick={handleDeleteImage}
+                                outlined
+                            >
+                                Xóa
+                            </Button>
+                        )}
                     </div>
                 </form>
                 <Button

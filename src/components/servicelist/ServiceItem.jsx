@@ -2,10 +2,17 @@ import PropTypes from 'prop-types';
 
 import ultils from '../../ultils/ultils';
 
-function ServiceItem({ itemData, className, ...otherProps }) {
-    const customClassName = ['h-72 w-72 overflow-hidden rounded-2xl'];
+const baseApiEnpoint = import.meta.env.VITE_API_BASE_URL;
 
-    const { name, price, estimated_time: time, description } = itemData;
+function ServiceItem({ itemData, className, ...otherProps }) {
+    const customClassName = ['h-72 w-72 overflow-hidden border-2'];
+
+    const {
+        name,
+        price,
+        estimated_time: time,
+        image_url,
+    } = itemData;
 
     const props = {
         ...otherProps,
@@ -21,18 +28,20 @@ function ServiceItem({ itemData, className, ...otherProps }) {
         >
             <div
                 id='item-header'
-                className='flex h-2/3 items-center justify-center bg-pink-light px-1 font-bold lg:px-2'
+                className='flex h-2/3 items-center justify-center font-bold'
             >
-                <p className='text-center text-lg md:text-2xl lg:text-3xl'>
-                    {name}
-                </p>
+                <img
+                    className='h-full w-full object-cover'
+                    src={`${baseApiEnpoint}${image_url}`}
+                    alt={name}
+                />
             </div>
             <div
                 id='item-footer'
-                className='flex h-1/3 flex-col justify-between bg-[#47484b66] p-2 lg:p-3'
+                className='flex h-1/3 flex-col justify-between p-2 lg:p-3 border-t-2'
             >
                 <h1 className='overflow-hidden text-ellipsis whitespace-nowrap text-sm md:text-base'>
-                    {description}
+                    {name}
                 </h1>
                 <p>{`Tạm tính ${ultils.getCurrencyFormat(price)}`}</p>
                 <div className='flex items-center gap-1'>

@@ -27,7 +27,7 @@ function SuccessPopup({ title, content, onClosed }) {
                         <div className='w-full overflow-hidden px-2 text-center text-xl font-bold capitalize'>
                             {title}
                         </div>
-                        <div className='overflow-hidden px-2'>{content}</div>
+                        <div className='overflow-hidden px-2 text-center'>{content}</div>
                     </div>
 
                     <div className='flex items-center rounded-b border-t border-gray-200 p-4 md:p-5 dark:border-gray-600'>

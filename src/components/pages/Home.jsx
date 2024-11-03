@@ -1,24 +1,21 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 import 'tippy.js/dist/tippy.css'; // optional
 
 import PaginatedItems from '../paginateditems';
 import ServiceList from '../servicelist';
 
-import loadData from '../../services/loadData.js';
 import GoongMap from '../map/GoongMap.jsx';
 import serviceService from '../../services/serviceService.js';
 import useUser from '../../hooks/useUser.js';
 import { useNavigate } from 'react-router-dom';
 import configs from '../../configs';
+import loadData from '../../services/loadData.js';
 
 function Home() {
     const [serviceList, setServiceList] = useState([]);
     const [serviceCategories, setServiceCategories] = useState([]);
-    const [motorcycleBrands, setMotorcycleBrands] = useState([]);
-
-    const [selectedServiceCategory, setSelectedServiceCategory] = useState('');
-    const [selectedMotorcycleBrand, setSelectedMotorcycleBrand] = useState('');
+    const [stations, setStations] = useState([]);
 
     const user = useUser();
     const navigate = useNavigate();
@@ -32,20 +29,19 @@ function Home() {
             navigate(configs.routes.admin.dashboard.services);
         }
     }, [user, navigate]);
-    useEffect(() => {
+    const handleChooseServiceCategory = useCallback((categoryId) => {
         try {
-            if (selectedServiceCategory === '') {
-                return;
-            }
-
             let params = {
                 active: 1,
             };
 
-            if (selectedServiceCategory !== '#') {
+            if (categoryId === '#') {
+                // find all services
+                params = { ...params };
+            } else {
                 params = {
                     ...params,
-                    category_id: selectedServiceCategory,
+                    category_id: categoryId,
                 };
             }
 
@@ -58,44 +54,14 @@ function Home() {
         } catch (error) {
             console.log(error);
         }
-    }, [selectedServiceCategory]);
-
-    useEffect(() => {
-        try {
-            if (selectedMotorcycleBrand === '') {
-                return;
-            }
-
-            let params = {
-                active: 1,
-            };
-
-            if (selectedMotorcycleBrand !== '#') {
-                params = {
-                    ...params,
-                    motorcycle_brand: selectedMotorcycleBrand,
-                };
-            }
-
-            const fetchServicesByCategory = async (params) => {
-                const services = await serviceService.getListService({
-                    ...params,
-                });
-                setServiceList(services.data.data);
-            };
-
-            fetchServicesByCategory(params);
-        } catch (error) {
-            console.log(error);
-        }
-    }, [selectedMotorcycleBrand]);
+    }, []);
 
     useEffect(() => {
         const fetchServices = async () => {
             const services = await serviceService.getListService({ active: 1 });
             const serviceCategories =
                 await serviceService.getServiceCategories();
-            const motorcycleBrands = await loadData.getMotorcycleBrands();
+            const stations = await loadData.getListServiceStation();
 
             if (services && services.data) {
                 setServiceList(services.data?.data);
@@ -105,8 +71,8 @@ function Home() {
                 setServiceCategories(serviceCategories.data.data);
             }
 
-            if (motorcycleBrands && motorcycleBrands.data) {
-                setMotorcycleBrands(motorcycleBrands.data.data);
+            if (stations && stations.data) {
+                setStations(stations.data.data);
             }
         };
 
@@ -114,98 +80,142 @@ function Home() {
     }, []);
 
     return (
-        <>
-            <div id='banner' className='mt-4 h-56 w-full'>
-                <div className='relative h-full w-full rounded-xl bg-primary-light p-[2rem] font-bold text-white'>
-                    <div
-                        id='title'
-                        className='text-2xl font-bold lg:ml-[2rem] lg:text-[2rem]'
-                    >
-                        Bảo dưỡng xe
+        <div className='mx-20'>
+            <div className='mt-4 flex flex-row'>
+                <div className='h-full w-60'>
+                    <div className='w-full bg-[#484848] py-1 text-center text-white'>
+                        Danh mục dịch vụ
                     </div>
-                    <div
-                        id='subtitle'
-                        className='mt-3 text-xs lg:ml-[4rem] lg:mr-[10rem] lg:mt-10 lg:text-base'
-                    >
-                        Chúng tôi cung cấp dịch vụ bảo dưỡng xe cao cấp, áp dụng
-                        đối với nhiều dòng xe. Cam kết bảo đảm chất lượng cho
-                        quý khách hàng.
+                    <div className='text-md mt-2 flex cursor-pointer flex-col gap-y-2 px-2 font-bold text-[#555]'>
+                        <p
+                            className='hover:text-primary-supper-light'
+                            onClick={() => handleChooseServiceCategory('#')}
+                        >
+                            Tất cả
+                        </p>
+                        {serviceCategories.map(({ id, name }) => {
+                            return (
+                                <p
+                                    key={id}
+                                    className='hover:text-primary-supper-light'
+                                    onClick={() =>
+                                        handleChooseServiceCategory(id)
+                                    }
+                                >
+                                    {name}
+                                </p>
+                            );
+                        })}
                     </div>
-                    {/* <Button
-                        outlined
-                        className='absolute bottom-0 mb-8 border-white text-xs text-white hover:bg-white hover:text-primary active:bg-opacity-0 active:text-white lg:mb-5 lg:ml-[4rem] lg:mr-[8rem] lg:text-sm'
-                    >
-                        Tìm dịch vụ
-                    </Button> */}
+                </div>
+                <div className='mx-2 flex-1'>
+                    <div id='banner' className='h-56'>
+                        <div className='relative h-full rounded-xl bg-primary-light p-[2rem] font-bold text-white'>
+                            <div
+                                id='title'
+                                className='text-2xl font-bold lg:ml-[2rem] lg:text-[2rem]'
+                            >
+                                Bảo dưỡng xe
+                            </div>
+                            <div
+                                id='subtitle'
+                                className='mt-3 text-xs lg:ml-[4rem] lg:mr-[10rem] lg:mt-10 lg:text-base'
+                            >
+                                Chúng tôi cung cấp dịch vụ bảo dưỡng xe cao cấp,
+                                áp dụng đối với nhiều dòng xe. Cam kết bảo đảm
+                                chất lượng cho quý khách hàng.
+                            </div>
+                            {/* <Button
+                            outlined
+                            className='absolute bottom-0 mb-8 border-white text-xs text-white hover:bg-white hover:text-primary active:bg-opacity-0 active:text-white lg:mb-5 lg:ml-[4rem] lg:mr-[8rem] lg:text-sm'
+                        >
+                            Tìm dịch vụ
+                        </Button> */}
+                        </div>
+                    </div>
+                    <div id='services-container'>
+                        {serviceList.length > 0 && (
+                            <PaginatedItems
+                                data={serviceList}
+                                itemsPerPage={6}
+                                size={8}
+                            >
+                                <ServiceList />
+                            </PaginatedItems>
+                        )}
+                    </div>
+                </div>
+                <div className='h-full w-60'>
+                    <div className='w-full bg-[#484848] py-1 text-center text-white'>
+                        Địa chỉ trạm dịch vụ
+                    </div>
+                    <div className='mt-2 flex flex-col gap-y-2 px-2 hover:cursor-pointer'>
+                        {stations.map(({ id, name, address }) => {
+                            const {
+                                latitude,
+                                longitude,
+                                address_name,
+                                full_address,
+                            } = address;
+                            return (
+                                <div key={id} className='group'>
+                                    <a
+                                        href={`https://www.google.com/maps/search/?api=1&query=${latitude},${longitude}`}
+                                        target='_blank'
+                                        rel='noreferrer'
+                                    >
+                                        <p className='text-md font-bold text-primary'>
+                                            {name}
+                                        </p>
+                                        <p className='text-xs'>
+                                            {address_name + ' ' + full_address}
+                                        </p>
+                                    </a>
+                                </div>
+                            );
+                        })}
+                    </div>
                 </div>
             </div>
 
-            <div id='services-container'>
-                <div
-                    id='action-button'
-                    className='mb-8 mt-10 grid w-3/4 grid-cols-2 flex-wrap gap-4 px-4 sm:w-96'
-                >
-                    <div className='col-span-3 sm:col-span-1'>
-                        <label
-                            htmlFor='province'
-                            className='mb-2 block text-sm font-medium text-gray-900'
-                        >
-                            Loại dịch vụ
-                        </label>
-                        <select
-                            id='province'
-                            className='block w-full rounded-lg border-2 border-primary-light p-2.5 text-sm focus:border-primary-light'
-                            defaultValue=''
-                            onChange={(e) =>
-                                setSelectedServiceCategory(e.target.value)
-                            }
-                        >
-                            <option className='p-5' value={'#'}>
-                                Tất cả
-                            </option>
-
-                            {serviceCategories.map(({ id, name }) => {
-                                return (
-                                    <option key={id} value={id}>
-                                        {name}
-                                    </option>
-                                );
-                            })}
-                        </select>
+            <div className='mt-8'>
+                <p className='inline bg-primary p-1 text-lg font-bold text-white'>
+                    Giới thiệu cửa hàng
+                </p>
+                <div className='mt-8 grid h-[550px] w-full grid-cols-3 gap-2 overflow-hidden'>
+                    <div className='col-span-2'>
+                        <img
+                            src='https://media-cdn-v2.laodong.vn/Storage/NewsPortal/2022/10/15/1105357/311251702_4781739143.jpg'
+                            alt='Ảnh bìa'
+                            className='h-full w-full'
+                        />
                     </div>
-                    <div className='col-span-3 sm:col-span-1'>
-                        <label
-                            htmlFor='province'
-                            className='mb-2 block text-sm font-medium text-gray-900'
-                        >
-                            Loại xe
-                        </label>
-                        <select
-                            id='province'
-                            className='block w-full rounded-lg border-2 border-primary-light p-2.5 text-sm focus:border-primary-light'
-                            defaultValue=''
-                            onChange={(e) =>
-                                setSelectedMotorcycleBrand(e.target.value)
-                            }
-                        >
-                            <option className='p-5' value={'#'}>
-                                Tất cả
-                            </option>
-
-                            {motorcycleBrands.map(({ id, name }) => {
-                                return (
-                                    <option key={id} value={id}>
-                                        {name}
-                                    </option>
-                                );
-                            })}
-                        </select>
+                    <div className='col-span-1 grid grid-rows-3 gap-2 overflow-hidden'>
+                        <div className='row-span-1'>
+                            <img
+                                src='https://www.motosoft.vn/uploads/files/tin-tuc-phan-mem-motor-net/nghe-sua-xe-may.jpg'
+                                alt=''
+                                className='h-full w-full'
+                            />
+                        </div>
+                        <div className='row-span-1'>
+                            {' '}
+                            <img
+                                src='https://photo-cms-tpo.zadn.vn/w1000/Uploaded/2022/xqeioxdexq/2022_02_20/z3197941555722-735ad6924cfe61833ebd4e8d45b5937b-9501.jpg'
+                                alt=''
+                                className='h-full w-full'
+                            />
+                        </div>
+                        <div className='row-span-1'>
+                            {' '}
+                            <img
+                                src='https://cuuhonhanh24h.com/wp-content/uploads/2023/04/sua-xe-may-tai-nha.jpg'
+                                alt=''
+                                className='h-full w-full'
+                            />
+                        </div>
                     </div>
                 </div>
-
-                <PaginatedItems data={serviceList} itemsPerPage={6} size={8}>
-                    <ServiceList />
-                </PaginatedItems>
             </div>
 
             <div className='my-20 flex flex-col gap-y-8 text-center'>
@@ -217,7 +227,7 @@ function Home() {
                     originPoint={[106.62383478787928, 10.822608284821372]}
                 />
             </div>
-        </>
+        </div>
     );
 }
 
