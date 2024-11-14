@@ -184,15 +184,23 @@ const getFormatedAddress = (address) => {
     return address?.address_name + ', ' + address?.full_address;
 };
 
-const getFormatedImageUrl=url=>{
-     // Kiểm tra xem URL có bắt đầu bằng "http" hoặc "https" không
-     if (/^https?:\/\//i.test(url)) {
+const getFormatedImageUrl = (url) => {
+    // Kiểm tra xem URL có bắt đầu bằng "http" hoặc "https" không
+    if (/^https?:\/\//i.test(url)) {
         return url;
     }
     // Nếu không, ghép API endpoint với URL
     return `${baseApiEnpoint}${url}`;
+};
 
-
+const getDateMonth=date=>{
+    const gmt7Time = convertTimeToGMT7(date); // Lấy thời gian đã được chuyển về GMT+7
+    const specificDate = moment.tz(
+        gmt7Time,
+        'HH:mm:ss DD/MM/YYYY',
+        'Asia/Bangkok'
+    );
+    return specificDate.format('DD/MM');
 }
 
 const ultils = {
@@ -212,7 +220,8 @@ const ultils = {
     notifyWarning,
     getFormatedAddress,
     getFormatedTime,
-    getFormatedImageUrl
+    getFormatedImageUrl,
+    getDateMonth
 };
 
 export default ultils;

@@ -160,7 +160,6 @@ function BookingDetail() {
     const handleStartFixing = async () => {
         try {
             const res = await bookingService.setBookingStatusToFixing(
-                selectedStaff,
                 bookingId,
                 note
             );
@@ -178,11 +177,7 @@ function BookingDetail() {
 
     const handleDoneFixing = async () => {
         try {
-            const res = await bookingService.doneBooking(
-                selectedStaff,
-                bookingId,
-                note
-            );
+            const res = await bookingService.doneBooking(bookingId, note);
 
             if (res.status !== configs.STATUS_CODE.OK) {
                 throw new Error(res.data.message);

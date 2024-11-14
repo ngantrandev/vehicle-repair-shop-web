@@ -13,9 +13,9 @@ const createBooking = async (bookingData) => {
     }
 };
 
-const getAllBookings = async () => {
+const getAllBookings = async (params) => {
     try {
-        const res = await httpRequests.get(`users/bookings`);
+        const res = await httpRequests.get(`users/bookings`, { params });
 
         return res;
     } catch (error) {
@@ -36,10 +36,10 @@ const cancelBooking = async (bookingId, data) => {
     }
 };
 
-const doneBooking = async (staffId, bookingId, note) => {
+const doneBooking = async (bookingId, note) => {
     try {
         const res = await httpRequests.patch(
-            `staffs/${staffId}/bookings/${bookingId}/set_done`,
+            `staffs/bookings/${bookingId}/set_done`,
             { note: note }
         );
 
@@ -59,10 +59,10 @@ const getBookingByID = async (bookingId) => {
     }
 };
 
-const setBookingStatusToFixing = async (staffId, bookingId, note) => {
+const setBookingStatusToFixing = async (bookingId, note) => {
     try {
         const res = await httpRequests.patch(
-            `staffs/${staffId}/bookings/${bookingId}/set_fixing`,
+            `staffs/bookings/${bookingId}/set_fixing`,
             { note: note }
         );
 

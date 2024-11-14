@@ -24,6 +24,11 @@ function SideBar({ className }) {
                     title='Danh sách trạm dịch vụ'
                     to={configs.routes.admin.dashboard.stations}
                 />
+
+                <SideBarItem
+                    title='Thống kê'
+                    to={configs.routes.admin.statistics}
+                />
             </Menu>
         </aside>
     );

@@ -8,5 +8,8 @@
     "editor.tabSize": 4,
     "files.associations": {
         "*.css": "tailwindcss"
+    },
+    "[snippets]": {
+        "editor.defaultFormatter": "vscode.json-language-features"
     }
 }

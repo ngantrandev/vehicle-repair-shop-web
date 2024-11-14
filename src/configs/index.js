@@ -30,6 +30,7 @@ const routes = {
             modify: '/admin/dashboard/stations/:station_id/modify',
             create: '/admin/dashboard/stations/new',
         },
+        statistics: "/admin/dashboard/statistics",
     },
     staff: {
         task: '/staff/tasks',

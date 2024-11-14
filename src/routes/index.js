@@ -16,6 +16,7 @@ import StationDetail from '../components/pages/admin/Station/StationDetail.jsx';
 import Stations from '../components/pages/admin/Station';
 import CreateStation from '../components/pages/admin/Station/CreateStation.jsx';
 import Profile from '../components/pages/Profile.jsx';
+import Statistic from '../components/pages/admin/Statistic.jsx';
 
 const publicRoutes = [
     { path: configs.routes.login, component: Login, layout: null },
@@ -50,6 +51,12 @@ const privateRoutes = [
     {
         path: configs.routes.admin.dashboard.stations,
         component: Stations,
+        layout: SidebarLayout,
+        role: configs.USER_ROLES.admin,
+    },
+    {
+        path: configs.routes.admin.statistics,
+        component: Statistic,
         layout: SidebarLayout,
         role: configs.USER_ROLES.admin,
     },
