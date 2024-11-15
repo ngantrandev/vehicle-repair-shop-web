@@ -86,8 +86,6 @@ function Home() {
         fetchServices();
     }, []);
 
-    console.log(topServices);
-
     return (
         <div className='mx-20'>
             <div className='mt-4 flex flex-row'>

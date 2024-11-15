@@ -6,10 +6,10 @@ import Header from '../components/header';
 
 function SidebarLayout({ children }) {
     return (
-        <div className='mb-2'>
-            <div className='h-screen'>
+        <div className='h-screen'>
+            <div className='flex h-full flex-col'>
                 <Header className='mx-2 flex items-center justify-between gap-x-2 border-b-2 bg-white py-[8px] sm:gap-x-8 md:mx-5 md:gap-x-16 lg:gap-x-4' />
-                <div className='flex h-screen md:flex-row'>
+                <div className='flex flex-1'>
                     <SideBar className='mt-3' />
                     {children}
                 </div>

@@ -11,31 +11,16 @@ function ServiceList({ data, className }) {
     }, [data]);
 
     return (
-        <div className={className}>
-            <table className='w-full table-auto border-2 border-primary-light p-8'>
-                <thead className='h-8 border-y-2 bg-primary-supper-light'>
-                    <tr className='text-left'>
-                        <th>Tên dịch vụ</th>
-                        <th>Thời gian</th>
-                        <th>Giá dịch vụ</th>
-                        <th>Trạng thái</th>
-                        <th>Hành động</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {services.map((service, index) => {
-                        return (
-                            <Item
-                                key={index}
-                                data={service}
-                                className={
-                                    'hover:cursor-pointer hover:bg-gray-200'
-                                }
-                            />
-                        );
-                    })}
-                </tbody>
-            </table>
+        <div className={`grid grid-cols-5 gap-4 ${className}`}>
+            {services.map((service, index) => {
+                return (
+                    <Item
+                        key={index}
+                        data={service}
+                        className='col-span-1 h-[200px] rounded-lg border-[1px] border-opacity-5 p-2 shadow-lg shadow-slate-200 hover:-translate-y-2 hover:cursor-pointer'
+                    />
+                );
+            })}
         </div>
     );
 }

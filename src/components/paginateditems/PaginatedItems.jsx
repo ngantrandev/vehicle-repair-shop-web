@@ -3,7 +3,7 @@ import { PropTypes } from 'prop-types';
 
 import React, { useState } from 'react';
 
-function PaginatedItems({ data, itemsPerPage, size, children }) {
+function PaginatedItems({ data, itemsPerPage, size, children, className }) {
     const [itemOffset, setItemOffset] = useState(0);
 
     const endOffset = itemOffset + itemsPerPage;
@@ -17,10 +17,10 @@ function PaginatedItems({ data, itemsPerPage, size, children }) {
     };
 
     return (
-        <>
+        <div className={` ${className}`}>
             {React.cloneElement(children, { data: currentItems })}
 
-            <div className='mt-8 flex w-full justify-center'>
+            <div className='flex w-full mt-4'>
                 <ReactPaginate
                     className={`flex h-${size} w-full items-center justify-center gap-2 rounded-md`}
                     breakLabel='...'
@@ -55,7 +55,7 @@ function PaginatedItems({ data, itemsPerPage, size, children }) {
                     activeLinkClassName='flex size-full items-center justify-center bg-primary text-white'
                 />
             </div>
-        </>
+        </div>
     );
 }
 
@@ -64,6 +64,7 @@ PaginatedItems.propTypes = {
     itemsPerPage: PropTypes.number.isRequired,
     children: PropTypes.element,
     size: PropTypes.number,
+    className: PropTypes.string,
 };
 
 export default PaginatedItems;
