@@ -1,17 +1,55 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
-import Tippy from '@tippyjs/react';
 import { useNavigate } from 'react-router-dom';
 
-import Item from './Item.jsx';
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell from '@mui/material/TableCell';
+import TableContainer from '@mui/material/TableContainer';
+import TableHead from '@mui/material/TableHead';
+import TablePagination from '@mui/material/TablePagination';
+import TableRow from '@mui/material/TableRow';
+
+import Button from '../../../button';
+
+const columns = [
+    { id: 'stt', label: 'STT', minWidth: 20 },
+    { id: 'id', label: 'Mã trạm', minWidth: 100 },
+    { id: 'fullname', label: 'Tên trạm dịch vụ', minWidth: 100 },
+    { id: 'address', label: 'Địa chỉ', minWidth: 100 },
+];
+
+function createData(stt, id, fullname, address) {
+    return { stt, id, fullname, address };
+}
 
 function StationList({ data, className }) {
     const [stations, setStations] = useState([]);
+    const [page, setPage] = useState(0);
+    const [rowsPerPage, setRowsPerPage] = useState(10);
+    const [rowDatas, setRowDatas] = useState([]);
+
     const navigate = useNavigate();
 
     useEffect(() => {
         setStations(data);
     }, [data]);
+
+    useEffect(() => {
+        const rows = [
+            ...stations.map((station, index) => {
+                const { address } = station;
+                return createData(
+                    index + 1,
+                    station.id,
+                    station.name,
+                    address?.address_name + ' ' + address?.full_address
+                );
+            }),
+        ];
+
+        setRowDatas(rows);
+    }, [stations]);
 
     const handleClickDetail = (station) => {
         navigate(`/admin/dashboard/stations/${station.id}/modify`, {
@@ -19,31 +57,114 @@ function StationList({ data, className }) {
         });
     };
 
+    const handleChangePage = useCallback((event, newPage) => {
+        setPage(newPage);
+    }, []);
+
+    const handleChangeRowsPerPage = useCallback((event) => {
+        setRowsPerPage(+event.target.value);
+        setPage(0);
+    }, []);
+
     return (
-        <table className={className}>
-            <thead className='h-8 bg-primary-supper-light'>
-                <tr className='text-left'>
-                    <th>Tên trạm</th>
-                    <th>Địch chỉ</th>
-                </tr>
-            </thead>
-            <tbody>
-                {stations.map((station, index) => (
-                    <Tippy
-                        key={index}
-                        content='Xem chi tiết'
-                        animation='fade'
-                        hideOnClick={false}
+        <div className={className}>
+            <TableContainer
+                sx={{ maxHeight: 440, border: '1px solid #4a9eff' }}
+            >
+                <Table stickyHeader aria-label='sticky table'>
+                    <TableHead
+                        sx={{ background: 'red' }}
+                        className='bg-red-100'
                     >
-                        <Item
-                            data={station}
-                            className={'hover:cursor-pointer hover:bg-gray-200'}
-                            onClick={() => handleClickDetail(station)}
-                        />
-                    </Tippy>
-                ))}
-            </tbody>
-        </table>
+                        <TableRow
+                            sx={{ background: 'red' }}
+                            className='bg-red-100'
+                        >
+                            {columns.map((column, index) => (
+                                <TableCell
+                                    key={index}
+                                    align={column.align}
+                                    style={{ minWidth: column.minWidth }}
+                                    sx={{
+                                        fontWeight: 'bold',
+                                    }}
+                                >
+                                    {column.label}
+                                </TableCell>
+                            ))}
+
+                            <TableCell
+                                align='left'
+                                style={{ minWidth: 120, fontWeight: 'bold' }}
+                            >
+                                <div>Hành động</div>
+                            </TableCell>
+                        </TableRow>
+                    </TableHead>
+                    <TableBody>
+                        {rowDatas
+                            .slice(page * rowsPerPage, (page + 1) * rowsPerPage)
+                            .map((row, index) => {
+                                return (
+                                    <TableRow
+                                        hover
+                                        role='checkbox'
+                                        tabIndex={-1}
+                                        key={index}
+                                    >
+                                        {columns.map((column, index) => {
+                                            const value = row[column.id];
+                                            return (
+                                                <TableCell
+                                                    key={index}
+                                                    align={column.align}
+                                                >
+                                                    {column.format &&
+                                                    typeof value === 'number'
+                                                        ? column.format(value)
+                                                        : value}
+                                                </TableCell>
+                                            );
+                                        })}
+
+                                        <TableCell align='left'>
+                                            <Button
+                                                rounded
+                                                onClick={() =>
+                                                    handleClickDetail(
+                                                        stations[
+                                                            page * rowsPerPage +
+                                                                index
+                                                        ]
+                                                    )
+                                                }
+                                            >
+                                                <span>Chi tiết</span>
+                                            </Button>
+                                        </TableCell>
+                                    </TableRow>
+                                );
+                            })}
+                    </TableBody>
+                </Table>
+            </TableContainer>
+            <TablePagination
+                className='mt-2 font-bold'
+                rowsPerPageOptions={[5, 10, 25, 100]}
+                component='div'
+                count={rowDatas.length}
+                rowsPerPage={rowsPerPage}
+                labelRowsPerPage={
+                    <p className='font-bold'>Số hàng trên mỗi trang</p>
+                }
+                labelDisplayedRows={({ from, to, count }) => (
+                    <p className='font-bold'>{`${from} - ${to} trên ${count}`}</p>
+                )}
+                page={page}
+                onPageChange={handleChangePage}
+                onRowsPerPageChange={handleChangeRowsPerPage}
+            />
+        </div>
     );
 }
 

@@ -102,7 +102,7 @@ const getFormatedTime = (time) => {
         'HH:mm:ss DD/MM/YYYY',
         'Asia/Bangkok'
     );
-    return specificDate.format('DD/MM/YYYY H[h]mm[p]ss[s]');
+    return specificDate.format('DD/MM/YYYY HH:mm:ss');
 };
 
 const removeUserDataLogedin = () => {

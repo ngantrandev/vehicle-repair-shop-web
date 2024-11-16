@@ -22,7 +22,7 @@ function PaginatedItems({ data, itemsPerPage, size, children, className }) {
 
             <div className='flex w-full mt-4'>
                 <ReactPaginate
-                    className={`flex h-${size} w-full items-center justify-center gap-2 rounded-md`}
+                    className={`flex h-${size} w-full items-center justify-center gap-2 rounded-md select-none`}
                     breakLabel='...'
                     nextLabel={
                         <svg

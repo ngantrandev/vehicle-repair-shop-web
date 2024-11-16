@@ -2,11 +2,14 @@ import { useEffect, useState } from 'react';
 
 import adminBookingService from '../../../../services/admin.bookingService';
 import configs from '../../../../configs';
-import Paginateditems from '../../../paginateditems';
 import BookingList from './BookingList';
+import Button from '../../../button';
+import { CSVLink } from 'react-csv';
+import dayjs from 'dayjs';
 
 function BookingMagager() {
     const [bookings, setBookings] = useState([]);
+    const [csvData, setCsvData] = useState([]);
 
     useEffect(() => {
         const fetchBooking = async () => {
@@ -27,22 +30,63 @@ function BookingMagager() {
 
         fetchBooking();
     }, []);
-    return (
-        <div className='flex flex-1 flex-col items-center px-0 md:px-4'>
-            <h1 className='py-10 text-center text-3xl font-bold'>
-                Danh sách lịch hẹn của khách
-            </h1>
-            <div className='m-5 w-max bg-white md:w-full'>
-                <div className='left-0 top-0 -translate-y-full'></div>
 
-                <Paginateditems data={bookings} itemsPerPage={5} size={8}>
-                    <BookingList
-                        className={
-                            'w-full table-auto border-collapse border-2 border-primary-light p-8'
-                        }
-                    />
-                </Paginateditems>
+    useEffect(() => {
+        const exportData = bookings.reduce((acc, booking, index) => {
+            const { user, service, address } = booking;
+
+            const data = {
+                STT: index + 1,
+                'Tên khách hàng': user.lastname + ' ' + user.firstname,
+                'Mã khách hàng': user.id,
+                'Tên dịch vụ': service.name,
+                'Mã dịch vụ': service.id,
+                'Số điện thoại': '' + user.phone,
+                'Ngày tạo': '' + dayjs(booking.created_at).format('DD/MM/YYYY'),
+                'Ghi chú': booking.note,
+                'Trạng thái':
+                    booking.status === configs.BOOKING_STATE.pending
+                        ? 'Chờ xác nhận'
+                        : booking.status === configs.BOOKING_STATE.done
+                          ? 'Hoàn thành'
+                          : booking.status === configs.BOOKING_STATE.fixing
+                            ? 'Đang sửa chữa'
+                            : booking.status === configs.BOOKING_STATE.cancelled
+                              ? 'Đã hủy'
+                              : 'Chuẩn bị sửa',
+                'Địa chỉ': address?.address_name + ' ' + address?.full_address,
+            };
+
+            acc.push(data);
+
+            return acc;
+        }, []);
+
+        setCsvData(exportData);
+    }, [bookings]);
+
+    const fileName = `booking_list_${dayjs().format('YYYY-MM-DD')}.csv`;
+
+    return (
+        <div className='flex flex-1 flex-col items-center px-0 md:px-10'>
+            <div className='flex w-full justify-between py-5'>
+                <h1 className='text-center text-3xl font-bold'>
+                    Danh sách lịch hẹn
+                </h1>
+
+                <Button rounded>
+                    <CSVLink data={csvData} filename={fileName}>
+                        Xuất excel
+                    </CSVLink>
+                </Button>
             </div>
+
+            <BookingList
+                data={bookings}
+                className={
+                    'w-full flex-1 border-collapse overflow-x-auto md:w-full'
+                }
+            />
         </div>
     );
 }
