@@ -13,8 +13,12 @@ function SideBar({ className }) {
                     to={configs.routes.admin.dashboard.services}
                 />
                 <SideBarItem
-                    title='Danh sách tài khoản'
+                    title='Danh sách khách hàng'
                     to={configs.routes.admin.dashboard.users}
+                />
+                <SideBarItem
+                    title='Danh sách nhân viên'
+                    to={configs.routes.admin.dashboard.staffs}
                 />
                 <SideBarItem
                     title='Danh sách đặt lịch'

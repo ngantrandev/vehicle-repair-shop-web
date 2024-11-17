@@ -8,6 +8,7 @@ import Register from '../components/pages/Register.jsx';
 import Service from '../components/pages/admin/Service';
 import ServiceDetail from '../components/pages/ServiceDetail.jsx';
 import User from '../components/pages/admin/User';
+import Staff from '../components/pages/admin/Staff/Staff.jsx';
 import configs from '../configs';
 import SidebarLayout from '../layouts/sidebarLayout/SidebarLayout.jsx';
 import BookingDetail from '../components/pages/booking/BookingDetail.jsx';
@@ -33,6 +34,12 @@ const privateRoutes = [
     {
         path: configs.routes.admin.dashboard.users,
         component: User,
+        layout: SidebarLayout,
+        role: configs.USER_ROLES.admin,
+    },
+    {
+        path: configs.routes.admin.dashboard.staffs,
+        component: Staff,
         layout: SidebarLayout,
         role: configs.USER_ROLES.admin,
     },

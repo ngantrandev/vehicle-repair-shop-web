@@ -11,6 +11,8 @@ import bookingsService from '../../../services/bookingService';
 import serviceService from '../../../services/serviceService';
 import statisticsService from '../../../services/statisticService';
 import ultils from '../../../ultils/ultils';
+import BookingList from './Booking/BookingList';
+import configs from '../../../configs';
 
 const { RangePicker } = DatePicker;
 
@@ -143,7 +145,7 @@ const ExportReport = ({ bookings }) => {
             'Tên khách hàng':
                 booking.user.lastname + ' ' + booking.user.firstname,
             'Dich vụ': booking.service.name,
-            'Giá tạm tính': booking.service.price,
+            'Phí dịch vụ': booking.service.price,
             'Ngày đặt': booking.created_at.toString(),
             'Địa chỉ khách hàng':
                 booking.address.address_name +
@@ -161,7 +163,7 @@ const ExportReport = ({ bookings }) => {
 
     return (
         <div>
-            <div className='mt-10'>
+            <div className='mt-3'>
                 <Button variant='contained'>
                     <CSVLink data={csvData} filename={fileName}>
                         Xuất báo cáo
@@ -223,7 +225,7 @@ const RevenueComponent = ({ className, onTotalRevenueChange }) => {
         };
 
         fetchData();
-    }, [selectedMode, timeRange]);
+    }, [selectedMode, timeRange, onTotalRevenueChange]);
 
     return (
         <div className={`mx-5 ${className}`}>
@@ -326,7 +328,10 @@ export default function Statistic() {
     useEffect(() => {
         const pendingBookings = [];
         bookings.map((booking) => {
-            if (booking.status != 'done' && booking.status != 'canceled') {
+            if (
+                booking.status != 'done' &&
+                booking.status != configs.BOOKING_STATE.cancelled
+            ) {
                 pendingBookings.push(booking);
             }
         });
@@ -373,7 +378,7 @@ export default function Statistic() {
 
     return (
         <div className='flex-1 bg-[#f1f1ee] p-4'>
-            <div className='grid h-1/2 w-full grid-cols-12 grid-rows-3 gap-4'>
+            <div className='grid w-full grid-cols-12 grid-rows-3 gap-4'>
                 <div className='col-span-3 row-span-1 flex rounded-lg bg-white p-4'>
                     <div className='flex h-full flex-col justify-center gap-1'>
                         <p className='opacity-80'>Tổng doanh thu</p>
@@ -415,6 +420,11 @@ export default function Statistic() {
             </div>
 
             <ExportReport bookings={bookings} />
+
+            <div className='mt-5 rounded-xl bg-white'>
+                <h2 className='p-4 text-xl font-bold'>Lịch hẹn gần đây</h2>
+                <BookingList data={pendingBookings} className={'mx-4'} />
+            </div>
         </div>
     );
 }

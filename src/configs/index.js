@@ -20,6 +20,7 @@ const routes = {
         dashboard: {
             services: '/admin/dashboard/service',
             users: '/admin/dashboard/user',
+            staffs: '/admin/dashboard/staff',
             bookings: '/admin/dashboard/booking',
             stations: '/admin/dashboard/station',
         },
