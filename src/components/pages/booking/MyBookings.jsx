@@ -7,6 +7,7 @@ import BookingList from './BookingList.jsx';
 function MyBookings() {
     const [bookings, setBookings] = useState([]);
     const { user } = useUser();
+    const [flag, setFlag] = useState(false);
 
     useEffect(() => {
         const fetchBookings = async () => {
@@ -24,11 +25,15 @@ function MyBookings() {
         };
 
         fetchBookings();
-    }, [user?.data?.id, user?.isLoggedin]);
+    }, [user?.data?.id, user?.isLoggedin, flag]);
+
+    const handleOnRequestRefresh = () => {
+        setFlag(!flag);
+    };
     return (
         <div className='flex flex-1 flex-col items-center px-0 md:px-10'>
             <div className='flex w-full justify-between py-10'>
-                <h1 className='text-center text-3xl font-bold w-full'>
+                <h1 className='w-full text-center text-3xl font-bold'>
                     Danh sách lịch hẹn
                 </h1>
             </div>
@@ -36,6 +41,7 @@ function MyBookings() {
             <BookingList
                 data={bookings}
                 className='w-full flex-1 border-collapse overflow-x-auto md:w-full'
+                onRequestRefresh={handleOnRequestRefresh}
             />
         </div>
     );

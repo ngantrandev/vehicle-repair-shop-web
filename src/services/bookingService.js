@@ -96,6 +96,18 @@ const undoBooking = async (bookingId) => {
     }
 };
 
+const userUndoCancelBooking = async (bookingId) => {
+    try {
+        const res = await httpRequests.patch(
+            `/bookings/${bookingId}/undo`
+        );
+
+        return res;
+    } catch (error) {
+        throw new Error(error);
+    }
+}
+
 const bookingService = {
     createBooking,
     getAllBookings,
@@ -105,6 +117,7 @@ const bookingService = {
     setBookingStatusToFixing,
     getAllBookingsOfStaff,
     undoBooking,
+    userUndoCancelBooking,
 };
 
 export default bookingService;

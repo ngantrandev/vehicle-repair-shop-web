@@ -1,6 +1,5 @@
 import PropTypes from 'prop-types';
 import { useCallback, useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -19,6 +18,7 @@ import {
 import configs from '../../../configs/index.js';
 import ultils from '../../../ultils/ultils.js';
 import Button from '../../button/Button.jsx';
+import bookingService from '../../../services/bookingService.js';
 
 const columns = [
     { id: 'fullname', label: 'Họ tên', minWidth: 80 },
@@ -83,13 +83,11 @@ function createData(fullname, id, service, phone, created_at, note, status) {
     return { fullname, id, service, phone, created_at, note, status };
 }
 
-function BookingList({ className, data }) {
+function BookingList({ className, data, onRequestRefresh }) {
     const [bookings, setBookings] = useState([]);
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(10);
     const [rowDatas, setRowDatas] = useState([]);
-
-    const navigate = useNavigate();
 
     useEffect(() => {
         setBookings(data);
@@ -114,12 +112,6 @@ function BookingList({ className, data }) {
         setRowDatas(rows);
     }, [bookings]);
 
-    const handleClickDetail = (booking) => {
-        navigate(`/users/${booking.user?.id}/bookings/${booking.id}`, {
-            state: { from: window.location.pathname },
-        });
-    };
-
     const handleChangePage = useCallback((event, newPage) => {
         setPage(newPage);
     }, []);
@@ -128,6 +120,61 @@ function BookingList({ className, data }) {
         setRowsPerPage(+event.target.value);
         setPage(0);
     }, []);
+
+    const handleCancel = useCallback(
+        (bookingId) => {
+            const cancelBooking = async (bookingId) => {
+                try {
+                    const res = await bookingService.cancelBooking(bookingId);
+
+                    if (res.status !== configs.STATUS_CODE.OK) {
+                        ultils.notifyError('Hủy đặt lịch thất bại');
+                        return;
+                    }
+
+                    ultils.notifySuccess('Hủy đặt lịch thành công');
+                    const newBookings = bookings.map((booking) => {
+                        if (booking.id == bookingId) {
+                            booking.status = configs.BOOKING_STATE.cancelled;
+                        }
+
+                        return booking;
+                    });
+                    setBookings(newBookings);
+                } catch (error) {
+                    ultils.notifyError('Có lỗi xảy ra');
+                    console.log(error);
+                }
+            };
+
+            cancelBooking(bookingId);
+        },
+        [bookings]
+    );
+
+    const handleUndoCancel = useCallback(
+        (bookingId) => {
+            const undoCancelBooking = async (bookingId) => {
+                try {
+                    const res =
+                        await bookingService.userUndoCancelBooking(bookingId);
+
+                    if (res.status !== configs.STATUS_CODE.OK) {
+                        ultils.notifyError('Có lỗi xảy ra');
+                        return;
+                    }
+
+                    onRequestRefresh();
+                } catch (error) {
+                    ultils.notifyError('Có lỗi xảy ra');
+                    console.log(error);
+                }
+            };
+
+            undoCancelBooking(bookingId);
+        },
+        [onRequestRefresh]
+    );
 
     return (
         <div className={className}>
@@ -191,14 +238,49 @@ function BookingList({ className, data }) {
                                         })}
 
                                         <TableCell align='left'>
-                                            <Button
-                                                rounded
-                                                onClick={() => {
-                                                    
-                                                }}
-                                            >
-                                                <span>Chi tiết</span>
-                                            </Button>
+                                            {row.status ===
+                                                configs.BOOKING_STATE
+                                                    .pending && (
+                                                <Button
+                                                    rounded
+                                                    className='bg-red-500 hover:bg-red-600 active:bg-red-500'
+                                                    onClick={() => {
+                                                        handleCancel(
+                                                            bookings[
+                                                                page *
+                                                                    rowsPerPage +
+                                                                    index
+                                                            ].id
+                                                        );
+                                                    }}
+                                                >
+                                                    <p className='text-white'>
+                                                        Hủy
+                                                    </p>
+                                                </Button>
+                                            )}
+
+                                            {row.status ===
+                                                configs.BOOKING_STATE
+                                                    .cancelled && (
+                                                <Button
+                                                    rounded
+                                                    className='bg-green-500 hover:bg-green-600 active:bg-green-500'
+                                                    onClick={() => {
+                                                        handleUndoCancel(
+                                                            bookings[
+                                                                page *
+                                                                    rowsPerPage +
+                                                                    index
+                                                            ].id
+                                                        );
+                                                    }}
+                                                >
+                                                    <p className='text-white'>
+                                                        Hoàn tác
+                                                    </p>
+                                                </Button>
+                                            )}
                                         </TableCell>
                                     </TableRow>
                                 );
@@ -229,6 +311,7 @@ function BookingList({ className, data }) {
 BookingList.propTypes = {
     className: PropTypes.string,
     data: PropTypes.array,
+    onRequestRefresh: PropTypes.func,
 };
 
 export default BookingList;
