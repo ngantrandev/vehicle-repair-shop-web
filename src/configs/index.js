@@ -5,7 +5,6 @@ const routes = {
     resetPassword: '/reset-password',
     profile: '/profile/',
     service: {
-        list: '/services/',
         create: '/services/new',
         detail: '/services/:service_id',
     },
@@ -31,7 +30,7 @@ const routes = {
             modify: '/admin/dashboard/stations/:station_id/modify',
             create: '/admin/dashboard/stations/new',
         },
-        statistics: "/admin/dashboard/statistics",
+        statistics: '/admin/dashboard/statistics',
     },
     staff: {
         task: '/staff/tasks',

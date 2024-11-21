@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import Tippy from '@tippyjs/react';
+import 'tippy.js/dist/tippy.css';
 
 import ultils from '../../../../ultils';
 import Image from '../../../image/Image';
@@ -18,7 +19,7 @@ function Item({ data, className }) {
                 className={className}
             >
                 <Tippy content='Chỉnh sửa'>
-                    <div className='h-full w-full'>
+                    <div className='h-full w-full overflow-hidden'>
                         <div className='flex justify-between gap-2'>
                             <div className='size-20 overflow-hidden rounded-lg shadow-lg'>
                                 <Image

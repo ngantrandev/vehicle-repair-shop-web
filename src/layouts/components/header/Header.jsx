@@ -227,7 +227,10 @@ function Header({ className }) {
                     )}
                 >
                     <div className='relative w-full lg:w-[60%]'>
-                        {window.location.pathname === configs.routes.home && (
+                        {(window.location.pathname === configs.routes.home ||
+                            window.location.pathname.startsWith(
+                                '/services'
+                            )) && (
                             <input
                                 type='text'
                                 className='h-full w-full rounded-full border-2 border-[#D9D9D9] px-[20px] py-2 font-medium caret-primary placeholder:text-[12px] focus:outline-primary md:placeholder:font-medium lg:placeholder:font-bold'

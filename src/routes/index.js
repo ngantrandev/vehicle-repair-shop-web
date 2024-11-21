@@ -1,23 +1,24 @@
-import BookingMagager from '../components/pages/admin/Booking';
-import MyBookings from '../components/pages/booking/MyBookings.jsx';
-import CreateService from '../components/pages/CreateService.jsx';
-import Home from '../components/pages/Home/Home.jsx';
-import Login from '../components/pages/Login.jsx';
-import ModifyService from '../components/pages/ModifyService.jsx';
-import Register from '../components/pages/Register.jsx';
-import Service from '../components/pages/admin/Service';
-import ServiceDetail from '../components/pages/ServiceDetail.jsx';
-import User from '../components/pages/admin/User';
-import Staff from '../components/pages/admin/Staff/Staff.jsx';
-import configs from '../configs';
-import SidebarLayout from '../layouts/sidebarLayout/SidebarLayout.jsx';
-import BookingDetail from '../components/pages/booking/BookingDetail.jsx';
-import MyTasks from '../components/pages/staff/MyTasks.jsx';
-import StationDetail from '../components/pages/admin/Station/StationDetail.jsx';
-import Stations from '../components/pages/admin/Station';
-import CreateStation from '../components/pages/admin/Station/CreateStation.jsx';
-import Profile from '../components/pages/Profile.jsx';
-import Statistic from '../components/pages/admin/Statistic.jsx';
+import BookingMagager from '@/src/components/pages/admin/Booking';
+import MyBookings from '@/src/components/pages/booking/MyBookings.jsx';
+import CreateService from '@/src/components/pages/CreateService.jsx';
+import Home from '@/src/components/pages/Home/Home.jsx';
+import Login from '@/src/components/pages/Login.jsx';
+import ModifyService from '@/src/components/pages/ModifyService.jsx';
+import Register from '@/src/components/pages/Register.jsx';
+import Service from '@/src/components/pages/admin/Service';
+import ServiceDetail from '@/src/components/pages/ServiceDetail.jsx';
+import User from '@/src/components/pages/admin/User';
+import Staff from '@/src/components/pages/admin/Staff/Staff.jsx';
+import configs from '@/src/configs';
+import SidebarLayout from '@/src/layouts/sidebarLayout/SidebarLayout.jsx';
+import BookingDetail from '@/src/components/pages/booking/BookingDetail.jsx';
+import MyTasks from '@/src/components/pages/staff/MyTasks.jsx';
+import StationDetail from '@/src/components/pages/admin/Station/StationDetail.jsx';
+import Stations from '@/src/components/pages/admin/Station';
+import CreateStation from '@/src/components/pages/admin/Station/CreateStation.jsx';
+import Profile from '@/src/components/pages/Profile.jsx';
+import Statistic from '@/src/components/pages/admin/Statistic.jsx';
+import HomeLayout from '@/src/layouts/HomeLayout/HomeLayout';
 
 const publicRoutes = [
     { path: configs.routes.login, component: Login, layout: null },
@@ -27,6 +28,7 @@ const publicRoutes = [
     {
         path: configs.routes.service.detail,
         component: ServiceDetail,
+        layout: HomeLayout,
     },
 ];
 

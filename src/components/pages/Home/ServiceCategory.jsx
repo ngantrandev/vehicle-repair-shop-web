@@ -27,10 +27,14 @@ function ServiceCategory({ onChooseServiceCategory, hide }) {
                 <MenuIcon />
                 Danh mục dịch vụ
             </div>
-            <div className='text-md mt-2 flex cursor-pointer flex-col gap-y-2 px-2 font-bold text-[#555]'>
+            <div
+                className={`text-md mt-2 flex cursor-pointer flex-col gap-y-2 px-2 font-bold text-[#555] ${hide && 'hidden'}`}
+            >
                 <p
                     className='hover:text-primary-supper-light'
-                    onClick={() => onChooseServiceCategory('#')}
+                    onClick={() =>
+                        onChooseServiceCategory && onChooseServiceCategory('#')
+                    }
                 >
                     Tất cả
                 </p>

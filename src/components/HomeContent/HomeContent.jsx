@@ -2,19 +2,13 @@ import PropTypes from 'prop-types';
 
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Breadcrumbs, Pagination } from '@mui/material';
+import { Pagination } from '@mui/material';
 
 import ServiceItem from '@/src/components/servicelist/ServiceItem';
 
 const itemsPerPage = 8;
 
 export default function HomeContent({ data }) {
-    const [breadcrumbs, setBreadcrumbs] = useState([
-        {
-            to: '/home',
-            label: 'Trang chủ',
-        },
-    ]);
     const [page, setPage] = useState(0);
 
     const currentItems = data.slice(
@@ -27,43 +21,6 @@ export default function HomeContent({ data }) {
     const handlePageClick = (event, page) => {
         setPage(page - 1);
     };
-
-    const handleBreadCrumbClick = (idx) => {
-        setBreadcrumbs(breadcrumbs.slice(0, idx + 1));
-    };
-
-    if (breadcrumbs.length > 1) {
-        return (
-            <div className='flex h-8 items-center bg-[rgb(233,233,233)] pl-4'>
-                <Breadcrumbs aria-label='breadcrumb'>
-                    {breadcrumbs.map(({ to, label }, idx) => {
-                        if (idx === breadcrumbs.length - 1) {
-                            return (
-                                <p key={idx} className='text-primary-light'>
-                                    {label}
-                                </p>
-                            );
-                        }
-                        return (
-                            <Link
-                                key={idx}
-                                underline='hover'
-                                to={to}
-                                onClick={() => {
-                                    handleBreadCrumbClick(idx);
-                                }}
-                            >
-                                <p className='text-black hover:underline'>
-                                    {' '}
-                                    {label}
-                                </p>
-                            </Link>
-                        );
-                    })}
-                </Breadcrumbs>
-            </div>
-        );
-    }
 
     return (
         <div>
@@ -94,23 +51,19 @@ export default function HomeContent({ data }) {
                     className='mt-4 grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-4'
                 >
                     {currentItems.map((service, index) => (
-                        <div
+                        <Link
                             key={index}
-                            onClick={() => {
-                                setBreadcrumbs([
-                                    ...breadcrumbs,
-                                    {
-                                        to: `/services/${service.id}/`,
-                                        label: service.name,
-                                    },
-                                ]);
+                            to={`/services/${service.id}/`}
+                            state={{
+                                data: service,
+                                from: window.location.pathname,
                             }}
                         >
                             <ServiceItem
                                 itemData={service}
                                 className='w-full hover:-translate-y-1 hover:cursor-pointer hover:border hover:border-primary'
                             />
-                        </div>
+                        </Link>
                     ))}
                 </div>
                 <Pagination
