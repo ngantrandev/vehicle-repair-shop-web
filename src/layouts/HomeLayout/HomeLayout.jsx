@@ -34,7 +34,7 @@ function HomeLayout({ children }) {
                 {/* <div className='h-full w-60'>
                     <ServiceCategory />
                 </div> */}
-                <div className='mx-2 flex-1'>{children}</div>
+                <div className='flex-1'>{children}</div>
                 <div className='w-60'>
                     <Stations />
 

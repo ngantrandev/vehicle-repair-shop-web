@@ -23,7 +23,7 @@ import HomeLayout from '@/src/layouts/HomeLayout/HomeLayout';
 const publicRoutes = [
     { path: configs.routes.login, component: Login, layout: null },
     { path: configs.routes.register, component: Register, layout: null },
-    { path: configs.routes.home, component: Home },
+    { path: configs.routes.home, component: Home, layout: HomeLayout },
 
     {
         path: configs.routes.service.detail,
