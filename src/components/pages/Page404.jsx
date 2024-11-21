@@ -1,12 +1,12 @@
 import PropTypes from 'prop-types';
 
-import notFoundImg from '../../assets/images/404.svg';
-import configs from '../../configs';
-import Button from '../button';
-import Image from '../image/Image';
+import notFoundImg from '@/src/assets/images/404.svg';
+import configs from '@/src/configs';
+import Button from '@/src/components/button';
+import Image from '@/src/components/image/Image';
 import { Link } from 'react-router-dom';
 
-function Page404({ content, from }) {
+function Page404({ content }) {
     return (
         <div className='relative mt-40 flex h-full w-full flex-col items-center justify-center'>
             <Image src={notFoundImg} alt='' className='w-[100px]' />

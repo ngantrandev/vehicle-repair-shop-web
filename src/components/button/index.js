@@ -1,1 +1,1 @@
-export { default } from './Button.jsx';
+export { default } from '@/src/components/button/Button.jsx';

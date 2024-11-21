@@ -9,11 +9,11 @@ import TableHead from '@mui/material/TableHead';
 import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
 
-import ultils from '../../../../ultils/ultils';
-import Button from '../../../button';
-import userService from '../../../../services/userService';
-import configs from '../../../../configs';
-import staffService from '../../../../services/staffService';
+import ultils from '@/src/ultils/ultils';
+import Button from '@/src/components/button';
+import userService from '@/src/services/userService';
+import configs from '@/src/configs';
+import staffService from '@/src/services/staffService';
 
 const columns = [
     { id: 'fullname', label: 'Họ tên', minWidth: 100 },

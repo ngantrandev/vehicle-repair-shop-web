@@ -2,14 +2,14 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import PropTypes from 'prop-types';
 
-import Button from '../../../button';
-import stationsService from '../../../../services/stationsService';
-import configs from '../../../../configs';
-import Input from '../../../input';
-import GoongMap from '../../../map/GoongMap';
-import ultils from '../../../../ultils';
-import goongMapService from '../../../../services/goongMapService';
-import useDebounce from '../../../../hooks/useDebounce';
+import Button from '@/src/components/button';
+import stationsService from '@/src/services/stationsService';
+import configs from '@/src/configs';
+import Input from '@/src/components/input';
+import GoongMap from '@/src/components/map/GoongMap';
+import ultils from '@/src/ultils';
+import goongMapService from '@/src/services/goongMapService';
+import useDebounce from '@/src/hooks/useDebounce';
 
 const SearchResult = ({ data, onItemClick }) => {
     return (

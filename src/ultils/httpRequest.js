@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-import configs from '../configs';
+import configs from '@/src/configs';
 import ultils from './ultils';
 
 const httpRequest = axios.create({

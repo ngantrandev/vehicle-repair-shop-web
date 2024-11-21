@@ -2,11 +2,11 @@ import { useEffect, useState } from 'react';
 import { CSVLink } from 'react-csv';
 import dayjs from 'dayjs';
 
-import staffService from '../../../../services/staffService';
-import configs from '../../../../configs';
+import staffService from '@/src/services/staffService';
+import configs from '@/src/configs';
 import StaffList from './StaffList';
-import ultils from '../../../../ultils/ultils';
-import Button from '../../../button';
+import ultils from '@/src/ultils/ultils';
+import Button from '@/src/components/button';
 
 function Staff() {
     const [staffs, setStaffs] = useState([]);

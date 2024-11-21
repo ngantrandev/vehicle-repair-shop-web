@@ -1,7 +1,7 @@
 import { createContext, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 
-import ultils from '../ultils';
+import ultils from '@/src/ultils';
 
 export const UserContext = createContext();
 

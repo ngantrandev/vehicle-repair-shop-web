@@ -1,8 +1,8 @@
 import { PropTypes } from 'prop-types';
 import { ToastContainer } from 'react-toastify';
 
-import SideBar from '../components/sidebar';
-import Header from '../components/header';
+import SideBar from '@/src/layouts/components/sidebar';
+import Header from '@/src/layouts/components/header';
 
 function SidebarLayout({ children }) {
     return (

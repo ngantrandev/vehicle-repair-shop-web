@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 
-import bookingService from '../../../services/bookingService.js';
-import useUser from '../../../hooks/useUser.js';
+import bookingService from '@/src/services/bookingService.js';
+import useUser from '@/src/hooks/useUser.js';
 import BookingList from './BookingList.jsx';
 
 function MyBookings() {

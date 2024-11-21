@@ -1,8 +1,8 @@
 import PropTypes from 'prop-types';
 import { memo, useEffect, useMemo, useState } from 'react';
 
-import OpenEye from '../../assets/icon/OpenEye';
-import CloseEye from '../../assets/icon/CloseEye';
+import OpenEye from '@/src/assets/icon/OpenEye';
+import CloseEye from '@/src/assets/icon/CloseEye';
 
 const INPUT_TYPES = {
     TEXT: 'text',

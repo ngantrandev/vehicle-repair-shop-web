@@ -1,14 +1,14 @@
 import PropTypes from 'prop-types';
 import { forwardRef } from 'react';
 
-import ultils from '../../../ultils';
-import configs from '../../../configs';
+import ultils from '@/src/ultils';
+import configs from '@/src/configs';
 import {
     CanceledIcon,
     DoneIcon,
     DotIcon,
     FixingIcon,
-} from '../../../assets/icon/Icon';
+} from '@/src/assets/icon/Icon';
 
 const TaskItem = forwardRef(function TaskItem(
     { data, className, onClick },

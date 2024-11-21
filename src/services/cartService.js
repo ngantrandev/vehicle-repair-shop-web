@@ -1,4 +1,4 @@
-import requests from '../ultils/httpRequest';
+import requests from '@/src/ultils/httpRequest';
 
 const cartService = {};
 

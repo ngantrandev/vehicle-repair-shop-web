@@ -1,4 +1,4 @@
-import httpRequests from '../ultils/httpRequest';
+import httpRequests from '@/src/ultils/httpRequest';
 
 const createBooking = async (bookingData) => {
     try {
@@ -98,15 +98,13 @@ const undoBooking = async (bookingId) => {
 
 const userUndoCancelBooking = async (bookingId) => {
     try {
-        const res = await httpRequests.patch(
-            `/bookings/${bookingId}/undo`
-        );
+        const res = await httpRequests.patch(`/bookings/${bookingId}/undo`);
 
         return res;
     } catch (error) {
         throw new Error(error);
     }
-}
+};
 
 const bookingService = {
     createBooking,

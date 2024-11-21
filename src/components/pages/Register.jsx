@@ -2,16 +2,16 @@ import { useCallback, useState } from 'react';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-import bannerImg from '../../assets/images/login_banner.jpg';
-import configs from '../../configs';
-import Input from '../input';
-import Button from '../button';
-import ultils from '../../ultils/ultils';
-import authService from '../../services/authService';
+import bannerImg from '@/src/assets/images/login_banner.jpg';
+import configs from '@/src/configs';
+import Input from '@/src/components/input';
+import Button from '@/src/components/button';
+import ultils from '@/src/ultils/ultils';
+import authService from '@/src/services/authService';
 
 const webName = import.meta.env.VITE_WEB_NAME || 'Shop sửa xe';
-import vehicleImg from '../../assets/images/motorcycle.png';
-import Image from '../image/Image';
+import vehicleImg from '@/src/assets/images/motorcycle.png';
+import Image from '@/src/components/image/Image';
 
 function Register() {
     const [username, setUsername] = useState('');

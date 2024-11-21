@@ -1,4 +1,4 @@
-import httpRequest from '../ultils/httpRequest';
+import httpRequest from '@/src/ultils/httpRequest';
 
 const getAllStaffOfStation = async (stationId) => {
     try {

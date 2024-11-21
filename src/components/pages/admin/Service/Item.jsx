@@ -3,8 +3,8 @@ import { Link } from 'react-router-dom';
 import Tippy from '@tippyjs/react';
 import 'tippy.js/dist/tippy.css';
 
-import ultils from '../../../../ultils';
-import Image from '../../../image/Image';
+import ultils from '@/src/ultils';
+import Image from '@/src/components/image/Image';
 
 function Item({ data, className }) {
     return (

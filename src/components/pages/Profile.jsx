@@ -1,13 +1,13 @@
 import { useCallback, useEffect, useState } from 'react';
 
-import CameraIcon from '../../assets/icon/CameraIcon';
-import ultils from '../../ultils';
-import Button from '../button';
-import Input from '../input/Input';
-import Avatar from '../../assets/icon/DefaultAvatar.jsx';
-import profileService from '../../services/profileService';
-import Image from '../image/Image.jsx';
-import useUser from '../../hooks/useUser.js';
+import CameraIcon from '@/src/assets/icon/CameraIcon';
+import ultils from '@/src/ultils';
+import Button from '@/src/components/button';
+import Input from '@/src/components/input/Input';
+import Avatar from '@/src/assets/icon/DefaultAvatar.jsx';
+import profileService from '@/src/services/profileService';
+import Image from '@/src/components/image/Image.jsx';
+import useUser from '@/src/hooks/useUser.js';
 
 const baseApiEnpoint = import.meta.env.VITE_API_BASE_URL;
 

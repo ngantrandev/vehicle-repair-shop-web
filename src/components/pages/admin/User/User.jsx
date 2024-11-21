@@ -2,11 +2,11 @@ import { useEffect, useState } from 'react';
 import { CSVLink } from 'react-csv';
 import dayjs from 'dayjs';
 
-import userService from '../../../../services/userService';
-import configs from '../../../../configs';
+import userService from '@/src/services/userService';
+import configs from '@/src/configs';
 import UserList from './UserList';
-import ultils from '../../../../ultils/ultils';
-import Button from '../../../button';
+import ultils from '@/src/ultils/ultils';
+import Button from '@/src/components/button';
 
 function User() {
     const [users, setUsers] = useState([]);

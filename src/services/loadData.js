@@ -1,4 +1,4 @@
-import httpRequests from '../ultils/httpRequest';
+import httpRequests from '@/src/ultils/httpRequest';
 
 const getMotorcycleBrands = async () => {
     try {

@@ -1,4 +1,4 @@
-import httpRequests from '../ultils/httpRequest';
+import httpRequests from '@/src/ultils/httpRequest';
 
 const getListService = async (params = {}) => {
     try {
@@ -81,7 +81,7 @@ const serviceService = {
     updateService,
     createService,
     getListService,
-    getListTopService
+    getListTopService,
 };
 
 export default serviceService;

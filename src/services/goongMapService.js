@@ -1,7 +1,7 @@
 const goongMapKey = import.meta.env.VITE_GOONG_MAP_KEY;
 const goongMapBaseUrl = import.meta.env.VITE_GOONG_MAP_BASE_URL;
 
-import httpRequest from '../ultils/httpRequest';
+import httpRequest from '@/src/ultils/httpRequest';
 
 const getDirections = async (
     origin = [],

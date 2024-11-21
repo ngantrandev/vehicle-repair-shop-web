@@ -1,9 +1,9 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import configs from '../../../../configs';
-import stationsService from '../../../../services/stationsService';
-import Button from '../../../button/Button.jsx';
+import configs from '@/src/configs';
+import stationsService from '@/src/services/stationsService';
+import Button from '@/src/components/button/Button.jsx';
 import StationList from './StationList.jsx';
 
 function Stations() {

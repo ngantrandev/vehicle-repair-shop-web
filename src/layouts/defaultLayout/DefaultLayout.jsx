@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import { ToastContainer } from 'react-toastify';
 
-import Header from '../components/header';
+import Header from '@/src/layouts/components/header';
 
 function DefaultLayout({ children }) {
     return (

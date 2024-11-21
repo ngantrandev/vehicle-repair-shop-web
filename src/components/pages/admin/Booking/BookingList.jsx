@@ -10,15 +10,15 @@ import TableHead from '@mui/material/TableHead';
 import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
 
-import ultils from '../../../../ultils/ultils';
-import configs from '../../../../configs';
+import ultils from '@/src/ultils/ultils';
+import configs from '@/src/configs';
 import {
     CanceledIcon,
     DoneIcon,
     DotIcon,
     FixingIcon,
-} from '../../../../assets/icon/Icon';
-import Button from '../../../button';
+} from '@/src/assets/icon/Icon';
+import Button from '@/src/components/button';
 
 const columns = [
     { id: 'fullname', label: 'Họ tên', minWidth: 80 },

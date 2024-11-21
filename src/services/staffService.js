@@ -1,4 +1,4 @@
-import httpRequests from '../ultils/httpRequest';
+import httpRequests from '@/src/ultils/httpRequest';
 
 const getAllStaffs = async () => {
     try {
@@ -32,7 +32,7 @@ const inactiveStaff = async (id) => {
     } catch (error) {
         throw new Error(error);
     }
-}
+};
 
 export default {
     getAllStaffs,

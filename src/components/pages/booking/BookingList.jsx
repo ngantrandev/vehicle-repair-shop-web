@@ -14,11 +14,11 @@ import {
     DoneIcon,
     DotIcon,
     FixingIcon,
-} from '../../../assets/icon/Icon.jsx';
-import configs from '../../../configs/index.js';
-import ultils from '../../../ultils/ultils.js';
-import Button from '../../button/Button.jsx';
-import bookingService from '../../../services/bookingService.js';
+} from '@/src/assets/icon/Icon.jsx';
+import configs from '@/src/configs/index.js';
+import ultils from '@/src/ultils/ultils.js';
+import Button from '@/src/components/button/Button.jsx';
+import bookingService from '@/src/services/bookingService.js';
 
 const columns = [
     { id: 'fullname', label: 'Họ tên', minWidth: 80 },

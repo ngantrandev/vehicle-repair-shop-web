@@ -3,20 +3,20 @@ import PropTypes from 'prop-types';
 import TippyHeadless from '@tippyjs/react/headless';
 import { Link, useNavigate } from 'react-router-dom';
 
-import Button from '../../../components/button';
+import Button from '@/src/components/button';
 import logo from '/favicon.svg';
 import textLogo from '/favicon_text.svg';
 
-import configs from '../../../configs';
-import ultils from '../../../ultils';
-import serviceService from '../../../services/serviceService';
-import useDebounce from '../../../hooks/useDebounce';
-import CloseIcon from '../../../assets/icon/CloseIcon';
-import PersonIcon from '../../../assets/icon/PersonIcon';
-import SignOutIcon from '../../../assets/icon/SignOutIcon';
-import DefaultAvatar from '../../../assets/icon/DefaultAvatar';
-import Image from '../../../components/image/Image';
-import useUser from '../../../hooks/useUser';
+import configs from '@/src/configs';
+import ultils from '@/src/ultils';
+import serviceService from '@/src/services/serviceService';
+import useDebounce from '@/src/hooks/useDebounce';
+import CloseIcon from '@/src/assets/icon/CloseIcon';
+import PersonIcon from '@/src/assets/icon/PersonIcon';
+import SignOutIcon from '@/src/assets/icon/SignOutIcon';
+import DefaultAvatar from '@/src/assets/icon/DefaultAvatar';
+import Image from '@/src/components/image/Image';
+import useUser from '@/src/hooks/useUser';
 
 const webName = import.meta.env.VITE_WEB_NAME;
 const baseApiEnpoint = import.meta.env.VITE_API_BASE_URL;

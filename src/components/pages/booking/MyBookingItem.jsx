@@ -1,17 +1,17 @@
 import { useState } from 'react';
 import PropTypes from 'prop-types';
 
-import Button from '../../button/index.js';
+import Button from '@/src/components/button/index.js';
 import {
     DotIcon,
     FixingIcon,
     CanceledIcon,
     DoneIcon,
-} from '../../../assets/icon/Icon.jsx';
-import configs from '../../../configs/index.js';
-import bookingService from '../../../services/bookingService.js';
-import ultils from '../../../ultils/ultils.js';
-import useUser from '../../../hooks/useUser.js';
+} from '@/src/assets/icon/Icon.jsx';
+import configs from '@/src/configs/index.js';
+import bookingService from '@/src/services/bookingService.js';
+import ultils from '@/src/ultils/ultils.js';
+import useUser from '@/src/hooks/useUser.js';
 
 function Item({ data, className }) {
     const {

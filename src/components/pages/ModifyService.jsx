@@ -3,13 +3,13 @@ import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { TimePicker } from 'antd';
 import dayjs from 'dayjs';
 
-import Button from '../button';
-import Input from '../input';
-import serviceService from '../../services/serviceService';
-import configs from '../../configs';
-import ultils from '../../ultils';
-import CameraIcon from '../../assets/icon/CameraIcon';
-import Image from '../image/Image';
+import Button from '@/src/components/button';
+import Input from '@/src/components/input';
+import serviceService from '@/src/services/serviceService';
+import configs from '@/src/configs';
+import ultils from '@/src/ultils';
+import CameraIcon from '@/src/assets/icon/CameraIcon';
+import Image from '@/src/components/image/Image';
 
 const baseApiEnpoint = import.meta.env.VITE_API_BASE_URL;
 
@@ -53,7 +53,7 @@ function ModifyService() {
 
                 setInputTime(dayjs(resData.data?.estimated_time, 'HH:mm'));
 
-                 setImage({
+                setImage({
                     data: null,
                     preview: baseApiEnpoint + resData.data.image_url,
                 });

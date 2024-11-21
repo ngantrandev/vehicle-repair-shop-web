@@ -3,13 +3,13 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { TimePicker } from 'antd';
 import dayjs from 'dayjs';
 
-import Button from '../button';
-import Input from '../input';
-import configs from '../../configs';
-import serviceService from '../../services/serviceService';
-import ultils from '../../ultils';
-import CameraIcon from '../../assets/icon/CameraIcon';
-import Image from '../image/Image';
+import Button from '@/src/components/button';
+import Input from '@/src/components/input';
+import configs from '@/src/configs';
+import serviceService from '@/src/services/serviceService';
+import ultils from '@/src/ultils';
+import CameraIcon from '@/src/assets/icon/CameraIcon';
+import Image from '@/src/components/image/Image';
 
 function CreateService() {
     const location = useLocation();
@@ -54,8 +54,6 @@ function CreateService() {
                 return;
             }
 
-        
-
             if (!inputPrice || inputPrice < 10000) {
                 ultils.notifyError('Giá tiền không hợp lệ');
 
@@ -65,7 +63,7 @@ function CreateService() {
                 return;
             }
 
-            if (!inputTime ) {
+            if (!inputTime) {
                 ultils.notifyError('Phải nhập thời gian ước tính');
                 return;
             }

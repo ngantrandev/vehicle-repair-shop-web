@@ -10,7 +10,7 @@ import TableHead from '@mui/material/TableHead';
 import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
 
-import Button from '../../../button';
+import Button from '@/src/components/button';
 
 const columns = [
     { id: 'stt', label: 'STT', minWidth: 20 },

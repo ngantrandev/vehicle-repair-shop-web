@@ -1,17 +1,17 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 
-import bookingService from '../../../services/bookingService';
-import configs from '../../../configs';
-import ultils from '../../../ultils';
-import adminStaffService from '../../../services/admin.staff.service';
-import Button from '../../button';
-import adminBookingService from '../../../services/admin.bookingService';
-import Input from '../../input';
-import GoongMap from '../../map/GoongMap';
-import stationsService from '../../../services/stationsService';
-import Image from '../../image/Image';
-import useUser from '../../../hooks/useUser';
+import bookingService from '@/src/services/bookingService';
+import configs from '@/src/configs';
+import ultils from '@/src/ultils';
+import adminStaffService from '@/src/services/admin.staff.service';
+import Button from '@/src/components/button';
+import adminBookingService from '@/src/services/admin.bookingService';
+import Input from '@/src/components/input';
+import GoongMap from '@/src/components/map/GoongMap';
+import stationsService from '@/src/services/stationsService';
+import Image from '@/src/components/image/Image';
+import useUser from '@/src/hooks/useUser';
 
 const baseApiEnpoint = import.meta.env.VITE_API_BASE_URL;
 

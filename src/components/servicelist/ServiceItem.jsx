@@ -1,18 +1,13 @@
 import PropTypes from 'prop-types';
 
-import ultils from '../../ultils/ultils';
+import ultils from '@/src/ultils/ultils';
 
 const baseApiEnpoint = import.meta.env.VITE_API_BASE_URL;
 
 function ServiceItem({ itemData, className, ...otherProps }) {
     const customClassName = ['h-72 w-72 overflow-hidden border-2'];
 
-    const {
-        name,
-        price,
-        estimated_time: time,
-        image_url,
-    } = itemData;
+    const { name, price, estimated_time: time, image_url } = itemData;
 
     const props = {
         ...otherProps,
@@ -38,7 +33,7 @@ function ServiceItem({ itemData, className, ...otherProps }) {
             </div>
             <div
                 id='item-footer'
-                className='flex h-1/3 flex-col justify-between p-2 lg:p-3 border-t-2'
+                className='flex h-1/3 flex-col justify-between border-t-2 p-2 lg:p-3'
             >
                 <h1 className='overflow-hidden text-ellipsis whitespace-nowrap text-sm md:text-base'>
                     {name}

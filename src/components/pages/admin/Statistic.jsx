@@ -7,12 +7,12 @@ import { Link } from 'react-router-dom';
 
 import { Button } from '@mui/material';
 import { CSVLink } from 'react-csv';
-import bookingsService from '../../../services/bookingService';
-import serviceService from '../../../services/serviceService';
-import statisticsService from '../../../services/statisticService';
-import ultils from '../../../ultils/ultils';
-import BookingList from './Booking/BookingList';
-import configs from '../../../configs';
+import bookingsService from '@/src/services/bookingService';
+import serviceService from '@/src/services/serviceService';
+import statisticsService from '@/src/services/statisticService';
+import ultils from '@/src/ultils/ultils';
+import BookingList from '@/src/components/pages/admin/Booking/BookingList';
+import configs from '@/src/configs';
 
 const { RangePicker } = DatePicker;
 

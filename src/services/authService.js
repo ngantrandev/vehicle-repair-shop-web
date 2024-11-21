@@ -1,4 +1,4 @@
-import httpRequests from '../ultils/httpRequest.js';
+import httpRequests from '@/src/ultils/httpRequest.js';
 
 const login = async ({ username, password }) => {
     try {

@@ -1,9 +1,9 @@
 import PropTypes from 'prop-types';
 
-import useUser from '../hooks/useUser';
-import Page404 from '../components/pages/Page404';
-import configs from '../configs';
-import DefaultLayout from '../layouts/defaultLayout';
+import useUser from '@/src/hooks/useUser';
+import Page404 from '@/src/components/pages/Page404';
+import configs from '@/src/configs';
+import DefaultLayout from '@/src/layouts/defaultLayout';
 
 function ProtectedRoute({ children, requiredRole }) {
     const { user } = useUser();

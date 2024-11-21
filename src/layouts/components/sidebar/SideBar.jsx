@@ -1,9 +1,9 @@
 import { PropTypes } from 'prop-types';
 import { useCallback, useState } from 'react';
 
-import Menu from '../menu';
+import Menu from '@/src/layouts/components/menu';
 import SideBarItem from './SideBarItem';
-import configs from '../../../configs';
+import configs from '@/src/configs';
 
 const items = [
     {

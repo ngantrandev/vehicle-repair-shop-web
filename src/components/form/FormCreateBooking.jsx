@@ -1,18 +1,18 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 
-import ultils from '../../ultils';
-import bookingService from '../../services/bookingService';
-import configs from '../../configs';
-import GoongMap from '../map/GoongMap';
-import Input from '../input';
-import PlusIcon from '../../assets/icon/PlusIcon';
-import Button from '../button';
-import CameraIcon from '../../assets/icon/CameraIcon';
-import Image from '../image/Image';
-import useUser from '../../hooks/useUser';
-import goongMapService from '../../services/goongMapService';
-import useDebounce from '../../hooks/useDebounce';
+import ultils from '@/src/ultils';
+import bookingService from '@/src/services/bookingService';
+import configs from '@/src/configs';
+import GoongMap from '@/src/components/map/GoongMap';
+import Input from '@/src/components/input';
+import PlusIcon from '@/src/assets/icon/PlusIcon';
+import Button from '@/src/components/button';
+import CameraIcon from '@/src/assets/icon/CameraIcon';
+import Image from '@/src/components/image/Image';
+import useUser from '@/src/hooks/useUser';
+import goongMapService from '@/src/services/goongMapService';
+import useDebounce from '@/src/hooks/useDebounce';
 
 const SearchResult = ({ data, onItemClick }) => {
     return (

@@ -2,18 +2,18 @@ import { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 
-import bannerImg from '../../assets/images/login_banner.jpg';
-import configs from '../../configs';
-import Input from '../input';
-import Button from '../button';
+import bannerImg from '@/src/assets/images/login_banner.jpg';
+import configs from '@/src/configs';
+import Input from '@/src/components/input';
+import Button from '@/src/components/button';
 
-import authService from '../../services/authService';
-import ultils from '../../ultils';
+import authService from '@/src/services/authService';
+import ultils from '@/src/ultils';
 
 const webName = import.meta.env.VITE_WEB_NAME || 'Shop sửa xe';
-import vehicleImg from '../../assets/images/motorcycle.png';
-import Image from '../image/Image';
-import useUser from '../../hooks/useUser';
+import vehicleImg from '@/src/assets/images/motorcycle.png';
+import Image from '@/src/components/image/Image';
+import useUser from '@/src/hooks/useUser';
 
 function Login() {
     const [username, setUsername] = useState('');

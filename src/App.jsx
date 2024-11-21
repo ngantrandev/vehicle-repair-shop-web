@@ -1,11 +1,11 @@
 import { Fragment } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 
-import { privateRoutes, publicRoutes } from './routes/index.js';
-import configs from './configs/index.js';
-import Page404 from './components/pages/Page404.jsx';
-import DefaultLayout from './layouts/defaultLayout';
-import ProtectedRoute from './routes/ProtectedRoute.jsx';
+import { privateRoutes, publicRoutes } from '@/src/routes/index.js';
+import configs from '@/src/configs/index.js';
+import Page404 from '@/src/components/pages/Page404.jsx';
+import DefaultLayout from '@/src/layouts/defaultLayout';
+import ProtectedRoute from '@/src/routes/ProtectedRoute.jsx';
 
 function App() {
     return (

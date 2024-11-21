@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
 
-import adminBookingService from '../../../../services/admin.bookingService';
-import configs from '../../../../configs';
+import adminBookingService from '@/src/services/admin.bookingService';
+import configs from '@/src/configs';
 import BookingList from './BookingList';
-import Button from '../../../button';
+import Button from '@/src/components/button';
 import { CSVLink } from 'react-csv';
 import dayjs from 'dayjs';
 

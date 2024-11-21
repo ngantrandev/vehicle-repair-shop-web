@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react';
 
-import bookingService from '../../../services/bookingService';
-import configs from '../../../configs';
+import bookingService from '@/src/services/bookingService';
+import configs from '@/src/configs';
 
-import useUser from '../../../hooks/useUser';
-import Paginateditems from '../../paginateditems';
+import useUser from '@/src/hooks/useUser';
+import Paginateditems from '@/src/components/paginateditems';
 import ListTask from './ListTask';
 
 function MyTasks() {

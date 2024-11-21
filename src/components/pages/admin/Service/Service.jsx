@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import serviceService from '../../../../services/serviceService';
-import configs from '../../../../configs';
-import Button from '../../../button';
-import Paginateditems from '../../../paginateditems';
+import serviceService from '@/src/services/serviceService';
+import configs from '@/src/configs';
+import Button from '@/src/components/button';
+import Paginateditems from '@/src/components/paginateditems';
 import ServiceList from './ServiceList';
 
 function Service() {

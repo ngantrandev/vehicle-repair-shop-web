@@ -17,10 +17,10 @@ import MapGL, {
     Source,
 } from '@goongmaps/goong-map-react';
 
-import Pin from '../../assets/icon/PinIcon';
-import goongMapService from '../../services/goongMapService';
-import ultils from '../../ultils';
-import configs from '../../configs';
+import Pin from '@/src/assets/icon/PinIcon';
+import goongMapService from '@/src/services/goongMapService';
+import ultils from '@/src/ultils';
+import configs from '@/src/configs';
 
 const MAPTILE_KEY = import.meta.env.VITE_GOONG_MAP_TILE_KEY;
 const DEFAULT_LATITUDE =
