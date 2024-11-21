@@ -195,7 +195,7 @@ function Header({ className }) {
                     }}
                     render={(attrs) => (
                         <div
-                            className='z-50 h-72 w-48 overflow-y-auto rounded-md border-b-2 border-[#D9D9D9] bg-white p-2 shadow-lg md:w-64 lg:w-96'
+                            className='z-50 h-72 w-48 overflow-y-auto rounded-md border-b-2 border-[#D9D9D9] bg-white p-2 shadow-lg md:w-64 lg:w-[600px]'
                             tabIndex='-1'
                             {...attrs}
                         >
