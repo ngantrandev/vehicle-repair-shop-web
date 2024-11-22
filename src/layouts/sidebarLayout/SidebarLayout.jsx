@@ -1,3 +1,5 @@
+import { useCallback, useEffect, useState } from 'react';
+import { useLocation } from 'react-router-dom';
 import { PropTypes } from 'prop-types';
 import { ToastContainer } from 'react-toastify';
 
@@ -5,7 +7,6 @@ import Header from '@/src/layouts/components/header';
 import configs from '@/src/configs';
 import Menu from '@/src/layouts/components/menu';
 import SideBarItem from '@/src/layouts/components/sidebar/SideBarItem';
-import { useCallback, useEffect, useState } from 'react';
 
 const items = [
     {
@@ -36,19 +37,32 @@ const items = [
 
 function SidebarLayout({ children }) {
     const [activeItem, setActiveItem] = useState(0);
+    const location = useLocation();
 
     const handleChangeActiveItem = useCallback((index) => {
         setActiveItem(index);
     }, []);
 
     useEffect(() => {
-        items.forEach((item, index) => {
-            if (item.to === window.location.pathname) {
-                setActiveItem(index);
-                return;
-            }
+        const pathSplits = location.pathname.split('/');
+
+        let matchedIndex = -1;
+
+        pathSplits.forEach((pathSplit) => {
+            items.forEach((item, index) => {
+                if (pathSplit !== 'admin' && pathSplit != 'dashboard') {
+                    if (item.to.includes(pathSplit)) {
+                        matchedIndex = index;
+                        return
+                    }
+                }
+            });
         });
-    }, [window.location.pathname]);
+
+        if (matchedIndex !== -1) {
+            setActiveItem(matchedIndex);
+        }
+    }, [location.pathname]);
 
     return (
         <div className='h-screen'>

@@ -20,9 +20,9 @@ function PaginatedItems({ data, itemsPerPage, size, children, className }) {
         <div className={` ${className}`}>
             {React.cloneElement(children, { data: currentItems })}
 
-            <div className='flex w-full mt-4'>
+            <div className='mt-4 flex w-full'>
                 <ReactPaginate
-                    className={`flex h-${size} w-full items-center justify-center gap-2 rounded-md select-none`}
+                    className={`flex h-${size} w-full select-none items-center justify-center gap-2 rounded-md`}
                     breakLabel='...'
                     nextLabel={
                         <svg

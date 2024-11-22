@@ -294,7 +294,8 @@ function Header({ className }) {
                                 rounded
                                 onClick={() =>
                                     navigate(
-                                        configs.routes.admin.dashboard.statistics
+                                        configs.routes.admin.dashboard
+                                            .statistics
                                     )
                                 }
                             >

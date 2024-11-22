@@ -17,10 +17,10 @@ const routes = {
 
     admin: {
         dashboard: {
-            services: '/admin/dashboard/service',
-            users: '/admin/dashboard/user',
-            staffs: '/admin/dashboard/staff',
-            bookings: '/admin/dashboard/booking',
+            services: '/admin/dashboard/services',
+            users: '/admin/dashboard/users',
+            staffs: '/admin/dashboard/staffs',
+            bookings: '/admin/dashboard/bookings',
             stations: '/admin/dashboard/station',
             statistics: '/admin/dashboard/statistics',
         },

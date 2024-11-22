@@ -193,7 +193,7 @@ const getFormatedImageUrl = (url) => {
     return `${baseApiEnpoint}${url}`;
 };
 
-const getDateMonth=date=>{
+const getDateMonth = (date) => {
     const gmt7Time = convertTimeToGMT7(date); // Lấy thời gian đã được chuyển về GMT+7
     const specificDate = moment.tz(
         gmt7Time,
@@ -201,7 +201,7 @@ const getDateMonth=date=>{
         'Asia/Bangkok'
     );
     return specificDate.format('DD/MM');
-}
+};
 
 const ultils = {
     getUserDataLogedin,
@@ -221,7 +221,7 @@ const ultils = {
     getFormatedAddress,
     getFormatedTime,
     getFormatedImageUrl,
-    getDateMonth
+    getDateMonth,
 };
 
 export default ultils;

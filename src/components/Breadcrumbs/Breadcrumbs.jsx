@@ -18,7 +18,9 @@ function Breadcrumbs({ className }) {
                         return (
                             <div key={idx} className='flex gap-1'>
                                 {Icon && <Icon />}
-                                <p className='text-black'>{label}</p>
+                                <p className='font-bold text-primary'>
+                                    {label}
+                                </p>
                             </div>
                         );
                     }
