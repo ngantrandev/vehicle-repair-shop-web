@@ -188,7 +188,6 @@ function BookingList({ className, data }) {
                         {rowDatas
                             .slice(page * rowsPerPage, (page + 1) * rowsPerPage)
                             .map((row, index) => {
-                                console.log(row);
                                 return (
                                     <TableRow
                                         hover

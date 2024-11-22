@@ -1,25 +1,24 @@
 import { useEffect, useMemo, useState } from 'react';
-import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 
-import bookingService from '@/src/services/bookingService';
-import configs from '@/src/configs';
-import ultils from '@/src/ultils';
-import adminStaffService from '@/src/services/admin.staff.service';
-import Button from '@/src/components/button';
-import adminBookingService from '@/src/services/admin.bookingService';
+import Image from '@/src/components/image/Image';
 import Input from '@/src/components/input';
 import GoongMap from '@/src/components/map/GoongMap';
 import stationsService from '@/src/services/stationsService';
-import Image from '@/src/components/image/Image';
+import configs from '@/src/configs';
 import useUser from '@/src/hooks/useUser';
+import adminBookingService from '@/src/services/admin.bookingService';
+import adminStaffService from '@/src/services/admin.staff.service';
+import bookingService from '@/src/services/bookingService';
+import ultils from '@/src/ultils';
+import useBreadcrumbs from '@/src/hooks/useBreadcrumbs';
+import ViewCompactIcon from '@mui/icons-material/ViewCompact';
+import Breadcrumbs from '@/src/components/Breadcrumbs/Breadcrumbs';
 
 const baseApiEnpoint = import.meta.env.VITE_API_BASE_URL;
 
 function BookingDetail() {
     const { booking_id: bookingId, user_id: userId } = useParams();
-    const location = useLocation();
-    const navigate = useNavigate();
-    const { from } = location.state;
 
     const { user } = useUser();
 
@@ -36,6 +35,26 @@ function BookingDetail() {
     const [stations, setStations] = useState([]);
     const [staffs, setStaffs] = useState([]);
     const [isShowMenu, setIsShowMenu] = useState(false);
+
+    const { setBreadcrumbsData } = useBreadcrumbs();
+
+    useEffect(() => {
+        setBreadcrumbsData([
+            {
+                to: configs.routes.admin.dashboard.statistics,
+                label: 'Dashboard',
+                icon: ViewCompactIcon,
+            },
+            {
+                to: configs.routes.admin.dashboard.bookings,
+                label: 'Danh sách lịch hẹn',
+            },
+            {
+                to: '',
+                label: 'Chi tiết lịch hẹn',
+            },
+        ]);
+    }, [setBreadcrumbsData]);
 
     const startPoint = useMemo(() => {
         const station = booking?.staff?.station || {};
@@ -307,17 +326,12 @@ function BookingDetail() {
     ];
 
     return (
-        <div className='flex-1 justify-center overflow-auto px-4'>
-            <div className='mt-3 w-full'>
-                <Button className='' rounded onClick={() => navigate(from)}>
-                    Quay lại
-                </Button>
-                <h1 className='w-full text-center text-2xl font-bold'>
-                    Thông tin đặt lịch
-                </h1>
+        <div className='flex-1 justify-center overflow-auto bg-white px-4'>
+            <div className='my-5 w-full'>
+                <Breadcrumbs />
             </div>
-            <div className='md:mx-6'>
-                <div className='mt-8 grid w-full grid-cols-4 gap-1 rounded-md border-2 border-primary-light p-3'>
+            <div className=''>
+                <div className='grid w-full grid-cols-4 gap-1 rounded-md border-2 border-primary-light p-3'>
                     <div className='col-span-4'>
                         <span>Khách hàng: </span>
                         <span className='text-xl font-bold'>

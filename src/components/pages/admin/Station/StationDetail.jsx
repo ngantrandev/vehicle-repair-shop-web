@@ -1,15 +1,19 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import PropTypes from 'prop-types';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useParams } from 'react-router-dom';
 
 import Button from '@/src/components/button';
-import stationsService from '@/src/services/stationsService';
-import configs from '@/src/configs';
 import Input from '@/src/components/input';
 import GoongMap from '@/src/components/map/GoongMap';
-import ultils from '@/src/ultils';
+import configs from '@/src/configs';
 import useDebounce from '@/src/hooks/useDebounce';
 import goongMapService from '@/src/services/goongMapService';
+import stationsService from '@/src/services/stationsService';
+import ultils from '@/src/ultils';
+
+import Breadcrumbs from '@/src/components/Breadcrumbs/Breadcrumbs';
+import useBreadcrumbs from '@/src/hooks/useBreadcrumbs';
+import ViewCompactIcon from '@mui/icons-material/ViewCompact';
 
 const SearchResult = ({ data, onItemClick }) => {
     return (
@@ -37,9 +41,6 @@ const SearchResult = ({ data, onItemClick }) => {
 
 function StationDetail() {
     const { station_id: stationId } = useParams();
-    const location = useLocation();
-    const navigate = useNavigate();
-    const { from } = location.state;
 
     const [stationName, setStationName] = useState('');
     const [stationAddressInput, setStationAddressInput] = useState('');
@@ -54,6 +55,26 @@ function StationDetail() {
     const mapRef = useRef(null);
 
     const [station, setStation] = useState(null);
+
+    const { setBreadcrumbsData } = useBreadcrumbs();
+
+    useEffect(() => {
+        setBreadcrumbsData([
+            {
+                to: configs.routes.admin.dashboard.statistics,
+                label: 'Dashboard',
+                icon: ViewCompactIcon,
+            },
+            {
+                to: configs.routes.admin.dashboard.stations,
+                label: 'Danh sách trạm dịch vụ',
+            },
+            {
+                to: '',
+                label: 'Chi tiết trạm dịch vụ',
+            },
+        ]);
+    }, [setBreadcrumbsData]);
 
     const handleChangeStationName = useCallback((e) => {
         const value = e.target.value;
@@ -178,30 +199,21 @@ function StationDetail() {
     };
 
     return (
-        <div className='relative mx-2 flex flex-1 flex-col justify-center'>
-            <div className='absolute top-6 flex w-full'>
-                <Button
-                    className='absolute'
-                    rounded
-                    onClick={() => navigate(from)}
-                >
-                    Quay lại
-                </Button>
-                <h1 className='w-full text-center text-2xl font-bold'>
-                    Chỉnh sửa thông tin trạm dịch vụ
-                </h1>
+        <div className='relative flex h-full flex-1 flex-col bg-white md:px-4'>
+            <div className='my-5'>
+                <Breadcrumbs />
             </div>
-            <div className='mx-2 mb-10 mt-32 grid grid-cols-3 gap-1 rounded-md border-2 border-primary-light p-3 md:mx-40'>
-                <div className='col-span-3'>
-                    <h3>Tên trạm dịch vụ</h3>
+            <div className='mb-10 grid grid-cols-3 gap-1 gap-y-5 rounded-md border-2 border-primary-light p-3'>
+                <div className='col-span-1'>
+                    <h3 className='mb-2'>Tên trạm dịch vụ</h3>
                     <Input
                         className={'w-full border-2 border-primary p-2'}
                         value={stationName}
                         onChange={handleChangeStationName}
                     />
                 </div>
-                <div className='relative col-span-3'>
-                    <h3>Địa chỉ</h3>
+                <div className='col-span-2 col-start-1'>
+                    <h3 className='mb-2'>Địa chỉ</h3>
                     <Input
                         className={'w-full border-2 border-primary p-2'}
                         value={stationAddressInput}
@@ -216,7 +228,7 @@ function StationDetail() {
                     )}
                 </div>
 
-                <div className='col-span-3 mt-10'>
+                <div className='col-span-3'>
                     <h3 className='mb-2 text-center text-xl font-bold'>
                         Tọa độ bản đồ
                     </h3>
@@ -226,16 +238,11 @@ function StationDetail() {
                         currentPoint={currentPoint}
                     />
                 </div>
-
-                <div className='col-span-3 mt-10 flex justify-center'>
-                    <Button
-                        className='px-16'
-                        rounded
-                        onClick={handleUpdateStation}
-                    >
-                        Lưu
-                    </Button>
-                </div>
+            </div>
+            <div className='flex justify-center'>
+                <Button className='px-16' rounded onClick={handleUpdateStation}>
+                    Lưu
+                </Button>
             </div>
         </div>
     );

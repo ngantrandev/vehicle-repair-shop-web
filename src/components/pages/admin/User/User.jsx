@@ -4,13 +4,34 @@ import dayjs from 'dayjs';
 
 import userService from '@/src/services/userService';
 import configs from '@/src/configs';
-import UserList from './UserList';
 import ultils from '@/src/ultils/ultils';
 import Button from '@/src/components/button';
+import UserList from '@/src/components/pages/admin/User/UserList';
+import useBreadcrumbs from '@/src/hooks/useBreadcrumbs';
+import ViewCompactIcon from '@mui/icons-material/ViewCompact';
+import Breadcrumbs from '@/src/components/Breadcrumbs/Breadcrumbs';
 
 function User() {
     const [users, setUsers] = useState([]);
     const [csvData, setCsvData] = useState([]);
+
+    const { breadcrumbs, setBreadcrumbsData } = useBreadcrumbs();
+
+    console.log(breadcrumbs);
+
+    useEffect(() => {
+        setBreadcrumbsData([
+            {
+                to: configs.routes.admin.dashboard.statistics,
+                label: 'Dashboard',
+                icon: ViewCompactIcon,
+            },
+            {
+                to: configs.routes.admin.dashboard.users,
+                label: 'Danh sách khách hàng',
+            },
+        ]);
+    }, [setBreadcrumbsData]);
 
     useEffect(() => {
         const fetchUsers = async () => {
@@ -60,13 +81,11 @@ function User() {
     const fileName = `user_list_${dayjs().format('YYYY-MM-DD')}.csv`;
 
     return (
-        <div className='flex flex-1 flex-col items-center px-0 md:px-10'>
+        <div className='flex h-full flex-1 flex-col items-center bg-white px-0 md:px-4'>
             <div className='flex w-full justify-between py-5'>
-                <h1 className='text-center text-3xl font-bold'>
-                    Danh sách khách hàng
-                </h1>
+                <Breadcrumbs />
 
-                <Button rounded>
+                <Button rounded className='h-10'>
                     <CSVLink data={csvData} filename={fileName}>
                         Xuất excel
                     </CSVLink>

@@ -91,7 +91,7 @@ function Login() {
 
         setTimeout(() => {
             if (userRole == configs.USER_ROLES.admin) {
-                navigate(configs.routes.admin.dashboard.services);
+                navigate(configs.routes.admin.dashboard.statistics);
                 return;
             }
             if (from === configs.routes.register) {

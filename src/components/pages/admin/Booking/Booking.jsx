@@ -7,9 +7,29 @@ import Button from '@/src/components/button';
 import { CSVLink } from 'react-csv';
 import dayjs from 'dayjs';
 
+import ViewCompactIcon from '@mui/icons-material/ViewCompact';
+import useBreadcrumbs from '@/src/hooks/useBreadcrumbs';
+import Breadcrumbs from '@/src/components/Breadcrumbs/Breadcrumbs';
+
 function BookingMagager() {
     const [bookings, setBookings] = useState([]);
     const [csvData, setCsvData] = useState([]);
+
+    const { setBreadcrumbsData } = useBreadcrumbs();
+
+    useEffect(() => {
+        setBreadcrumbsData([
+            {
+                to: configs.routes.admin.dashboard.statistics,
+                label: 'Dashboard',
+                icon: ViewCompactIcon,
+            },
+            {
+                to: configs.routes.admin.dashboard.services,
+                label: 'Danh sách lịch hẹn',
+            },
+        ]);
+    }, [setBreadcrumbsData]);
 
     useEffect(() => {
         const fetchBooking = async () => {
@@ -68,13 +88,11 @@ function BookingMagager() {
     const fileName = `booking_list_${dayjs().format('YYYY-MM-DD')}.csv`;
 
     return (
-        <div className='flex flex-1 flex-col items-center px-0 md:px-10'>
+        <div className='flex h-full flex-1 flex-col items-center bg-white px-0 md:px-4'>
             <div className='flex w-full justify-between py-5'>
-                <h1 className='text-center text-3xl font-bold'>
-                    Danh sách lịch hẹn
-                </h1>
+                <Breadcrumbs />
 
-                <Button rounded>
+                <Button rounded className='h-10'>
                     <CSVLink data={csvData} filename={fileName}>
                         Xuất excel
                     </CSVLink>

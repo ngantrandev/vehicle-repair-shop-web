@@ -21,7 +21,7 @@ function HomeLayout({ children }) {
         }
 
         if (user.user.role === configs.USER_ROLES.admin) {
-            navigate(configs.routes.admin.dashboard.services);
+            navigate(configs.routes.admin.dashboard.statistics);
         }
     }, [user, navigate]);
 

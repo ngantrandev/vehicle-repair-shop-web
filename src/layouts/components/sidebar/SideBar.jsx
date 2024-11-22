@@ -7,6 +7,10 @@ import configs from '@/src/configs';
 
 const items = [
     {
+        title: 'Dashboard',
+        to: configs.routes.admin.statistics,
+    },
+    {
         title: 'Danh sách dịch vụ',
         to: configs.routes.admin.dashboard.services,
     },
@@ -26,10 +30,6 @@ const items = [
         title: 'Danh sách trạm dịch vụ',
         to: configs.routes.admin.dashboard.stations,
     },
-    {
-        title: 'Thống kê',
-        to: configs.routes.admin.statistics,
-    },
 ];
 
 function SideBar({ className }) {
@@ -41,7 +41,7 @@ function SideBar({ className }) {
 
     return (
         <aside className={className}>
-            <Menu className='grid w-full grid-cols-3 flex-col gap-y-1 md:flex'>
+            <Menu className='grid w-full grid-cols-3 flex-col md:flex'>
                 {items.map((item, index) => (
                     <SideBarItem
                         key={index}

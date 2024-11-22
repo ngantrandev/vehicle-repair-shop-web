@@ -22,6 +22,7 @@ const routes = {
             staffs: '/admin/dashboard/staff',
             bookings: '/admin/dashboard/booking',
             stations: '/admin/dashboard/station',
+            statistics: '/admin/dashboard/statistics',
         },
         service: {
             modify: 'admin/services/:service_id/modify',

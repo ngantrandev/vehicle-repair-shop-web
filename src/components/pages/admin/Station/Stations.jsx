@@ -4,11 +4,30 @@ import { useNavigate } from 'react-router-dom';
 import configs from '@/src/configs';
 import stationsService from '@/src/services/stationsService';
 import Button from '@/src/components/button/Button.jsx';
-import StationList from './StationList.jsx';
+import StationList from '@/src/components/pages/admin/Station/StationList.jsx';
+import useBreadcrumbs from '@/src/hooks/useBreadcrumbs.js';
+import ViewCompactIcon from '@mui/icons-material/ViewCompact';
+import Breadcrumbs from '@/src/components/Breadcrumbs/Breadcrumbs.jsx';
 
 function Stations() {
     const [stations, setStations] = useState([]);
     const navigate = useNavigate();
+
+    const { setBreadcrumbsData } = useBreadcrumbs();
+
+    useEffect(() => {
+        setBreadcrumbsData([
+            {
+                to: configs.routes.admin.dashboard.statistics,
+                label: 'Dashboard',
+                icon: ViewCompactIcon,
+            },
+            {
+                to: configs.routes.admin.dashboard.stations,
+                label: 'Danh sách trạm dịch vụ',
+            },
+        ]);
+    }, [setBreadcrumbsData]);
 
     useEffect(() => {
         const getAllStations = async () => {
@@ -39,13 +58,11 @@ function Stations() {
     }, []);
 
     return (
-        <div className='flex flex-1 flex-col items-center px-0 md:px-10'>
+        <div className='flex h-full flex-1 flex-col items-center bg-white px-0 md:px-4'>
             <div className='flex w-full justify-between py-5'>
-                <h1 className='text-center text-3xl font-bold'>
-                    Danh sách trạm dịch vụ
-                </h1>
+                <Breadcrumbs />
 
-                <Button rounded onClick={handleClickCreate}>
+                <Button rounded onClick={handleClickCreate} className='h-10'>
                     <svg
                         fill='currentColor'
                         className='w-6'

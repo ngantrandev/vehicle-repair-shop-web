@@ -1,15 +1,34 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import serviceService from '@/src/services/serviceService';
-import configs from '@/src/configs';
 import Button from '@/src/components/button';
 import Paginateditems from '@/src/components/paginateditems';
-import ServiceList from './ServiceList';
+import ServiceList from '@/src/components/pages/admin/Service/ServiceList';
+import configs from '@/src/configs';
+import serviceService from '@/src/services/serviceService';
+import Breadcrumbs from '@/src/components/Breadcrumbs/Breadcrumbs';
+import useBreadcrumbs from '@/src/hooks/useBreadcrumbs';
+import ViewCompactIcon from '@mui/icons-material/ViewCompact';
 
 function Service() {
     const [services, setServices] = useState([]);
     const navigate = useNavigate();
+
+    const { setBreadcrumbsData } = useBreadcrumbs();
+
+    useEffect(() => {
+        setBreadcrumbsData([
+            {
+                to: configs.routes.admin.dashboard.statistics,
+                label: 'Dashboard',
+                icon: ViewCompactIcon,
+            },
+            {
+                to: configs.routes.admin.dashboard.services,
+                label: 'Danh sách dịch vụ',
+            },
+        ]);
+    }, [setBreadcrumbsData]);
 
     useEffect(() => {
         const fetchServices = async () => {
@@ -32,11 +51,9 @@ function Service() {
     }, []);
 
     return (
-        <div className='relative flex flex-1 flex-col items-center px-0 md:px-4'>
+        <div className='relative flex h-full flex-1 flex-col items-center bg-white px-0 md:px-4'>
             <div className='flex w-full justify-between py-5'>
-                <h1 className='text-center text-3xl font-bold'>
-                    Danh sách dịch vụ
-                </h1>
+                <Breadcrumbs />
                 <Button
                     rounded
                     className='h-10'

@@ -1,27 +1,12 @@
 import { useCallback, useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 
 import HomeContent from '@/src/components/HomeContent/HomeContent';
 import ServiceCategory from '@/src/components/pages/Home/ServiceCategory';
-import configs from '@/src/configs';
-import useUser from '@/src/hooks/useUser.js';
 import serviceService from '@/src/services/serviceService.js';
 
 function Home() {
     const [serviceList, setServiceList] = useState([]);
 
-    const user = useUser();
-    const navigate = useNavigate();
-
-    useEffect(() => {
-        if (!user || !navigate) {
-            return;
-        }
-
-        if (user.user.role === configs.USER_ROLES.admin) {
-            navigate(configs.routes.admin.dashboard.services);
-        }
-    }, [user, navigate]);
     const handleChooseServiceCategory = useCallback((categoryId) => {
         try {
             let params = {

@@ -13,6 +13,9 @@ import statisticsService from '@/src/services/statisticService';
 import ultils from '@/src/ultils/ultils';
 import BookingList from '@/src/components/pages/admin/Booking/BookingList';
 import configs from '@/src/configs';
+import Breadcrumbs from '@/src/components/Breadcrumbs/Breadcrumbs';
+import useBreadcrumbs from '@/src/hooks/useBreadcrumbs';
+import ViewCompactIcon from '@mui/icons-material/ViewCompact';
 
 const { RangePicker } = DatePicker;
 
@@ -289,6 +292,22 @@ export default function Statistic() {
     const [todayBookings, setTodayBookings] = useState([]);
     const [pendingBookings, setPendingBookings] = useState([]);
 
+    const { setBreadcrumbsData } = useBreadcrumbs();
+
+    useEffect(() => {
+        setBreadcrumbsData([
+            {
+                to: configs.routes.admin.dashboard.statistics,
+                label: 'Dashboard',
+                icon: ViewCompactIcon,
+            },
+            {
+                to: configs.routes.admin.dashboard.services,
+                label: 'Danh sách dịch vụ',
+            },
+        ]);
+    }, [setBreadcrumbsData]);
+
     useEffect(() => {
         const fetchTodayBooking = async () => {
             try {
@@ -377,7 +396,11 @@ export default function Statistic() {
     }, []);
 
     return (
-        <div className='flex-1 bg-[#f1f1ee] p-4'>
+        <div className='flex-1 bg-[#f1f1ee] px-4'>
+            <div className='flex w-full flex-col justify-center py-5'>
+                <Breadcrumbs />
+            </div>
+
             <div className='grid w-full grid-cols-12 grid-rows-3 gap-4'>
                 <div className='col-span-3 row-span-1 flex rounded-lg bg-white p-4'>
                     <div className='flex h-full flex-col justify-center gap-1'>
@@ -421,9 +444,9 @@ export default function Statistic() {
 
             <ExportReport bookings={bookings} />
 
-            <div className='mt-5 rounded-xl bg-white'>
-                <h2 className='p-4 text-xl font-bold'>Lịch hẹn gần đây</h2>
-                <BookingList data={pendingBookings} className={'mx-4'} />
+            <div className='mt-5 rounded-xl bg-white p-4'>
+                <h2 className='mb-4 text-xl font-bold'>Lịch hẹn gần đây</h2>
+                <BookingList data={pendingBookings} />
             </div>
         </div>
     );

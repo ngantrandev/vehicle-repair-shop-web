@@ -1,17 +1,76 @@
 import { PropTypes } from 'prop-types';
 import { ToastContainer } from 'react-toastify';
 
-import SideBar from '@/src/layouts/components/sidebar';
 import Header from '@/src/layouts/components/header';
+import configs from '@/src/configs';
+import Menu from '@/src/layouts/components/menu';
+import SideBarItem from '@/src/layouts/components/sidebar/SideBarItem';
+import { useCallback, useEffect, useState } from 'react';
+
+const items = [
+    {
+        title: 'Thống kê',
+        to: configs.routes.admin.statistics,
+    },
+    {
+        title: 'Danh sách dịch vụ',
+        to: configs.routes.admin.dashboard.services,
+    },
+    {
+        title: 'Danh sách khách hàng',
+        to: configs.routes.admin.dashboard.users,
+    },
+    {
+        title: 'Danh sách nhân viên',
+        to: configs.routes.admin.dashboard.staffs,
+    },
+    {
+        title: 'Danh sách đặt lịch',
+        to: configs.routes.admin.dashboard.bookings,
+    },
+    {
+        title: 'Danh sách trạm dịch vụ',
+        to: configs.routes.admin.dashboard.stations,
+    },
+];
 
 function SidebarLayout({ children }) {
+    const [activeItem, setActiveItem] = useState(0);
+
+    const handleChangeActiveItem = useCallback((index) => {
+        setActiveItem(index);
+    }, []);
+
+    useEffect(() => {
+        items.forEach((item, index) => {
+            if (item.to === window.location.pathname) {
+                setActiveItem(index);
+                return;
+            }
+        });
+    }, [window.location.pathname]);
+
     return (
         <div className='h-screen'>
             <div className='flex h-full flex-col'>
                 <Header className='mx-2 flex items-center justify-between gap-x-2 border-b-2 bg-white py-[8px] sm:gap-x-8 md:mx-5 md:gap-x-16 lg:gap-x-4' />
-                <div className='flex flex-1'>
-                    <SideBar className='mt-3 border-r-2' />
-                    {children}
+                <div className='flex h-auto flex-1'>
+                    <aside className='border-r-2'>
+                        <Menu className='grid w-full grid-cols-3 flex-col md:flex'>
+                            {items.map((item, index) => (
+                                <SideBarItem
+                                    key={index}
+                                    title={item.title}
+                                    to={item.to}
+                                    active={activeItem === index}
+                                    onClick={() =>
+                                        handleChangeActiveItem(index)
+                                    }
+                                />
+                            ))}
+                        </Menu>
+                    </aside>
+                    <div className='flex-1 bg-[#f1f1ee]'>{children}</div>
                 </div>
             </div>
 
