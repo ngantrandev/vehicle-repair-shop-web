@@ -1,19 +1,25 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useParams } from 'react-router-dom';
 
+import AddIcon from '@mui/icons-material/Add';
+import RemoveIcon from '@mui/icons-material/Remove';
+import { IconButton, Menu, MenuItem } from '@mui/material';
+
+import Breadcrumbs from '@/src/components/Breadcrumbs/Breadcrumbs';
+import Button from '@/src/components/button';
 import Image from '@/src/components/image/Image';
 import Input from '@/src/components/input';
 import GoongMap from '@/src/components/map/GoongMap';
-import stationsService from '@/src/services/stationsService';
 import configs from '@/src/configs';
+import useBreadcrumbs from '@/src/hooks/useBreadcrumbs';
 import useUser from '@/src/hooks/useUser';
 import adminBookingService from '@/src/services/admin.bookingService';
 import adminStaffService from '@/src/services/admin.staff.service';
 import bookingService from '@/src/services/bookingService';
+import itemsService from '@/src/services/itemsService';
+import stationsService from '@/src/services/stationsService';
 import ultils from '@/src/ultils';
-import useBreadcrumbs from '@/src/hooks/useBreadcrumbs';
 import ViewCompactIcon from '@mui/icons-material/ViewCompact';
-import Breadcrumbs from '@/src/components/Breadcrumbs/Breadcrumbs';
 
 const baseApiEnpoint = import.meta.env.VITE_API_BASE_URL;
 
@@ -34,7 +40,17 @@ function BookingDetail() {
 
     const [stations, setStations] = useState([]);
     const [staffs, setStaffs] = useState([]);
-    const [isShowMenu, setIsShowMenu] = useState(false);
+    const [listItemsOfBooking, setListItemsOfBooking] = useState([]);
+    const [listItems, setListItems] = useState([]);
+    const [anchorEl, setAnchorEl] = useState(null);
+    const open = Boolean(anchorEl);
+
+    const handleClick = (event) => {
+        setAnchorEl(event.currentTarget);
+    };
+    const handleClose = () => {
+        setAnchorEl(null);
+    };
 
     const { setBreadcrumbsData } = useBreadcrumbs();
 
@@ -101,31 +117,48 @@ function BookingDetail() {
     }, [selectedStation]);
 
     useEffect(() => {
-        const fetchStations = async () => {
+        const fetchData = async () => {
             try {
                 const res = await stationsService.getActiveServiceStations();
+                const itemsRes = await itemsService.getAllItems();
                 if (res.status !== configs.STATUS_CODE.OK) {
                     throw new Error(res.data.message);
                 }
+
+                if (itemsRes.status !== configs.STATUS_CODE.OK) {
+                    throw new Error(itemsRes.data.message);
+                }
+
                 const resData = res.data;
+                const itemsResData = itemsRes.data;
                 setStations(resData.data);
+                setListItems(itemsResData.data);
             } catch (error) {
                 console.log(error);
             }
         };
-        fetchStations();
+        fetchData();
     }, []);
 
     useEffect(() => {
         const fetchBookingDetail = async () => {
             try {
                 const res = await bookingService.getBookingByID(bookingId);
+                const itemsOfBookingRes =
+                    await itemsService.getAllItemsOfBooking(bookingId);
 
                 if (res.status !== configs.STATUS_CODE.OK) {
                     throw new Error(res.data.message);
                 }
 
+                if (itemsOfBookingRes.status !== configs.STATUS_CODE.OK) {
+                    throw new Error(itemsOfBookingRes.data.message);
+                }
+
                 const resData = res.data;
+                const itemsOfBookingResData = itemsOfBookingRes.data;
+
+                setListItemsOfBooking(itemsOfBookingResData.data);
 
                 const booking = resData.data;
 
@@ -325,156 +358,220 @@ function BookingDetail() {
         },
     ];
 
+    const handleAddItem = async (item) => {
+        try {
+            const { id: itemId } = item;
+            let flag = false;
+            const res = await itemsService.addItemToBooking(bookingId, itemId);
+
+            if (res.status !== configs.STATUS_CODE.OK) {
+                throw new Error(res.data.message);
+            }
+
+            const newItems = listItemsOfBooking.map((i) => {
+                if (i.id === itemId) {
+                    flag = true;
+                    return {
+                        ...i,
+                        quantity: i.quantity + 1,
+                    };
+                }
+                return i;
+            });
+
+            if (!flag) {
+                newItems.push({
+                    ...item,
+                    quantity: 1,
+                });
+            }
+
+            setListItemsOfBooking(newItems);
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
+    const handleRemoveItem = async (itemId) => {
+        try {
+            const res = await itemsService.removeItemFromBooking(
+                bookingId,
+                itemId
+            );
+
+            if (res.status !== configs.STATUS_CODE.OK) {
+                throw new Error(res.data.message);
+            }
+
+            const newItems = listItemsOfBooking.filter((item) => {
+                if (item.id !== itemId) {
+                    return item;
+                } else if (item.quantity > 1) {
+                    item.quantity -= 1;
+                    return item;
+                } else if (item.quantity === 1) {
+                    return;
+                }
+            });
+            setListItemsOfBooking(newItems);
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
     return (
-        <div className='flex-1 justify-center overflow-auto bg-white px-4'>
+        <div className='flex flex-col justify-center overflow-auto bg-white px-4'>
             <div className='my-5 w-full'>
                 <Breadcrumbs />
             </div>
-            <div className=''>
-                <div className='grid w-full grid-cols-4 gap-1 rounded-md border-2 border-primary-light p-3'>
-                    <div className='col-span-4'>
-                        <span>Khách hàng: </span>
-                        <span className='text-xl font-bold'>
-                            {booking.user?.lastname +
-                                ' ' +
-                                booking.user?.firstname || '---'}
-                        </span>
+            <div className='px-20'>
+                <div className='grid w-full grid-cols-2 grid-rows-3'>
+                    <div className='p-3'>
+                        <h2 className='font-bold'>Thông tin khách hàng</h2>
+                        <p>{`Tên khách hàng: ${booking.user?.lastname} ${booking.user?.firstname}`}</p>
+                        <p>{`Số điện thoại: ${booking.user?.phone}`}</p>
+                        <p>{`Địa chỉ: ${ultils.getFormatedAddress(booking.address)}`}</p>
                     </div>
-                    <div className='col-span-4'>
-                        <span>SDT khách hàng: </span>
-                        <span className='text-xl font-bold'>
-                            {booking.user?.phone || '---'}
-                        </span>
-                    </div>
-                    <div className='col-span-4'>
-                        <span>Tên dịch vụ: </span>
-                        <span className='text-xl font-bold'>
-                            {booking.service?.name || '---'}
-                        </span>
-                    </div>
-                    <div className='col-span-4'>
-                        <span>Chi phí tạm tính: </span>
-                        <span className='font-bold'>
-                            {ultils.getCurrencyFormat(booking.service?.price) ||
-                                '---'}
-                        </span>
-                    </div>
-
-                    <div className='col-span-4 pb-2'>
-                        <span>Địa chỉ sửa chữa: </span>
-                        <span className='font-bold'>
-                            {ultils.getFormatedAddress(booking?.address)}
-                        </span>
-                    </div>
-                    <div className='col-span-4 pb-2'>
-                        <span>Trạm dịch vụ: </span>
-                        <span className='font-bold'>
-                            {booking?.staff?.station?.name || '---'}
-                        </span>
-                    </div>
-
-                    <div className='col-span-4 mb-8 border-b-2 border-primary-light pb-2'>
-                        <span>Trạng thái: </span>
-                        <span className='font-bold'>
-                            {status === configs.BOOKING_STATE.pending
-                                ? 'Chờ xác nhận'
-                                : status === configs.BOOKING_STATE.accepted
-                                  ? 'Đã xác nhận'
-                                  : status === configs.BOOKING_STATE.fixing
-                                    ? 'Đang sửa chữa'
-                                    : status === configs.BOOKING_STATE.done
-                                      ? 'Đã hoàn thành'
-                                      : status ===
-                                          configs.BOOKING_STATE.cancelled
-                                        ? 'Đã hủy'
-                                        : '---'}
-                        </span>
-                    </div>
-
-                    <div className='col-span-1'>
-                        <label
-                            htmlFor='station'
-                            className='mb-2 block text-sm font-medium text-gray-900'
-                        >
-                            Chi nhánh
-                        </label>
-                        <select
-                            disabled={
-                                user?.role !== configs.USER_ROLES.admin ||
-                                status === configs.BOOKING_STATE.cancelled ||
-                                status === configs.BOOKING_STATE.done
-                            }
-                            id='station'
-                            className='block w-full rounded-lg border-2 border-primary-light p-2.5 text-sm focus:border-primary-light'
-                            value={selectedStation}
-                            onChange={(e) => {
-                                if (user?.role !== configs.USER_ROLES.admin) {
-                                    return;
+                    <div className='p-3'>
+                        <h2 className='font-bold'>
+                            Thông tin trạm và nhân viên
+                        </h2>
+                        <div className='flex items-center gap-4'>
+                            <span className='mb-2 block text-sm font-medium text-gray-900'>
+                                Chi nhánh
+                            </span>
+                            <select
+                                className='min-w-64 rounded-lg border-2 border-primary-light p-2.5 text-sm focus:border-primary-light'
+                                disabled={
+                                    user?.role !== configs.USER_ROLES.admin ||
+                                    status ===
+                                        configs.BOOKING_STATE.cancelled ||
+                                    status === configs.BOOKING_STATE.done
                                 }
-                                setSelectedStaff('');
-                                setSelectedStation(e.target.value);
-                            }}
-                        >
-                            <option className='p-5'></option>
-                            {stations.map(({ id, name }) => {
+                                id='station'
+                                value={selectedStation}
+                                onChange={(e) => {
+                                    if (
+                                        user?.role !== configs.USER_ROLES.admin
+                                    ) {
+                                        return;
+                                    }
+                                    setSelectedStaff('');
+                                    setSelectedStation(e.target.value);
+                                }}
+                            >
+                                <option className='p-5'></option>
+                                {stations.map(({ id, name }) => {
+                                    return (
+                                        <option key={id} value={id}>
+                                            {name}
+                                        </option>
+                                    );
+                                })}
+                            </select>
+                        </div>
+                        <div className='flex items-center gap-4'>
+                            <span className='mb-2 block text-sm font-medium text-gray-900'>
+                                Nhân viên
+                            </span>
+                            <select
+                                className='min-w-64 rounded-lg border-2 border-primary-light p-2.5 text-sm focus:border-primary-light'
+                                disabled={
+                                    user?.role !== configs.USER_ROLES.admin ||
+                                    status ===
+                                        configs.BOOKING_STATE.cancelled ||
+                                    status === configs.BOOKING_STATE.done
+                                }
+                                id='staffs'
+                                value={selectedStaff}
+                                onChange={(e) => {
+                                    if (
+                                        user?.role !== configs.USER_ROLES.admin
+                                    ) {
+                                        return;
+                                    }
+                                    setSelectedStaff(e.target.value);
+                                }}
+                            >
+                                <option className='p-5'></option>
+                                {staffs.map(({ id, firstname, lastname }) => {
+                                    return (
+                                        <option key={id} value={id}>
+                                            {`Mã: ${id} - ${lastname} ${firstname}`}
+                                        </option>
+                                    );
+                                })}
+                            </select>
+                        </div>
+                    </div>
+                    <div className='p-3'>
+                        <h2 className='font-bold'>Thông tin lịch hẹn</h2>
+                        <p>{`Tên dịch vụ: ${booking.service?.name}`}</p>
+                        <p>{`Phí dịch vụ: ${ultils.getCurrencyFormat(booking.service?.price)}`}</p>
+                        <p>{`Thời gian  : ${booking.service?.estimated_time}`}</p>
+                    </div>
+                    <div className='row-span-1 p-3'>
+                        <h2 className='font-bold'>Danh sách sản phẩm</h2>
+                        <div className='max-h-28 overflow-auto'>
+                            {listItemsOfBooking.map((item, index) => {
                                 return (
-                                    <option key={id} value={id}>
-                                        {name}
-                                    </option>
+                                    <div
+                                        key={index}
+                                        className='mb-1 flex w-2/3 items-center justify-between gap-2'
+                                    >
+                                        <Image
+                                            src={ultils.getFormatedImageUrl(
+                                                item.image_url
+                                            )}
+                                            alt={item.name}
+                                            className='size-10'
+                                        />
+                                        <span className='flex-1 text-sm'>
+                                            {item.name}
+                                        </span>
+                                        <div className='flex items-center justify-center'>
+                                            <IconButton
+                                                color='#ccc'
+                                                aria-label='remove'
+                                                onClick={() => {
+                                                    handleRemoveItem(item.id);
+                                                }}
+                                            >
+                                                <RemoveIcon />
+                                            </IconButton>
+                                            <p>{item.quantity}</p>
+                                            <IconButton
+                                                aria-label='add'
+                                                onClick={() => {
+                                                    handleAddItem(item);
+                                                }}
+                                            >
+                                                <AddIcon />
+                                            </IconButton>
+                                        </div>
+                                    </div>
                                 );
                             })}
-                        </select>
+                        </div>
                     </div>
-                    <div className='col-span-1'>
-                        <label
-                            htmlFor='staffs'
-                            className='mb-2 block text-sm font-medium text-gray-900'
-                        >
-                            Nhân viên
-                        </label>
-                        <select
-                            disabled={
-                                user?.role !== configs.USER_ROLES.admin ||
-                                status === configs.BOOKING_STATE.cancelled ||
-                                status === configs.BOOKING_STATE.done
-                            }
-                            id='staffs'
-                            className='block w-full rounded-lg border-2 border-primary-light p-2.5 text-sm focus:border-primary-light'
-                            value={selectedStaff}
-                            onChange={(e) => {
-                                if (user?.role !== configs.USER_ROLES.admin) {
-                                    return;
-                                }
-                                setSelectedStaff(e.target.value);
-                            }}
-                        >
-                            <option className='p-5'></option>
-                            {staffs.map(({ id, firstname, lastname }) => {
-                                return (
-                                    <option key={id} value={id}>
-                                        {`Mã: ${id} - ${lastname} ${firstname}`}
-                                    </option>
-                                );
-                            })}
-                        </select>
-                    </div>
-                    <div className='col-span-2 mb-2 flex flex-col'>
+
+                    <div className='p-3'>
                         <label
                             htmlFor='note'
-                            className='mb-2 block text-sm font-medium text-gray-900'
+                            className='mb-2 block text-sm font-bold text-gray-900'
                         >
                             Ghi chú
                         </label>
                         <Input
+                            className={
+                                'h-20 w-1/2 rounded-md border-2 border-primary-light p-2'
+                            }
                             disabled={
                                 user?.role !== configs.USER_ROLES.admin ||
                                 status === configs.BOOKING_STATE.cancelled ||
                                 status === configs.BOOKING_STATE.done
                             }
                             multiline
-                            className={
-                                'h-10 w-full rounded-md border-2 border-primary-light p-2'
-                            }
                             value={note}
                             onChange={(e) => {
                                 if (user?.role !== configs.USER_ROLES.admin) {
@@ -484,60 +581,69 @@ function BookingDetail() {
                             }}
                         />
                     </div>
-
-                    <div className='relative inline-block text-left'>
-                        <div>
-                            <button
-                                type='button'
-                                className='flex w-full items-center justify-center gap-x-1.5 rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-primary-light hover:ring-primary'
-                                id='menu-button'
-                                aria-expanded='true'
-                                aria-haspopup='true'
-                                onClick={() => setIsShowMenu(!isShowMenu)}
-                            >
-                                <p> Hành động</p>
-                                <svg
-                                    className='-mr-1 size-5 text-gray-400'
-                                    viewBox='0 0 20 20'
-                                    fill='currentColor'
-                                    aria-hidden='true'
-                                    data-slot='icon'
-                                >
-                                    <path
-                                        fillRule='evenodd'
-                                        d='M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z'
-                                        clipRule='evenodd'
-                                    />
-                                </svg>
-                            </button>
-                        </div>
-
-                        <div
-                            className={`absolute right-0 z-10 mt-2 w-56 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none ${isShowMenu ? 'block' : 'hidden'}`}
-                            role='menu'
-                            aria-orientation='vertical'
-                            aria-labelledby='menu-button'
-                            tabIndex='-1'
-                        >
-                            <div className='py-1' role='none'>
-                                {buttonList.map((item, index) => {
-                                    return (
-                                        item.isShow && (
-                                            <p
-                                                key={index}
-                                                className='block cursor-pointer px-4 py-2 text-sm text-gray-700 hover:bg-primary-supper-light hover:bg-opacity-50'
-                                                role='menuitem'
-                                                tabIndex='-1'
-                                                onClick={item.onClick}
-                                            >
-                                                {item.text}
-                                            </p>
-                                        )
-                                    );
-                                })}
-                            </div>
+                    <div className='p-3'>
+                        <div className='max-h-28 overflow-auto'>
+                            {listItems.map((item, index) => {
+                                return (
+                                    <div
+                                        key={index}
+                                        className='mb-1 mr-10 flex items-center justify-between gap-2 hover:cursor-pointer hover:bg-gray-100'
+                                        onClick={() => {
+                                            handleAddItem(item);
+                                        }}
+                                    >
+                                        <Image
+                                            src={ultils.getFormatedImageUrl(
+                                                item.image_url
+                                            )}
+                                            alt={item.name}
+                                            className='size-10'
+                                        />
+                                        <span className='flex-1 text-sm'>
+                                            {item.name}
+                                        </span>
+                                    </div>
+                                );
+                            })}
                         </div>
                     </div>
+                </div>
+                <div className='px-4'>
+                    <Button
+                        id='basic-button'
+                        aria-controls={open ? 'basic-menu' : undefined}
+                        aria-haspopup='true'
+                        aria-expanded={open ? 'true' : undefined}
+                        onClick={handleClick}
+                        outlined
+                    >
+                        Hành động
+                    </Button>
+                    <Menu
+                        id='basic-menu'
+                        anchorEl={anchorEl}
+                        open={open}
+                        onClose={handleClose}
+                        MenuListProps={{
+                            'aria-labelledby': 'basic-button',
+                        }}
+                    >
+                        {buttonList.map((item, index) => {
+                            return (
+                                item.isShow && (
+                                    <MenuItem
+                                        key={index}
+                                        onClick={() => {
+                                            item.onClick();
+                                            handleClose();
+                                        }}
+                                    >
+                                        {item.text}
+                                    </MenuItem>
+                                )
+                            );
+                        })}
+                    </Menu>
                 </div>
 
                 {booking.image_url && (

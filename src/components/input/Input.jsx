@@ -21,6 +21,7 @@ function Input({
     className,
     multiline,
     password,
+    disabled,
     ...otherProps
 }) {
     const isPasswordField = useMemo(
@@ -58,6 +59,12 @@ function Input({
     }
 
     customClassName.push(className);
+
+    if (disabled) {
+        customClassName.push(
+            'cursor-not-allowed border-neutral-200 pointer-events-none'
+        );
+    }
 
     let Tag = 'input';
     if (multiline) {
@@ -102,6 +109,7 @@ Input.propTypes = {
     className: PropTypes.string,
     multiline: PropTypes.bool,
     password: PropTypes.bool,
+    disabled: PropTypes.bool,
 };
 
 export default memo(Input);
