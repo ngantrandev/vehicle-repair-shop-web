@@ -1,4 +1,4 @@
-import { Breadcrumbs } from '@mui/material';
+import { Breadcrumbs, Checkbox } from '@mui/material';
 import { useCallback, useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 
@@ -10,6 +10,7 @@ import SuccessPopup from '@/src/components/popup/SuccessPopup';
 import configs from '@/src/configs';
 import useUser from '@/src/hooks/useUser';
 import serviceService from '@/src/services/serviceService';
+import itemsService from '@/src/services/itemsService';
 
 function ServiceDetail() {
     const { service_id: serviceId } = useParams();
@@ -27,11 +28,19 @@ function ServiceDetail() {
     const [showForm, setShowForm] = useState(false);
 
     const [service, setService] = useState({});
+    const [listItemsOfService, setListItemsOfService] = useState([]);
+    const [listSelectedItems, setListSelectedItems] = useState([]); // list id of items selected
 
     useEffect(() => {
         const fetchService = async () => {
             try {
                 const res = await serviceService.getServiceById(serviceId);
+                const resItems =
+                    await itemsService.getAllItemsOfService(serviceId);
+
+                if (resItems.status === configs.STATUS_CODE.OK) {
+                    setListItemsOfService(resItems.data.data);
+                }
 
                 if (res.status !== configs.STATUS_CODE.OK) {
                     return;
@@ -117,7 +126,7 @@ function ServiceDetail() {
                         {service.description && (
                             <>
                                 <span className='text-xl font-bold'>
-                                    Mô tả:{' '}
+                                    Mô tả:
                                 </span>
                                 <div className='text-xl'>
                                     {service?.description &&
@@ -145,7 +154,7 @@ function ServiceDetail() {
                     </div>
                 </div>
 
-                <div className='col-span-3 col-end-6 flex flex-col gap-4 bg-green-200 px-4 py-2 text-lg'>
+                <div className='col-span-3 col-end-6 mx-4 flex flex-col gap-4 bg-green-200 px-4 py-4 text-lg'>
                     <h3>
                         Chi phí tạm tính:
                         <span className='text-3xl font-bold'>
@@ -158,10 +167,66 @@ function ServiceDetail() {
                         Đặt lịch
                     </Button>
                 </div>
+
+                <div className='col-span-3 col-end-6 mx-4'>
+                    {listItemsOfService.length > 0 && (
+                        <div className='flex flex-col gap-4'>
+                            <h3 className='text-2xl font-bold'>
+                                Thường được đặt kèm
+                            </h3>
+                            <div className='flex max-h-80 flex-col gap-2 overflow-auto'>
+                                {listItemsOfService.map((item, index) => (
+                                    <div key={index} className='flex gap-2'>
+                                        <Checkbox
+                                            onChange={(e) => {
+                                                if (e.target.checked) {
+                                                    setListSelectedItems([
+                                                        ...listSelectedItems,
+                                                        item.id,
+                                                    ]);
+                                                } else {
+                                                    setListSelectedItems(
+                                                        listSelectedItems.filter(
+                                                            (id) =>
+                                                                id !== item.id
+                                                        )
+                                                    );
+                                                }
+                                            }}
+                                        />
+                                        <Image
+                                            src={ultils.getFormatedImageUrl(
+                                                item.image_url
+                                            )}
+                                            alt={item.name}
+                                            className='size-20'
+                                        />
+                                        <div>
+                                            <div className='text-md'>
+                                                <span className='font-bold'>
+                                                    {item.name}
+                                                </span>
+                                            </div>
+                                            <div className='text-md'>
+                                                <span className='font-bold'>
+                                                    Giá:
+                                                </span>
+                                                {ultils.getCurrencyFormat(
+                                                    item.price
+                                                )}
+                                            </div>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    )}
+                </div>
             </div>
 
             {showForm && (
                 <FormCreateBooking
+                    items={listSelectedItems}
                     service={service}
                     onClose={handleOnCloseForm}
                     onSuccess={handleOnSuccess}

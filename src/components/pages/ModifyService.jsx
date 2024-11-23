@@ -373,7 +373,10 @@ function ModifyService() {
                         <div className='flex max-h-36 flex-col gap-2 overflow-auto'>
                             {listItemsOfService.map((item, index) => {
                                 return (
-                                    <div key={index} className='flex gap-2'>
+                                    <div
+                                        key={index}
+                                        className='flex justify-between gap-2'
+                                    >
                                         <Image
                                             src={ultils.getFormatedImageUrl(
                                                 item.image_url
@@ -381,7 +384,7 @@ function ModifyService() {
                                             alt={item.name}
                                             className='size-10'
                                         />
-                                        <span className='text-sm'>
+                                        <span className='flex-1 text-sm'>
                                             {item.name}
                                         </span>
                                         <IconButton

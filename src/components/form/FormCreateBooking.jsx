@@ -38,7 +38,7 @@ const SearchResult = ({ data, onItemClick }) => {
     );
 };
 
-function FormCreateBooking({ service, onClose, onSuccess }) {
+function FormCreateBooking({ items, service, onClose, onSuccess }) {
     const [addressInput, setAddressInput] = useState('');
     const [image, setImage] = useState(null);
     const debouncedInputSearch = useDebounce(addressInput, 500);
@@ -118,7 +118,7 @@ function FormCreateBooking({ service, onClose, onSuccess }) {
         fetchAddress();
     }, [debouncedInputSearch]);
 
-    const handleChooseAddressItem = (address) => {
+    const handleChooseAddressItem = useCallback((address) => {
         const fetchAddressDetail = async () => {
             const res = await goongMapService.getAddressInfoByPlaceId(
                 address.place_id
@@ -135,7 +135,7 @@ function FormCreateBooking({ service, onClose, onSuccess }) {
         };
 
         fetchAddressDetail();
-    };
+    }, []);
 
     const handleChooseImage = (e) => {
         const file = e.target.files[0];
@@ -180,6 +180,7 @@ function FormCreateBooking({ service, onClose, onSuccess }) {
             latitude,
             longitude,
             file: image?.data,
+            items: items,
         };
 
         try {
@@ -344,6 +345,7 @@ FormCreateBooking.propTypes = {
     service: PropTypes.object,
     onClose: PropTypes.func,
     onSuccess: PropTypes.func,
+    items: PropTypes.array,
 };
 
 SearchResult.propTypes = {
