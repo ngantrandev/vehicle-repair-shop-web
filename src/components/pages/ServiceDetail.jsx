@@ -135,9 +135,20 @@ function ServiceDetail() {
                                             .map((item, index) => {
                                                 if (item.trim() === '')
                                                     return null;
-                                                return (
-                                                    <p key={index}>- {item}</p>
-                                                );
+
+                                                if (index != 0) {
+                                                    return (
+                                                        <div key={index}>
+                                                            - {item}
+                                                        </div>
+                                                    );
+                                                } else {
+                                                    return (
+                                                        <div key={index}>
+                                                            {item}
+                                                        </div>
+                                                    );
+                                                }
                                             })}
                                 </div>
                             </>

@@ -182,15 +182,15 @@ function BookingDetail() {
 
     const handleConfirmBooking = async () => {
         try {
-            if (!selectedStation || selectedStation.length === 0) {
-                ultils.notifyWarning('Vui lòng chọn chi nhánh');
-                return;
-            }
+            // if (!selectedStation || selectedStation.length === 0) {
+            //     ultils.notifyWarning('Vui lòng chọn chi nhánh');
+            //     return;
+            // }
 
-            if (!selectedStaff || selectedStaff.length === 0) {
-                ultils.notifyWarning('Vui lòng chọn nhân viên');
-                return;
-            }
+            // if (!selectedStaff || selectedStaff.length === 0) {
+            //     ultils.notifyWarning('Vui lòng chọn nhân viên');
+            //     return;
+            // }
 
             const res = await adminBookingService.confirmBooking(
                 bookingId,
