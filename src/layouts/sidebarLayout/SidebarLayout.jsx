@@ -8,30 +8,53 @@ import configs from '@/src/configs';
 import Menu from '@/src/layouts/components/menu';
 import SideBarItem from '@/src/layouts/components/sidebar/SideBarItem';
 
+import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
+import CalendarMonthOutlinedIcon from '@mui/icons-material/CalendarMonthOutlined';
+import Person2OutlinedIcon from '@mui/icons-material/Person2Outlined';
+import HandymanOutlinedIcon from '@mui/icons-material/HandymanOutlined';
+import SatelliteAltOutlinedIcon from '@mui/icons-material/SatelliteAltOutlined';
+import SupportAgentOutlinedIcon from '@mui/icons-material/SupportAgentOutlined';
+
 const items = [
     {
         title: 'Thống kê',
         to: configs.routes.admin.statistics,
+        isLabel: false,
+        icon: HomeOutlinedIcon,
+    },
+    {
+        title: 'Danh sách lịch hẹn',
+        to: configs.routes.admin.dashboard.bookings,
+        isLabel: false,
+        icon: CalendarMonthOutlinedIcon,
+    },
+    {
+        title: 'Quản trị',
+        isLabel: true,
     },
     {
         title: 'Danh sách dịch vụ',
         to: configs.routes.admin.dashboard.services,
+        isLabel: false,
+        icon: SupportAgentOutlinedIcon,
     },
     {
         title: 'Danh sách khách hàng',
         to: configs.routes.admin.dashboard.users,
+        isLabel: false,
+        icon: Person2OutlinedIcon,
     },
     {
         title: 'Danh sách nhân viên',
         to: configs.routes.admin.dashboard.staffs,
-    },
-    {
-        title: 'Danh sách đặt lịch',
-        to: configs.routes.admin.dashboard.bookings,
+        isLabel: false,
+        icon: HandymanOutlinedIcon,
     },
     {
         title: 'Danh sách trạm dịch vụ',
         to: configs.routes.admin.dashboard.stations,
+        isLabel: false,
+        icon: SatelliteAltOutlinedIcon,
     },
 ];
 
@@ -51,9 +74,9 @@ function SidebarLayout({ children }) {
         pathSplits.forEach((pathSplit) => {
             items.forEach((item, index) => {
                 if (pathSplit !== 'admin' && pathSplit != 'dashboard') {
-                    if (item.to.includes(pathSplit)) {
+                    if (item.isLabel == false && item.to.includes(pathSplit)) {
                         matchedIndex = index;
-                        return
+                        return;
                     }
                 }
             });
@@ -71,17 +94,31 @@ function SidebarLayout({ children }) {
                 <div className='flex h-auto flex-1'>
                     <aside className='border-r-2'>
                         <Menu className='grid w-full grid-cols-3 flex-col md:flex'>
-                            {items.map((item, index) => (
-                                <SideBarItem
-                                    key={index}
-                                    title={item.title}
-                                    to={item.to}
-                                    active={activeItem === index}
-                                    onClick={() =>
-                                        handleChangeActiveItem(index)
-                                    }
-                                />
-                            ))}
+                            {items.map((item, index) => {
+                                if (item.isLabel) {
+                                    return (
+                                        <div
+                                            key={index}
+                                            className='px-4 py-2 font-bold'
+                                        >
+                                            {item.title}
+                                        </div>
+                                    );
+                                } else {
+                                    return (
+                                        <SideBarItem
+                                            key={index}
+                                            title={item.title}
+                                            to={item.to}
+                                            icon={item.icon}
+                                            active={activeItem === index}
+                                            onClick={() =>
+                                                handleChangeActiveItem(index)
+                                            }
+                                        />
+                                    );
+                                }
+                            })}
                         </Menu>
                     </aside>
                     <div className='flex-1 bg-[#f1f1ee]'>{children}</div>
