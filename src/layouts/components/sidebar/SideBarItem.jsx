@@ -11,7 +11,7 @@ function SideBarItem({ title, to, icon: Icon, active, onClick }) {
             onClick={onClick}
         >
             {Icon && <Icon className='' color='inherit' />}
-            <span className='text-sm md:text-lg'>{title}</span>
+            <span className='text-sm md:text-lg hidden md:block'>{title}</span>
         </NavLink>
     );
 }

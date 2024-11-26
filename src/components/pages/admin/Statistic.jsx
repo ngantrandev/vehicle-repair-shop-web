@@ -303,7 +303,7 @@ export default function Statistic() {
             },
             {
                 to: configs.routes.admin.dashboard.services,
-                label: 'Danh sách dịch vụ',
+                label: 'Thống kê',
             },
         ]);
     }, [setBreadcrumbsData]);
@@ -396,7 +396,7 @@ export default function Statistic() {
     }, []);
 
     return (
-        <div className='flex-1 bg-[#f1f1ee] px-4'>
+        <div className='bg-light-gray flex-1 px-4'>
             <div className='flex w-full flex-col justify-center py-5'>
                 <Breadcrumbs />
             </div>

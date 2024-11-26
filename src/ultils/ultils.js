@@ -39,6 +39,19 @@ const getUserDataLogedin = () => {
     return null;
 };
 
+const saveUserDataLogedin = (user, token, remember) => {
+    if (remember) {
+        localStorage.setItem('user', JSON.stringify(user));
+        let date = new Date();
+        date.setTime(date.getTime() + 365 * 24 * 60 * 60 * 1000);
+        let expires = 'expires=' + date.toUTCString();
+        document.cookie = `token=${token}; ${expires};`;
+    } else {
+        sessionStorage.setItem('user', JSON.stringify(user));
+        document.cookie = `token=${token}; path=/`;
+    }
+};
+
 const getAccessToken = () => {
     const token = getCookie('token');
 
@@ -186,7 +199,8 @@ const getFormatedAddress = (address) => {
 
 const getFormatedImageUrl = (url) => {
     // Kiểm tra xem URL có bắt đầu bằng "http" hoặc "https" không
-    if (/^https?:\/\//i.test(url)) {
+    url = url.trim();
+    if (/^(https?:\/\/|blob:http)/i.test(url)) {
         return url;
     }
     // Nếu không, ghép API endpoint với URL
@@ -205,6 +219,7 @@ const getDateMonth = (date) => {
 
 const ultils = {
     getUserDataLogedin,
+    saveUserDataLogedin,
     isValidInteger,
     getCurrencyFormat,
     convertTimeToGMT7,

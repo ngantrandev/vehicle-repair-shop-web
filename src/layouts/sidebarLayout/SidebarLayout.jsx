@@ -93,7 +93,7 @@ function SidebarLayout({ children }) {
                 <Header className='mx-2 flex items-center justify-between gap-x-2 border-b-2 bg-white py-[8px] sm:gap-x-8 md:mx-5 md:gap-x-16 lg:gap-x-4' />
                 <div className='flex h-auto flex-1'>
                     <aside className='border-r-2'>
-                        <Menu className='grid w-full grid-cols-3 flex-col md:flex'>
+                        <Menu className='w-full'>
                             {items.map((item, index) => {
                                 if (item.isLabel) {
                                     return (
@@ -121,7 +121,7 @@ function SidebarLayout({ children }) {
                             })}
                         </Menu>
                     </aside>
-                    <div className='flex-1 bg-[#f1f1ee]'>{children}</div>
+                    <div className='flex-1'>{children}</div>
                 </div>
             </div>
 

@@ -94,7 +94,7 @@ const patchFormData = async (apiPath, data = {}) => {
         if (error.response) {
             return error.response;
         } else if (error.request) {
-            throw new Error('No response received from server');
+            throw new Error(error.message);
         } else {
             throw new Error(error.message);
         }

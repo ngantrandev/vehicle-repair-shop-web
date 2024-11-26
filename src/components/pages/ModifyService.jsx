@@ -18,8 +18,6 @@ import itemsService from '@/src/services/itemsService';
 
 import Breadcrumbs from '@/src/components/Breadcrumbs/Breadcrumbs';
 
-const baseApiEnpoint = import.meta.env.VITE_API_BASE_URL;
-
 function ModifyService() {
     const { service_id: serviceId } = useParams();
 
@@ -88,7 +86,9 @@ function ModifyService() {
 
                 setImage({
                     data: null,
-                    preview: baseApiEnpoint + resData.data.image_url,
+                    preview: ultils.getFormatedImageUrl(
+                        resData?.data?.image_url
+                    ),
                 });
             } catch (error) {
                 console.log(error);

@@ -2,8 +2,6 @@ import PropTypes from 'prop-types';
 
 import ultils from '@/src/ultils/ultils';
 
-const baseApiEnpoint = import.meta.env.VITE_API_BASE_URL;
-
 function ServiceItem({ itemData, className, ...otherProps }) {
     const customClassName = ['h-72 w-72 overflow-hidden border-2'];
 
@@ -27,7 +25,7 @@ function ServiceItem({ itemData, className, ...otherProps }) {
             >
                 <img
                     className='h-full w-full object-cover'
-                    src={`${baseApiEnpoint}${image_url}`}
+                    src={ultils.getFormatedImageUrl(image_url)}
                     alt={name}
                 />
             </div>

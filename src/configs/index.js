@@ -23,6 +23,8 @@ const routes = {
             bookings: '/admin/dashboard/bookings',
             stations: '/admin/dashboard/station',
             statistics: '/admin/dashboard/statistics',
+            userinfo: '/admin/dashboard/users/:user_id/info',
+            staffinfo: '/admin/dashboard/staffs/:staff_id/info',
         },
         service: {
             modify: 'admin/services/:service_id/modify',

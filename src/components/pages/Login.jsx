@@ -41,7 +41,10 @@ function Login() {
 
         const result = await authService.login({ username, password });
 
-        if (result.status !== configs.STATUS_CODE.OK) {
+        if (result.status === configs.STATUS_CODE.FORBIDDEN) {
+            ultils.notifyError('Tài khoản của bạn đã bị khóa');
+            return;
+        } else if (result.status === configs.STATUS_CODE.NOT_FOUND) {
             ultils.notifyError('Sai tên tài khoản hoặc mật khẩu');
 
             setUser({
@@ -66,17 +69,7 @@ function Login() {
             return;
         }
 
-        if (isSaveDevice) {
-            localStorage.setItem('user', JSON.stringify(resData.data));
-
-            let date = new Date();
-            date.setTime(date.getTime() + 365 * 24 * 60 * 60 * 1000);
-            let expires = 'expires=' + date.toUTCString();
-            document.cookie = `token=${resData.token}; ${expires};`;
-        } else {
-            sessionStorage.setItem('user', JSON.stringify(resData.data));
-            document.cookie = `token=${resData.token}; path=/`;
-        }
+        ultils.saveUserDataLogedin(resData.data, resData.token, isSaveDevice);
 
         const userRole = ultils.getUserRole(resData.token);
 

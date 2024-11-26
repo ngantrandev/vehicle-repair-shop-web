@@ -2,22 +2,20 @@ import { useEffect, useState } from 'react';
 import { CSVLink } from 'react-csv';
 import dayjs from 'dayjs';
 
-import userService from '@/src/services/userService';
-import configs from '@/src/configs';
-import ultils from '@/src/ultils/ultils';
+import Breadcrumbs from '@/src/components/Breadcrumbs/Breadcrumbs';
 import Button from '@/src/components/button';
 import UserList from '@/src/components/pages/admin/User/UserList';
+import configs from '@/src/configs';
 import useBreadcrumbs from '@/src/hooks/useBreadcrumbs';
+import userService from '@/src/services/userService';
+import ultils from '@/src/ultils/ultils';
 import ViewCompactIcon from '@mui/icons-material/ViewCompact';
-import Breadcrumbs from '@/src/components/Breadcrumbs/Breadcrumbs';
 
 function User() {
     const [users, setUsers] = useState([]);
     const [csvData, setCsvData] = useState([]);
 
-    const { breadcrumbs, setBreadcrumbsData } = useBreadcrumbs();
-
-    console.log(breadcrumbs);
+    const { setBreadcrumbsData } = useBreadcrumbs();
 
     useEffect(() => {
         setBreadcrumbsData([

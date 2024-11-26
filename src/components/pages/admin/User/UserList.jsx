@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
+import { useNavigate } from 'react-router-dom';
 
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -68,6 +69,8 @@ function UserList({ className, data }) {
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(10);
     const [rowDatas, setRowDatas] = useState([]);
+
+    const navigate = useNavigate();
 
     useEffect(() => {
         setUsers(data);
@@ -215,7 +218,10 @@ function UserList({ className, data }) {
                                             );
                                         })}
 
-                                        <TableCell align='left'>
+                                        <TableCell
+                                            align='left'
+                                            sx={{ display: 'flex', gap: 1 }}
+                                        >
                                             {row.active == 1 ? (
                                                 <Button
                                                     rounded
@@ -241,6 +247,30 @@ function UserList({ className, data }) {
                                                     </p>
                                                 </Button>
                                             )}
+
+                                            <Button
+                                                rounded
+                                                className='bg-green-500 hover:bg-green-600 active:bg-green-500'
+                                                onClick={() => {
+                                                    navigate(
+                                                        `/admin/dashboard/users/${row.id}/info`,
+
+                                                        {
+                                                            state: {
+                                                                data: users[
+                                                                    page *
+                                                                        rowsPerPage +
+                                                                        index
+                                                                ],
+                                                            },
+                                                        }
+                                                    );
+                                                }}
+                                            >
+                                                <p className='text-white'>
+                                                    Chi tiết
+                                                </p>
+                                            </Button>
                                         </TableCell>
                                     </TableRow>
                                 );

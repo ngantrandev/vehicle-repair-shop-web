@@ -5,9 +5,9 @@ import Header from '@/src/layouts/components/header';
 
 function DefaultLayout({ children }) {
     return (
-        <div className='mx-2 md:mx-12'>
-            <div className='h-full w-full'>
-                <Header className='flex h-[70px] w-full items-center justify-between gap-x-2 border-b-2 bg-white py-[14px] sm:gap-x-8 md:gap-x-16 lg:gap-x-4' />
+        <div className='h-screen md:mx-5'>
+            <div className='flex h-full w-full flex-col'>
+                <Header className='mx-2 flex items-center justify-between gap-x-2 border-b-2 bg-white py-[8px] sm:gap-x-8 md:mx-5 md:gap-x-16 lg:gap-x-4' />
                 {children}
             </div>
             <ToastContainer

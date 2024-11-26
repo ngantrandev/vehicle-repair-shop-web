@@ -21,8 +21,6 @@ import stationsService from '@/src/services/stationsService';
 import ultils from '@/src/ultils';
 import ViewCompactIcon from '@mui/icons-material/ViewCompact';
 
-const baseApiEnpoint = import.meta.env.VITE_API_BASE_URL;
-
 function BookingDetail() {
     const { booking_id: bookingId, user_id: userId } = useParams();
 
@@ -34,6 +32,8 @@ function BookingDetail() {
 
     const [selectedStaff, setSelectedStaff] = useState('');
     const [selectedStation, setSelectedStation] = useState('');
+
+    console.log(selectedStation);
     const [note, setNote] = useState('');
 
     const [booking, setBooking] = useState({});
@@ -653,7 +653,7 @@ function BookingDetail() {
                         </h1>
                         <Image
                             className='w-full border-2 border-primary object-cover md:w-11/12 lg:w-4/5'
-                            src={`${baseApiEnpoint}${booking.image_url}`}
+                            src={ultils.getFormatedImageUrl(booking?.image_url)}
                             alt=''
                         />
                     </div>

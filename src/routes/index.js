@@ -19,6 +19,8 @@ import CreateStation from '@/src/components/pages/admin/Station/CreateStation.js
 import Profile from '@/src/components/pages/Profile.jsx';
 import Statistic from '@/src/components/pages/admin/Statistic.jsx';
 import HomeLayout from '@/src/layouts/HomeLayout/HomeLayout';
+import UserInfo from '@/src/components/pages/admin/User/UserInfo';
+import StaffInfo from '@/src/components/pages/admin/Staff/StaffInfo';
 
 const publicRoutes = [
     { path: configs.routes.login, component: Login, layout: null },
@@ -40,8 +42,20 @@ const privateRoutes = [
         role: configs.USER_ROLES.admin,
     },
     {
+        path: configs.routes.admin.dashboard.userinfo,
+        component: UserInfo,
+        layout: SidebarLayout,
+        role: configs.USER_ROLES.admin,
+    },
+    {
         path: configs.routes.admin.dashboard.staffs,
         component: Staff,
+        layout: SidebarLayout,
+        role: configs.USER_ROLES.admin,
+    },
+    {
+        path: configs.routes.admin.dashboard.staffinfo,
+        component: StaffInfo,
         layout: SidebarLayout,
         role: configs.USER_ROLES.admin,
     },

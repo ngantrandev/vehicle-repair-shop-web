@@ -62,7 +62,7 @@ function Input({
 
     if (disabled) {
         customClassName.push(
-            'cursor-not-allowed border-neutral-200 pointer-events-none'
+            'cursor-not-allowed bg-gray-100 border-neutral-100 pointer-events-none text-neutral-400'
         );
     }
 
@@ -79,7 +79,7 @@ function Input({
                 placeholder={placeholder}
                 className={customClassName.join(' ')}
                 value={value}
-                onChange={onChange}
+                onChange={!disabled ? onChange : null}
                 {...props}
             />
 

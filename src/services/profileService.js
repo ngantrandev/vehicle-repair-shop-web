@@ -11,10 +11,9 @@ const getProfileByUsername = async (username) => {
 
 const updateProfile = async (userId, data) => {
     try {
-        const res = await httpRequests.patchFormData(
-            `/profile/${userId}`,
-            data
-        );
+        const res = await httpRequests.patchFormData(`/profile/${userId}`, {
+            ...data,
+        });
         return res;
     } catch (error) {
         throw new Error(error);

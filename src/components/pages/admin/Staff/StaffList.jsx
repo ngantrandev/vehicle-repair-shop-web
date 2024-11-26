@@ -1,5 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
+import ultils from '@/src/ultils/ultils';
+import { useNavigate } from 'react-router-dom';
 
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -9,9 +11,7 @@ import TableHead from '@mui/material/TableHead';
 import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
 
-import ultils from '@/src/ultils/ultils';
 import Button from '@/src/components/button';
-import userService from '@/src/services/userService';
 import configs from '@/src/configs';
 import staffService from '@/src/services/staffService';
 
@@ -69,6 +69,8 @@ function StaffList({ className, data }) {
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(10);
     const [rowDatas, setRowDatas] = useState([]);
+
+    const navigate = useNavigate();
 
     useEffect(() => {
         setStaffs(data);
@@ -249,9 +251,24 @@ function StaffList({ className, data }) {
                                                 <Button
                                                     rounded
                                                     className='bg-green-500 hover:bg-green-600 active:bg-green-500'
+                                                    onClick={() => {
+                                                        navigate(
+                                                            `/admin/dashboard/staffs/${row.id}/info`,
+
+                                                            {
+                                                                state: {
+                                                                    data: staffs[
+                                                                        page *
+                                                                            rowsPerPage +
+                                                                            index
+                                                                    ],
+                                                                },
+                                                            }
+                                                        );
+                                                    }}
                                                 >
                                                     <p className='text-white'>
-                                                        Chỉnh sửa
+                                                        Chi tiết
                                                     </p>
                                                 </Button>
                                             </div>

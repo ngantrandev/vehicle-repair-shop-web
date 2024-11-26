@@ -17,9 +17,9 @@ import SignOutIcon from '@/src/assets/icon/SignOutIcon';
 import DefaultAvatar from '@/src/assets/icon/DefaultAvatar';
 import Image from '@/src/components/image/Image';
 import useUser from '@/src/hooks/useUser';
+import Utils from '@/src/ultils';
 
 const webName = import.meta.env.VITE_WEB_NAME;
-const baseApiEnpoint = import.meta.env.VITE_API_BASE_URL;
 
 function Header({ className }) {
     const navigate = useNavigate();
@@ -50,7 +50,7 @@ function Header({ className }) {
 
         setAvatar((pre) => ({
             ...pre,
-            preview: baseApiEnpoint + user?.data?.image_url,
+            preview: Utils.getFormatedImageUrl(user?.data?.image_url),
         }));
     }, [user]);
 
@@ -326,14 +326,14 @@ function Header({ className }) {
                                     {...attrs}
                                 >
                                     <div
-                                        className='flex h-10 items-center gap-2 px-4 hover:cursor-pointer hover:bg-slate-300'
+                                        className='flex h-10 select-none items-center gap-2 px-4 hover:cursor-pointer hover:bg-slate-300'
                                         onClick={handleClickGoToProfile}
                                     >
                                         <PersonIcon className='h-6 w-6' />
                                         <p>Xem hồ sơ</p>
                                     </div>
                                     <div
-                                        className='flex h-10 items-center gap-2 px-4 hover:cursor-pointer hover:bg-slate-300'
+                                        className='flex h-10 select-none items-center gap-2 px-4 hover:cursor-pointer hover:bg-slate-300'
                                         onClick={handleClickSignOut}
                                     >
                                         <SignOutIcon className='h-6 w-6' />
