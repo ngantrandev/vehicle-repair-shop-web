@@ -21,6 +21,8 @@ import Statistic from '@/src/components/pages/admin/Statistic.jsx';
 import HomeLayout from '@/src/layouts/HomeLayout/HomeLayout';
 import UserInfo from '@/src/components/pages/admin/User/UserInfo';
 import StaffInfo from '@/src/components/pages/admin/Staff/StaffInfo';
+import PaymentResult from '@/src/components/pages/PaymentResult';
+import FreeLayout from '@/src/layouts/FreeLayout/FreeLayout';
 
 const publicRoutes = [
     { path: configs.routes.login, component: Login, layout: null },
@@ -31,6 +33,11 @@ const publicRoutes = [
         path: configs.routes.service.detail,
         component: ServiceDetail,
         layout: HomeLayout,
+    },
+    {
+        path: configs.routes.payment_result,
+        component: PaymentResult,
+        layout: FreeLayout,
     },
 ];
 

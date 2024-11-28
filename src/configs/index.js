@@ -4,6 +4,7 @@ const routes = {
     home: '/home',
     resetPassword: '/reset-password',
     profile: '/profile/',
+    payment_result: '/payment-result',
     service: {
         create: '/services/new',
         detail: '/services/:service_id',

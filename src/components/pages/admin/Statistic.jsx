@@ -396,7 +396,7 @@ export default function Statistic() {
     }, []);
 
     return (
-        <div className='bg-light-gray flex-1 px-4'>
+        <div className='flex-1 bg-light-gray px-4'>
             <div className='flex w-full flex-col justify-center py-5'>
                 <Breadcrumbs />
             </div>

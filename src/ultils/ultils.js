@@ -193,6 +193,10 @@ const notifyWarning = (message, configs = {}) => {
     });
 };
 
+const convertTimeFormat = (time, currFormat, targetFormat) => {
+    return moment(time, currFormat).format(targetFormat);
+};
+
 const getFormatedAddress = (address) => {
     return address?.address_name + ', ' + address?.full_address;
 };
@@ -237,6 +241,7 @@ const ultils = {
     getFormatedTime,
     getFormatedImageUrl,
     getDateMonth,
+    convertTimeFormat,
 };
 
 export default ultils;
