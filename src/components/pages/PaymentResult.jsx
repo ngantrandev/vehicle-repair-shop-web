@@ -1,3 +1,5 @@
+import configs from '@/src/configs';
+import paymentService from '@/src/services/payments.service';
 import ultils from '@/src/ultils';
 import { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
@@ -15,7 +17,8 @@ const columns = [
         param: 'vnp_Amount',
         label: 'Số tiền thanh toán',
         format: (value) => {
-            return ultils.getCurrencyFormat(value);
+            // VNPay trả về số tiền theo đơn vị là amount * 100
+            return ultils.getCurrencyFormat(value / 100);
         },
     },
     {
@@ -24,7 +27,19 @@ const columns = [
     },
     {
         param: 'vnp_BankTranNo',
-        label: 'Mã giao dịch cổng thanh toán',
+        label: 'Mã giao dịch tại ngân hàng',
+    },
+    {
+        param: 'vnp_TransactionNo',
+        label: 'Mã giao dịch tại VNPay',
+        format: (value) => {
+            if (value) return value;
+            else return '';
+        },
+    },
+    {
+        param: 'vnp_TxnRef',
+        label: 'Mã giao dịch tại cửa hàng',
     },
     {
         param: 'vnp_CardType',
@@ -42,16 +57,14 @@ const columns = [
         },
     },
     {
-        param: 'vnp_TransactionNo',
-        label: 'Mã giao dịch',
-    },
-    {
         param: 'vnp_TransactionStatus',
         label: 'Trạng thái giao dịch',
-    },
-    {
-        param: 'vnp_TxnRef',
-        label: 'Mã tham chiếu trên hệ thống của cửa hàng',
+        format: (value) => {
+            if (!value) {
+                return 'Giao dịch không thành công';
+            }
+            return transactionStatusCodes[value];
+        },
     },
 ];
 
@@ -79,33 +92,58 @@ const websiteInfo = {
 function PaymentResult() {
     const [searchParams] = useSearchParams();
     const [isSuccess, setIsSuccess] = useState(false);
+    const [params, setParams] = useState({});
 
     useEffect(() => {
-        const responseCode = searchParams.get('vnp_ResponseCode');
-        if (!responseCode || responseCode !== '00') {
-            setIsSuccess(false);
-        } else {
-            setIsSuccess(responseCode === '00');
-        }
+        setParams({
+            vnp_Amount: searchParams.get('vnp_Amount'),
+            vnp_BankCode: searchParams.get('vnp_BankCode'),
+            vnp_BankTranNo: searchParams.get('vnp_BankTranNo'),
+            vnp_CardType: searchParams.get('vnp_CardType'),
+            vnp_OrderInfo: searchParams.get('vnp_OrderInfo'),
+            vnp_PayDate: searchParams.get('vnp_PayDate'),
+            vnp_ResponseCode: searchParams.get('vnp_ResponseCode'),
+            vnp_TmnCode: searchParams.get('vnp_TmnCode'),
+            vnp_TransactionNo: searchParams.get('vnp_TransactionNo'),
+            vnp_TransactionStatus: searchParams.get('vnp_TransactionStatus'),
+            vnp_TxnRef: searchParams.get('vnp_TxnRef'),
+            vnp_SecureHash: searchParams.get('vnp_SecureHash'),
+        });
     }, [searchParams]);
 
+    useEffect(() => {
+        const fetchPaymentStatus = async (queryParams) => {
+            if (Object.keys(queryParams).length === 0) return;
+
+            const res = await paymentService.returnPayment(queryParams);
+
+            if (res.status == configs.STATUS_CODE.OK) {
+                setIsSuccess(true);
+            }
+        };
+
+        fetchPaymentStatus(params);
+    }, [params]);
+
+    const transactionStatus = searchParams.get('vnp_TransactionStatus');
     return (
         <div className='mx-2 flex-1 text-xs md:mx-10 md:text-base'>
             <h1 className='mt-5 text-2xl font-bold'>
-                {isSuccess ? (
-                    <div className='text-green-500'>Giao dịch thành công</div>
-                ) : (
-                    <div className='text-red-500'>Giao dịch thất bại</div>
-                )}
+                {isSuccess
+                    ? 'Giao dịch thành công'
+                    : transactionStatusCodes[transactionStatus]}
             </h1>
 
             <table className='mt-5 table-auto'>
                 <tbody>
-                    {columns.map(({ param, label, format }) => {
+                    {columns.map(({ param, label, format }, index) => {
                         const value = searchParams.get(param);
                         if (param === 'vnp_TransactionStatus') {
                             return (
-                                <tr key={param}>
+                                <tr
+                                    key={param}
+                                    className={index % 2 != 0 && 'bg-gray-100'}
+                                >
                                     <td className='border border-gray-400 p-2'>
                                         {label}
                                     </td>
@@ -116,7 +154,10 @@ function PaymentResult() {
                             );
                         }
                         return (
-                            <tr key={param}>
+                            <tr
+                                key={param}
+                                className={index % 2 != 0 && 'bg-gray-100'}
+                            >
                                 <td className='border border-gray-400 p-2'>
                                     {label}
                                 </td>

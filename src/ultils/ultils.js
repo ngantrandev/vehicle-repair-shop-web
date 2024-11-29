@@ -203,12 +203,16 @@ const getFormatedAddress = (address) => {
 
 const getFormatedImageUrl = (url) => {
     // Kiểm tra xem URL có bắt đầu bằng "http" hoặc "https" không
-    url = url.trim();
-    if (/^(https?:\/\/|blob:http)/i.test(url)) {
-        return url;
+    try {
+        url = url.trim();
+        if (/^(https?:\/\/|blob:http)/i.test(url)) {
+            return url;
+        }
+        // Nếu không, ghép API endpoint với URL
+        return `${baseApiEnpoint}${url}`;
+    } catch (error) {
+        return '';
     }
-    // Nếu không, ghép API endpoint với URL
-    return `${baseApiEnpoint}${url}`;
 };
 
 const getDateMonth = (date) => {
