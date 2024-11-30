@@ -1,8 +1,10 @@
 import httpRequests from '@/src/ultils/httpRequest.js';
 
-const getAllBooking = async () => {
+const getAllBooking = async (params) => {
     try {
-        const res = await httpRequests.get('/admin/bookings');
+        const res = await httpRequests.get('/admin/bookings', {
+            params: params,
+        });
         return res;
     } catch (error) {
         throw new Error(error);

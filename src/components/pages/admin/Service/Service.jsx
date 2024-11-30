@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import Button from '@/src/components/button';
@@ -9,10 +9,13 @@ import serviceService from '@/src/services/serviceService';
 import Breadcrumbs from '@/src/components/Breadcrumbs/Breadcrumbs';
 import useBreadcrumbs from '@/src/hooks/useBreadcrumbs';
 import ViewCompactIcon from '@mui/icons-material/ViewCompact';
+import Input from '@/src/components/input/Input';
 
 function Service() {
     const [services, setServices] = useState([]);
+    const [categories, setCategories] = useState([]);
     const navigate = useNavigate();
+    const [searchInput, setSearchInput] = useState('');
 
     const { setBreadcrumbsData } = useBreadcrumbs();
 
@@ -30,18 +33,43 @@ function Service() {
         ]);
     }, [setBreadcrumbsData]);
 
+    const handleKeyDown = useCallback(
+        (e) => {
+            if (e.key === 'Enter') {
+                getServices({
+                    key: searchInput,
+                });
+            }
+        },
+        [searchInput]
+    );
+
+    const getServices = useCallback(async (params) => {
+        const res = await serviceService.getListService(params);
+
+        if (res.status == configs.STATUS_CODE.OK) {
+            const resData = res.data;
+
+            setServices(resData.data);
+        }
+    }, []);
+
     useEffect(() => {
         const fetchServices = async () => {
             try {
                 const res = await serviceService.getListService({});
+                const resCategories =
+                    await serviceService.getServiceCategories();
 
-                if (res.status !== configs.STATUS_CODE.OK) {
-                    return;
+                if (resCategories.status == configs.STATUS_CODE.OK) {
+                    setCategories(resCategories.data.data);
                 }
 
-                const resData = res.data;
+                if (res.status == configs.STATUS_CODE.OK) {
+                    const resData = res.data;
 
-                setServices(resData.data);
+                    setServices(resData.data);
+                }
             } catch (error) {
                 console.log(error);
             }
@@ -81,6 +109,77 @@ function Service() {
                     <span>Thêm mới</span>
                 </Button>
             </div>
+
+            <div className='mb-8 w-full overflow-hidden rounded-2xl pt-0 shadow-[rgba(0,5,0,0.15)_1px_1px_60px_1px]'>
+                <h2 className='border-b-2 px-4 py-2 font-bold'>
+                    Bộ lọc tìm kiếm
+                </h2>
+                <div className='grid w-full grid-cols-6 gap-4 p-8'>
+                    <div className='col-span-3 flex w-full gap-2'>
+                        <div className='flex-1'>
+                            <Input
+                                className='h-10 rounded-md border-2 border-neutral-500 px-2 focus:border-primary'
+                                placeholder='Bạn cần tìm kiếm gì?'
+                                value={searchInput}
+                                onChange={(e) => setSearchInput(e.target.value)}
+                                onKeyDown={handleKeyDown}
+                            />
+                        </div>
+                        <Button
+                            rounded
+                            className='h-full'
+                            onClick={()=>{
+                                getServices({
+                                    key: searchInput,
+                                });
+                            }}
+                        >
+                            Tìm kiếm
+                        </Button>
+                    </div>
+
+                    <div className='col-span-2 col-start-1 flex flex-col'>
+                        <label htmlFor='price'>Sắp xếp theo phí dịch vụ</label>
+                        <select
+                            name=''
+                            id='price'
+                            className='h-10 rounded-md border-2 border-neutral-500 px-2 focus:border-primary'
+                        >
+                            <option value=''>Tất cả</option>
+                            <option value=''>Thấp tới cao</option>
+                            <option value=''>Cao tới thấp</option>
+                        </select>
+                    </div>
+                    <div className='col-span-2 flex flex-col'>
+                        <label htmlFor='state'>Sắp xếp theo trạng thái</label>
+                        <select
+                            name=''
+                            id='state'
+                            className='h-10 rounded-md border-2 border-neutral-500 px-2 focus:border-primary'
+                        >
+                            <option value=''>Tất cả</option>
+                            <option value=''>Đang cung cấp</option>
+                            <option value=''>Ngừng cung cấp</option>
+                        </select>
+                    </div>
+                    <div className='col-span-2 col-start-1 flex flex-col'>
+                        <label htmlFor='type'>Sắp xếp theo loại dịch vụ</label>
+                        <select
+                            name='type'
+                            id='type'
+                            className='h-10 rounded-md border-2 border-neutral-500 px-2 focus:border-primary'
+                        >
+                            <option value=''>Tất cả</option>
+                            {categories.map((category) => (
+                                <option key={category.id} value={category.id}>
+                                    {category.name}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
+                </div>
+            </div>
+
             <div className='relative w-full flex-1 pb-3'>
                 <Paginateditems
                     data={services}

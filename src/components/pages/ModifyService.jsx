@@ -223,7 +223,7 @@ function ModifyService() {
                 id='container'
                 className='mx-20 flex h-full flex-col items-center bg-white'
             >
-                <div className='grid w-full flex-1 grid-cols-6 gap-x-10 gap-y-5 p-10'>
+                <div className='grid w-full flex-1 grid-cols-6 gap-x-10 gap-y-5 p-10 pt-0'>
                     <div className='col-span-2 flex flex-col gap-2'>
                         <label htmlFor='name'>Tên dịch vụ</label>
                         <Input

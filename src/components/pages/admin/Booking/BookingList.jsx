@@ -21,16 +21,16 @@ import {
 import Button from '@/src/components/button';
 
 const columns = [
-    { id: 'fullname', label: 'Họ tên', minWidth: 80 },
-    { id: 'id', label: 'Mã khách hàng', minWidth: 50 },
-
-    { id: 'service', label: 'Tên dịch vụ', minWidth: 100 },
+    { id: 'bookingId', label: 'Mã lịch hẹn', minWidth: 50 },
+    { id: 'fullname', label: 'Tên khách hàng', minWidth: 80 },
+    { id: 'userId', label: 'Mã khách hàng', minWidth: 50 },
     {
         id: 'phone',
         label: 'Số điện thoại',
         minWidth: 80,
         align: 'left',
     },
+    { id: 'service', label: 'Tên dịch vụ', minWidth: 100 },
     {
         id: 'created_at',
         label: 'Ngày tạo',
@@ -40,13 +40,19 @@ const columns = [
     {
         id: 'note',
         label: 'Ghi chú',
+        minWidth: 80,
+        align: 'left',
+    },
+    {
+        id: 'station',
+        label: 'Chi nhánh',
         minWidth: 120,
         align: 'left',
     },
     {
         id: 'status',
         label: 'Trạng thái',
-        minWidth: 120,
+        minWidth: 100,
         align: 'left',
         format: (value) => {
             return value === configs.BOOKING_STATE.pending ? (
@@ -79,8 +85,28 @@ const columns = [
     },
 ];
 
-function createData(fullname, id, service, phone, created_at, note, status) {
-    return { fullname, id, service, phone, created_at, note, status };
+function createData(
+    bookingId,
+    fullname,
+    userId,
+    service,
+    phone,
+    created_at,
+    note,
+    station,
+    status
+) {
+    return {
+        bookingId,
+        fullname,
+        userId,
+        service,
+        phone,
+        created_at,
+        note,
+        station,
+        status,
+    };
 }
 
 function BookingList({ className, data }) {
@@ -99,14 +125,16 @@ function BookingList({ className, data }) {
     useEffect(() => {
         const rows = [
             ...bookings.map((booking) => {
-                const { user, service } = booking;
+                const { user, service, id: bookingId, staff } = booking;
                 return createData(
+                    bookingId,
                     user.lastname + ' ' + user.firstname,
                     user.id,
                     service.name,
                     user.phone,
                     ultils.getFormatedTime(booking.created_at),
                     booking.note,
+                    staff?.station?.name,
                     booking.status
                 );
             }),
@@ -178,7 +206,7 @@ function BookingList({ className, data }) {
 
                             <TableCell
                                 align='left'
-                                style={{ minWidth: 120, fontWeight: 'bold' }}
+                                style={{ minWidth: 100, fontWeight: 'bold' }}
                             >
                                 <div>Hành động</div>
                             </TableCell>

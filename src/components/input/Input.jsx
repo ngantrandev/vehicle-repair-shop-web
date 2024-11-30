@@ -62,7 +62,7 @@ function Input({
 
     if (disabled) {
         customClassName.push(
-            'cursor-not-allowed bg-gray-100 border-neutral-100 pointer-events-none text-neutral-400'
+            'cursor-not-allowed bg-gray-100 border-neutral-100 pointer-events-none text-neutral-400 bg-neutral-100'
         );
     }
 

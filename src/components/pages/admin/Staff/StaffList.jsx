@@ -41,6 +41,12 @@ const columns = [
         format: (value) => value.toLocaleString('en-US'),
     },
     {
+        id: 'station',
+        label: 'Chi nhánh',
+        minWidth: 120,
+        align: 'left',
+    },
+    {
         id: 'active',
         label: 'Trạng thái',
         minWidth: 120,
@@ -60,8 +66,26 @@ const columns = [
     },
 ];
 
-function createData(id, username, fullname, email, phone, created_at, active) {
-    return { id, username, fullname, email, phone, created_at, active };
+function createData(
+    id,
+    username,
+    fullname,
+    email,
+    phone,
+    created_at,
+    active,
+    station
+) {
+    return {
+        id,
+        username,
+        fullname,
+        email,
+        phone,
+        created_at,
+        active,
+        station,
+    };
 }
 
 function StaffList({ className, data }) {
@@ -86,7 +110,8 @@ function StaffList({ className, data }) {
                     staff.email,
                     staff.phone,
                     ultils.getFormatedTime(staff.created_at),
-                    staff.active
+                    staff.active,
+                    staff?.service_station?.name
                 );
             }),
         ];
