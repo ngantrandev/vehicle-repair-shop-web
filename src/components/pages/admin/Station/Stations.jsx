@@ -1,14 +1,13 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import configs from '@/src/configs';
-import stationsService from '@/src/services/stationsService';
+import Breadcrumbs from '@/src/components/Breadcrumbs/Breadcrumbs.jsx';
 import Button from '@/src/components/button/Button.jsx';
 import StationList from '@/src/components/pages/admin/Station/StationList.jsx';
+import configs from '@/src/configs';
 import useBreadcrumbs from '@/src/hooks/useBreadcrumbs.js';
+import stationsService from '@/src/services/stationsService';
 import ViewCompactIcon from '@mui/icons-material/ViewCompact';
-import Breadcrumbs from '@/src/components/Breadcrumbs/Breadcrumbs.jsx';
-import Input from '@/src/components/input/Input';
 
 function Stations() {
     const [stations, setStations] = useState([]);
@@ -81,12 +80,12 @@ function Stations() {
                 </Button>
             </div>
 
-            <div className='mb-8 w-full overflow-hidden rounded-2xl pt-0 shadow-[rgba(0,5,0,0.15)_1px_1px_60px_1px]'>
+            {/* <div className='mb-8 w-full overflow-hidden rounded-2xl pt-0 shadow-[rgba(0,5,0,0.15)_1px_1px_60px_1px]'>
                 <h2 className='border-b-2 px-4 py-2 font-bold'>
                     Bộ lọc tìm kiếm
                 </h2>
                 <div className='grid w-full grid-cols-6 gap-4 p-8'>
-                    <div className='col-span-3 flex w-full gap-2'>
+                    <div className='col-span-3 flex w-full gap-2 mb-20'>
                         <div className='flex-1'>
                             <Input
                                 className='h-10 rounded-md border-2 border-neutral-500 px-2 focus:border-primary'
@@ -97,50 +96,8 @@ function Stations() {
                             Tìm kiếm
                         </Button>
                     </div>
-
-                    <div className='col-span-2 col-start-1 flex flex-col'>
-                        <label htmlFor='time'>Sắp xếp theo thời gian</label>
-                        <select
-                            name=''
-                            id='time'
-                            className='h-10 rounded-md border-2 border-neutral-500 px-2 focus:border-primary'
-                        >
-                            <option value=''>Mới nhất</option>
-                            <option value=''>Cũ nhất</option>
-                        </select>
-                    </div>
-                    <div className='col-span-2 flex flex-col'>
-                        <label htmlFor='state'>Sắp xếp theo trạng thái</label>
-                        <select
-                            name=''
-                            id='state'
-                            className='h-10 rounded-md border-2 border-neutral-500 px-2 focus:border-primary'
-                        >
-                            <option value=''>Tất cả</option>
-                            {/* {bookingStates.map((state) => (
-                                <option key={state.value} value={state.value}>
-                                    {state.label}
-                                </option>
-                            ))} */}
-                        </select>
-                    </div>
-                    <div className='col-span-2 col-start-1 flex flex-col'>
-                        <label htmlFor='station'>Trạm dịch vụ</label>
-                        <select
-                            name='station'
-                            id='station'
-                            className='h-10 rounded-md border-2 border-neutral-500 px-2 focus:border-primary'
-                        >
-                            <option value=''>Tất cả</option>
-                            {/* {stations.map((station) => (
-                                <option key={station.id} value={station.id}>
-                                    {station.name}
-                                </option>
-                            ))} */}
-                        </select>
-                    </div>
                 </div>
-            </div>
+            </div> */}
 
             <StationList
                 data={stations}

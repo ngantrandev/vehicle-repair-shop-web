@@ -509,6 +509,18 @@ function BookingDetail() {
                         <p>{`Tên dịch vụ: ${booking.service?.name}`}</p>
                         <p>{`Phí dịch vụ: ${ultils.getCurrencyFormat(booking.service?.price)}`}</p>
                         <p>{`Thời gian  : ${booking.service?.estimated_time}`}</p>
+                        <div>
+                            <span>Trạng thái thanh toán: </span>
+                            {booking.is_paid ? (
+                                <span className='font-bold text-green-500'>
+                                    Đã thanh toán
+                                </span>
+                            ) : (
+                                <span className='font-bold text-red-500'>
+                                    Chưa thanh toán
+                                </span>
+                            )}
+                        </div>
                     </div>
                     <div className='row-span-1 p-3'>
                         <h2 className='font-bold'>Danh sách sản phẩm</h2>

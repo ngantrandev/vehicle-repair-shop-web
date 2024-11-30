@@ -210,8 +210,8 @@ const GoongMap = forwardRef(function GoongMap(
                         <Marker
                             longitude={currentPoint[0]}
                             latitude={currentPoint[1]}
-                            offsetLeft={-20}
-                            offsetTop={-20}
+                            offsetLeft={-30}
+                            offsetTop={-30}
                         >
                             <Pin className={'h-16 w-16 text-blue-500'} />
                         </Marker>

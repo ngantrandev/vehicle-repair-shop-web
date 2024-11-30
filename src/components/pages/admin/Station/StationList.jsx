@@ -17,10 +17,15 @@ const columns = [
     { id: 'id', label: 'Mã trạm', minWidth: 100 },
     { id: 'fullname', label: 'Tên trạm dịch vụ', minWidth: 100 },
     { id: 'address', label: 'Địa chỉ', minWidth: 100 },
+    {
+        id: 'staffCount',
+        label: 'Số lượng nhân viên',
+        minWidth: 100,
+    },
 ];
 
-function createData(stt, id, fullname, address) {
-    return { stt, id, fullname, address };
+function createData(stt, id, fullname, address, staffCount) {
+    return { stt, id, fullname, address, staffCount };
 }
 
 function StationList({ data, className }) {
@@ -43,7 +48,8 @@ function StationList({ data, className }) {
                     index + 1,
                     station.id,
                     station.name,
-                    address?.address_name + ' ' + address?.full_address
+                    address?.address_name + ' ' + address?.full_address,
+                    station.staff_count
                 );
             }),
         ];
