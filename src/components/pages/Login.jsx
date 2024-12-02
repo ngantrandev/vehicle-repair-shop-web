@@ -163,15 +163,15 @@ function Login() {
                                 Ghi nhớ thiết bị
                             </label>
                         </div>
-                        {/* <div>
+                        <div>
                             <Button
                                 textonly
-                                to={configs.routes.resetPassword}
+                                to={configs.routes['forgot-password']}
                                 className='font-medium'
                             >
                                 Quên mật khẩu?
                             </Button>
-                        </div> */}
+                        </div>
                     </div>
                     <Button
                         className='w-full font-medium'

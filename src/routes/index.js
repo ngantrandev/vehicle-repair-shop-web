@@ -23,6 +23,8 @@ import UserInfo from '@/src/components/pages/admin/User/UserInfo';
 import StaffInfo from '@/src/components/pages/admin/Staff/StaffInfo';
 import PaymentResult from '@/src/components/pages/PaymentResult';
 import FreeLayout from '@/src/layouts/FreeLayout/FreeLayout';
+import ForgotPassword from '../components/pages/ForgotPassword';
+import ResetPassword from '../components/pages/ResetPassword';
 
 const publicRoutes = [
     { path: configs.routes.login, component: Login, layout: null },
@@ -37,6 +39,16 @@ const publicRoutes = [
     {
         path: configs.routes.payment_result,
         component: PaymentResult,
+        layout: FreeLayout,
+    },
+    {
+        path: configs.routes['forgot-password'],
+        component: ForgotPassword,
+        layout: FreeLayout,
+    },
+    {
+        path: configs.routes['reset-password'],
+        component: ResetPassword,
         layout: FreeLayout,
     },
 ];
