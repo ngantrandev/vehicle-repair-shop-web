@@ -310,6 +310,20 @@ function BookingDetail() {
         }
     };
 
+    const handleExportInvoice = async () => {
+        try {
+            const res = await bookingService.exportInvoice(bookingId);
+
+            if (res.status == configs.STATUS_CODE.OK) {
+                ultils.notifySuccess('Xuất hóa đơn thành công');
+            } else {
+                ultils.notifyError('Xuất hóa đơn thất bại');
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
     const buttonList = [
         {
             text: 'Xác nhận yêu cầu',
@@ -355,6 +369,11 @@ function BookingDetail() {
             isShow:
                 status === configs.BOOKING_STATE.cancelled ||
                 status === configs.BOOKING_STATE.done,
+        },
+        {
+            text: 'Xuất hóa đơn',
+            onClick: handleExportInvoice,
+            isShow: true,
         },
     ];
 
@@ -529,7 +548,7 @@ function BookingDetail() {
                                 return (
                                     <div
                                         key={index}
-                                        className='mb-1 flex w-2/3 items-center justify-between gap-2'
+                                        className='mb-1 flex items-center justify-between gap-2'
                                     >
                                         <Image
                                             src={ultils.getFormatedImageUrl(
@@ -541,25 +560,33 @@ function BookingDetail() {
                                         <span className='flex-1 text-sm'>
                                             {item.name}
                                         </span>
-                                        <div className='flex items-center justify-center'>
-                                            <IconButton
-                                                color='#ccc'
-                                                aria-label='remove'
-                                                onClick={() => {
-                                                    handleRemoveItem(item.id);
-                                                }}
-                                            >
-                                                <RemoveIcon />
-                                            </IconButton>
-                                            <p>{item.quantity}</p>
-                                            <IconButton
-                                                aria-label='add'
-                                                onClick={() => {
-                                                    handleAddItem(item);
-                                                }}
-                                            >
-                                                <AddIcon />
-                                            </IconButton>
+                                        <div className='mr-4 flex items-center justify-center'>
+                                            {!booking.is_paid ? (
+                                                <>
+                                                    <IconButton
+                                                        color='#ccc'
+                                                        aria-label='remove'
+                                                        onClick={() => {
+                                                            handleRemoveItem(
+                                                                item.id
+                                                            );
+                                                        }}
+                                                    >
+                                                        <RemoveIcon />
+                                                    </IconButton>
+                                                    <p>{item.quantity}</p>
+                                                    <IconButton
+                                                        aria-label='add'
+                                                        onClick={() => {
+                                                            handleAddItem(item);
+                                                        }}
+                                                    >
+                                                        <AddIcon />
+                                                    </IconButton>
+                                                </>
+                                            ) : (
+                                                <p>{`Số lượng: ${item.quantity}`}</p>
+                                            )}
                                         </div>
                                     </div>
                                 );
@@ -593,16 +620,13 @@ function BookingDetail() {
                             }}
                         />
                     </div>
-                    <div className='p-3'>
+                    <div className={`p-3 ${booking.is_paid && 'hidden'}`}>
                         <div className='max-h-28 overflow-auto'>
                             {listItems.map((item, index) => {
                                 return (
                                     <div
                                         key={index}
                                         className='mb-1 mr-10 flex items-center justify-between gap-2 hover:cursor-pointer hover:bg-gray-100'
-                                        onClick={() => {
-                                            handleAddItem(item);
-                                        }}
                                     >
                                         <Image
                                             src={ultils.getFormatedImageUrl(
@@ -614,6 +638,15 @@ function BookingDetail() {
                                         <span className='flex-1 text-sm'>
                                             {item.name}
                                         </span>
+
+                                        <Button
+                                            rounded
+                                            onClick={() => {
+                                                handleAddItem(item);
+                                            }}
+                                        >
+                                            Thêm
+                                        </Button>
                                     </div>
                                 );
                             })}

@@ -106,6 +106,18 @@ const userUndoCancelBooking = async (bookingId) => {
     }
 };
 
+const exportInvoice = async (bookingId) => {
+    try {
+        const res = await httpRequests.post(`/invoices/export`, {
+            booking_id: bookingId,
+        });
+
+        return res;
+    } catch (error) {
+        throw new Error(error);
+    }
+};
+
 const bookingService = {
     createBooking,
     getAllBookings,
@@ -116,6 +128,7 @@ const bookingService = {
     getAllBookingsOfStaff,
     undoBooking,
     userUndoCancelBooking,
+    exportInvoice,
 };
 
 export default bookingService;

@@ -19,6 +19,14 @@ import ViewCompactIcon from '@mui/icons-material/ViewCompact';
 
 const { RangePicker } = DatePicker;
 
+const bookingStatus = {
+    [configs.BOOKING_STATE.pending]: 'Chờ xác nhận',
+    [configs.BOOKING_STATE.done]: 'Hoàn thành',
+    [configs.BOOKING_STATE.fixing]: 'Đang sửa chữa',
+    [configs.BOOKING_STATE.cancelled]: 'Đã hủy',
+    [configs.BOOKING_STATE.accepted]: 'Chuẩn bị sửa',
+};
+
 const actionButtons = [
     {
         title: 'Ngày',
@@ -153,8 +161,11 @@ const ExportReport = ({ bookings }) => {
             'Địa chỉ khách hàng':
                 booking.address.address_name +
                 ' ' +
-                booking.address.fulladdress,
-            'Trạng thái': booking.status,
+                booking.address.full_address,
+            'Trạng thái phục vụ': bookingStatus[booking.status],
+            'Trạng thái thanh toán': booking.is_paid
+                ? 'Đã thanh toán'
+                : 'Chưa thanh toán',
         };
 
         acc.push(data);

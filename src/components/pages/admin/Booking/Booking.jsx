@@ -168,7 +168,15 @@ function BookingMagager() {
                                 onKeyDown={handleKeyDown}
                             />
                         </div>
-                        <Button rounded className='h-full'>
+                        <Button
+                            rounded
+                            className='h-full'
+                            onClick={() => {
+                                getBookings({
+                                    search: searchInput,
+                                });
+                            }}
+                        >
                             Tìm kiếm
                         </Button>
                     </div>
