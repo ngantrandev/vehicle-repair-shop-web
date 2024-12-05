@@ -125,13 +125,14 @@ function PaymentResult() {
         fetchPaymentStatus(params);
     }, [params]);
 
-    const transactionStatus = searchParams.get('vnp_TransactionStatus');
     return (
         <div className='mx-2 flex-1 text-xs md:mx-10 md:text-base'>
             <h1 className='mt-5 text-2xl font-bold'>
-                {isSuccess
-                    ? 'Giao dịch thành công'
-                    : transactionStatusCodes[transactionStatus]}
+                {isSuccess ? (
+                    <h1 className='text-green-500'> Giao dịch thành công</h1>
+                ) : (
+                    <h1 className='text-red-500'> Giao dịch thất bại</h1>
+                )}
             </h1>
 
             <table className='mt-5 table-auto'>

@@ -2,7 +2,7 @@ import httpRequests from '@/src/ultils/httpRequest.js';
 
 const returnPayment = async (queryParams) => {
     try {
-        const res = await httpRequests.get('/payments/result?', {
+        const res = await httpRequests.get('/payments/vnpay-result?', {
             params: {
                 ...queryParams,
             },
