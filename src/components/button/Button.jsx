@@ -26,7 +26,7 @@ const Button = forwardRef(function Button(
 
     if (rounded) {
         customClassName.push(
-            'rounded-md bg-primary text-white hover:bg-primary-dark active:bg-primary p-2'
+            'rounded-md bg-primary text-white hover:bg-blue-800 active:bg-primary p-2'
         );
     } else if (outlined) {
         customClassName.push(

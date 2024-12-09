@@ -413,30 +413,34 @@ export default function Statistic() {
             </div>
 
             <div className='grid w-full grid-cols-12 grid-rows-3 gap-4'>
-                <div className='col-span-3 row-span-1 flex rounded-lg bg-white p-4'>
+                <div className='col-span-3 row-span-1 flex rounded-lg bg-blue-600 p-4 text-white'>
                     <div className='flex h-full flex-col justify-center gap-1'>
-                        <p className='opacity-80'>Tổng doanh thu</p>
+                        <p className=''>Tổng doanh thu</p>
                         <p className='text-xl font-bold'>
                             {ultils.getCurrencyFormat(totalPrice)}
                         </p>
                     </div>
                 </div>
-                <div className='col-span-3 row-span-1 rounded-lg bg-white p-4'>
+                <div className='col-span-3 row-span-1 rounded-lg bg-orange-400 p-4 text-white'>
                     <div className='flex h-full flex-col justify-center gap-1'>
-                        <p className='opacity-80'>Tổng lịch hẹn</p>
+                        <p className=''>Tổng lịch hẹn</p>
                         <p className='text-xl font-bold'>{bookings.length}</p>
                     </div>
                 </div>
-                <div className='col-span-3 row-span-1 rounded-lg bg-white p-4'>
+                <div className='col-span-3 row-span-1 rounded-lg bg-blue-400 p-4 font-bold text-white'>
                     <div className='flex h-full flex-col justify-center gap-2'>
-                        <p className='opacity-80'>Lịch hẹn hôm nay</p>
-                        <p className='font-bold'>{todayBookings.length}</p>
+                        <p className=''>Lịch hẹn hôm nay</p>
+                        <p className='text-xl font-bold'>
+                            {todayBookings.length}
+                        </p>
                     </div>
                 </div>
-                <div className='col-span-3 row-span-1 rounded-lg bg-white p-4'>
+                <div className='col-span-3 row-span-1 rounded-lg bg-red-400 p-4 font-bold text-white'>
                     <div className='flex h-full flex-col justify-center gap-2'>
-                        <p className='opacity-80'>Tổng lịch hẹn đang xử lý</p>
-                        <p className='font-bold'>{pendingBookings.length}</p>
+                        <p className=''>Tổng lịch hẹn đang xử lý</p>
+                        <p className='text-xl font-bold'>
+                            {pendingBookings.length}
+                        </p>
                     </div>
                 </div>
                 <div className='col-span-12 row-span-2 grid grid-cols-12 gap-4'>

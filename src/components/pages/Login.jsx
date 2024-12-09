@@ -1,19 +1,16 @@
 import { useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 
-import bannerImg from '@/src/assets/images/login_banner.jpg';
-import configs from '@/src/configs';
-import Input from '@/src/components/input';
 import Button from '@/src/components/button';
+import Input from '@/src/components/input';
+import configs from '@/src/configs';
 
+import banner from '@/src/assets/banner.svg';
+import rightarrow from '@/src/assets/icon/RightArrow';
+import useUser from '@/src/hooks/useUser';
 import authService from '@/src/services/authService';
 import ultils from '@/src/ultils';
-
-const webName = import.meta.env.VITE_WEB_NAME || 'Shop sửa xe';
-import vehicleImg from '@/src/assets/images/motorcycle.png';
-import Image from '@/src/components/image/Image';
-import useUser from '@/src/hooks/useUser';
 
 function Login() {
     const [username, setUsername] = useState('');
@@ -21,6 +18,7 @@ function Login() {
     const [isSaveDevice, setIsSaveDevice] = useState(false);
     const navigate = useNavigate();
     const location = useLocation();
+    const [loading, setLoading] = useState(false);
 
     const { setUser } = useUser();
 
@@ -39,99 +37,107 @@ function Login() {
             return;
         }
 
-        const result = await authService.login({ username, password });
+        try {
+            setLoading(true);
+            const result = await authService.login({ username, password });
 
-        if (result.status === configs.STATUS_CODE.FORBIDDEN) {
-            ultils.notifyError('Tài khoản của bạn đã bị khóa');
-            return;
-        } else if (result.status === configs.STATUS_CODE.NOT_FOUND) {
-            ultils.notifyError('Sai tên tài khoản hoặc mật khẩu');
+            if (result.status === configs.STATUS_CODE.FORBIDDEN) {
+                ultils.notifyError('Tài khoản của bạn đã bị khóa');
+                return;
+            } else if (result.status === configs.STATUS_CODE.NOT_FOUND) {
+                ultils.notifyError('Sai tên tài khoản hoặc mật khẩu');
 
-            setUser({
-                data: null,
-                token: null,
-                role: null,
-                isLoggedin: false,
-            });
-            return;
-        }
-
-        const resData = result.data;
-
-        if (!resData || !resData.data || !resData.token) {
-            ultils.notifyError('Đăng nhập thất bại');
-            setUser({
-                data: null,
-                token: null,
-                role: null,
-                isLoggedin: false,
-            });
-            return;
-        }
-
-        ultils.saveUserDataLogedin(resData.data, resData.token, isSaveDevice);
-
-        const userRole = ultils.getUserRole(resData.token);
-
-        setUser({
-            data: resData.data,
-            token: resData.token,
-            role: userRole,
-            isLoggedin: true,
-        });
-
-        ultils.notifySuccess('Đăng nhập thành công');
-
-        setTimeout(() => {
-            if (userRole == configs.USER_ROLES.admin) {
-                navigate(configs.routes.admin.dashboard.statistics);
+                setUser({
+                    data: null,
+                    token: null,
+                    role: null,
+                    isLoggedin: false,
+                });
                 return;
             }
-            if (from === configs.routes.register) {
-                navigate(configs.routes.home);
-            } else {
-                navigate(from);
+
+            const resData = result.data;
+
+            if (!resData || !resData.data || !resData.token) {
+                ultils.notifyError('Đăng nhập thất bại');
+                setUser({
+                    data: null,
+                    token: null,
+                    role: null,
+                    isLoggedin: false,
+                });
+                return;
             }
-        }, 2000);
+
+            ultils.saveUserDataLogedin(
+                resData.data,
+                resData.token,
+                isSaveDevice
+            );
+
+            const userRole = ultils.getUserRole(resData.token);
+
+            setUser({
+                data: resData.data,
+                token: resData.token,
+                role: userRole,
+                isLoggedin: true,
+            });
+
+            ultils.notifySuccess('Đăng nhập thành công');
+
+            setTimeout(() => {
+                if (userRole == configs.USER_ROLES.admin) {
+                    navigate(configs.routes.admin.dashboard.statistics);
+                    return;
+                }
+                if (from === configs.routes.register) {
+                    navigate(configs.routes.home);
+                } else {
+                    navigate(from);
+                }
+            }, 2000);
+        } catch (error) {
+            setLoading(false);
+            ultils.notifyError('Đăng nhập thất bại, vui lòng thử lại sau');
+            setUser({
+                data: null,
+                token: null,
+                role: null,
+                isLoggedin: false,
+            });
+            return;
+        }
     };
 
     return (
-        <div className='grid w-full grid-cols-1 text-[15px] lg:grid-cols-3'>
-            <div className='relative hidden h-screen select-none lg:col-span-2 lg:block'>
-                <div className='absolute left-0 top-0 flex h-full w-full flex-col items-center justify-center bg-slate-300 opacity-25'></div>
-                <div className='absolute left-0 top-0 flex h-full w-full flex-col items-center justify-center'>
-                    <Image src={vehicleImg} alt='' className='size-56' />
-                    <h1 className='inline-block bg-gradient-to-r from-cyan-500 to-primary bg-clip-text text-7xl font-bold capitalize text-transparent'>
-                        {webName}
-                    </h1>
-                </div>
-                <Image
-                    src={bannerImg}
-                    alt='banner image'
-                    className='h-full w-full bg-transparent object-cover'
-                />
-            </div>
-            <div className='flex h-screen content-center items-center justify-center lg:col-span-1 lg:min-h-screen lg:pl-[48px] lg:pr-[48px]'>
-                <div className='w-11/12 place-content-center bg-white sm:w-4/5 md:w-3/5 lg:w-full'>
-                    <h2 className='bold mb-4 text-center text-[40px] font-bold text-primary'>
-                        Đăng nhập
-                    </h2>
-                    <form>
-                        <div className='mb-4'>
+        <div
+            tabIndex='-1'
+            className={`fixed inset-0 z-50 flex items-center justify-center bg-gray-200`}
+        >
+            <div className='grid w-1/2 grid-cols-2 flex-col overflow-hidden rounded-md bg-white'>
+                <div className='flex flex-col gap-4 p-5'>
+                    <div className='flex w-full items-center justify-center'>
+                        <Link to={configs.routes.home} className='w-3/5'>
+                            <img src={banner} alt='' className='' />
+                        </Link>
+                    </div>
+                    <form className='w-full'>
+                        <div className=''>
                             <label htmlFor='username' className=''>
-                                Tên tài khoản
+                                Email / Tên tài khoản
                             </label>
                             <Input
                                 rounded
                                 id='username'
                                 type='text'
-                                placeholder='Nhập tên tài khoản'
+                                placeholder='Nhập email hoặc tên tài khoản'
                                 className={'w-full p-2'}
                                 value={username}
                                 onChange={(e) => setUsername(e.target.value)}
                             />
                         </div>
-                        <div className='mb-4'>
+                        <div className=''>
                             <label htmlFor='password' className=''>
                                 Mât khẩu
                             </label>
@@ -146,7 +152,7 @@ function Login() {
                             />
                         </div>
                     </form>
-                    <div className='mb-4 flex justify-between'>
+                    <div className='flex justify-between'>
                         <div className='flex cursor-pointer items-center'>
                             <input
                                 type='checkbox'
@@ -174,23 +180,33 @@ function Login() {
                         </div>
                     </div>
                     <Button
+                        disabled={loading}
                         className='w-full font-medium'
                         rounded
                         onClick={() => handleSignIn()}
                     >
                         Đăng nhập
                     </Button>
-                    <div className='mt-4 flex gap-1'>
-                        <span>Bạn chưa có tài khoản?</span>
-
-                        <Button
-                            textonly
-                            to={configs.routes.register}
-                            className='font-medium'
-                        >
+                </div>
+                <div className='flex flex-col items-center justify-center gap-4 bg-blue-700 p-10 text-white'>
+                    <h2 className='text-2xl font-bold'>
+                        Bạn chưa có tài khoản?
+                    </h2>
+                    <h3 className='text-center'>
+                        Bạn muốn tham gia vào hệ thống của chúng tôi và tận
+                        hưởng các tiện ích của hệ thống. Còn chần chừ gì nữa mà
+                        không đăng ký tài khoản ngay nào!
+                    </h3>
+                    <Button
+                        outlined
+                        to={configs.routes.register}
+                        className='border-white font-bold text-white hover:bg-none'
+                    >
+                        <div>
+                            <img src={rightarrow} alt='' />
                             Đăng ký ngay
-                        </Button>
-                    </div>
+                        </div>
+                    </Button>
                 </div>
             </div>
 

@@ -9,7 +9,7 @@ function SuccessPopup({ title, content, onClosed }) {
             className={`fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50`}
         >
             <div className='relative flex max-h-full w-full max-w-2xl justify-center p-4'>
-                <div className='relative w-64 rounded-lg bg-white shadow'>
+                <div className='relative w-80 rounded-lg bg-white shadow'>
                     <div className='flex flex-col items-center justify-center space-y-4 py-4'>
                         <div className='flex w-full justify-center'>
                             <svg

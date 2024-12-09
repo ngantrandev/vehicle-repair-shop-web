@@ -1,17 +1,15 @@
 import { useCallback, useState } from 'react';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { Link } from 'react-router-dom';
 
-import bannerImg from '@/src/assets/images/login_banner.jpg';
-import configs from '@/src/configs';
-import Input from '@/src/components/input';
 import Button from '@/src/components/button';
-import ultils from '@/src/ultils/ultils';
+import Input from '@/src/components/input';
+import configs from '@/src/configs';
 import authService from '@/src/services/authService';
+import ultils from '@/src/ultils/ultils';
 
-const webName = import.meta.env.VITE_WEB_NAME || 'Shop sửa xe';
-import vehicleImg from '@/src/assets/images/motorcycle.png';
-import Image from '@/src/components/image/Image';
+import banner from '@/src/assets/banner.svg';
 
 function Register() {
     const [username, setUsername] = useState('');
@@ -86,7 +84,7 @@ function Register() {
                 }
             } catch (error) {
                 console.log(error);
-                ultils.notifyError('Đăng ký thất bại');
+                ultils.notifyError('Có lỗi xảy ra, vui lòng thử lại sau');
             }
         };
 
@@ -126,106 +124,101 @@ function Register() {
     }, []);
 
     return (
-        <div className='relative grid w-full grid-cols-1 text-[15px] lg:grid-cols-3'>
-            <div className='relative hidden h-screen select-none lg:col-span-2 lg:block'>
-                <div className='absolute left-0 top-0 flex h-full w-full flex-col items-center justify-center bg-slate-300 opacity-25'></div>
-                <div className='absolute left-0 top-0 flex h-full w-full select-none flex-col items-center justify-center'>
-                    <Image src={vehicleImg} alt='' className='size-56' />
-                    <h1 className='inline-block bg-gradient-to-r from-cyan-500 to-primary bg-clip-text text-7xl font-bold capitalize text-transparent'>
-                        {webName}
-                    </h1>
-                </div>
-                <Image
-                    src={bannerImg}
-                    alt='banner image'
-                    className='h-full w-full bg-transparent object-cover'
-                />
-            </div>
-            <div className='flex h-screen content-center items-center justify-center lg:col-span-1 lg:min-h-screen lg:pl-[48px] lg:pr-[48px]'>
-                <div className='w-11/12 place-content-center bg-white sm:w-4/5 md:w-3/5 lg:w-full'>
-                    <h2 className='bold mb-4 text-center text-[40px] font-bold text-primary'>
-                        Đăng ký
-                    </h2>
-                    <form>
-                        <div className='mb-4'>
-                            <label htmlFor='username' className=''>
-                                Tên người dùng
-                            </label>
-                            <Input
-                                rounded
-                                id='username'
-                                type='text'
-                                placeholder='Nhập tên người dùng'
-                                className={'w-full p-2'}
-                                value={username}
-                                onChange={handleUsernameChange}
-                            />
+        <div
+            tabIndex='-1'
+            className={`fixed inset-0 z-50 flex items-center justify-center bg-gray-200`}
+        >
+            <div className='w-1/3 flex-col overflow-hidden rounded-md bg-white'>
+                <div className='flex flex-col gap-4 p-5'>
+                    <div className='flex w-full items-center justify-center'>
+                        <Link to={configs.routes.home} className='w-3/5'>
+                            <img src={banner} alt='' className='' />
+                        </Link>
+                    </div>
+                    <form className='flex flex-col gap-2'>
+                        <div className='grid grid-cols-2 gap-2'>
+                            <div className=''>
+                                <label htmlFor='username' className=''>
+                                    Tên người dùng
+                                </label>
+                                <Input
+                                    rounded
+                                    id='username'
+                                    type='text'
+                                    placeholder='Nhập tên người dùng'
+                                    className={'w-full p-2'}
+                                    value={username}
+                                    onChange={handleUsernameChange}
+                                />
+                            </div>
+                            <div className=''>
+                                <label htmlFor='fullname' className=''>
+                                    Họ và tên
+                                </label>
+                                <Input
+                                    rounded
+                                    id='fullname'
+                                    type='text'
+                                    placeholder='Nhập họ và tên'
+                                    className={'w-full p-2'}
+                                    value={fullName}
+                                    onChange={handleFullNameChange}
+                                />
+                            </div>
                         </div>
-                        <div className='mb-4'>
-                            <label htmlFor='fullname' className=''>
-                                Họ và tên
-                            </label>
-                            <Input
-                                rounded
-                                id='fullname'
-                                type='text'
-                                placeholder='Nhập họ và tên'
-                                className={'w-full p-2'}
-                                value={fullName}
-                                onChange={handleFullNameChange}
-                            />
+                        <div className='grid grid-cols-2 gap-2'>
+                            <div className=''>
+                                <label htmlFor='email' className=''>
+                                    Email
+                                </label>
+                                <Input
+                                    rounded
+                                    id='email'
+                                    type='text'
+                                    placeholder='Nhập email'
+                                    className={'w-full p-2'}
+                                    value={email}
+                                    onChange={handleEmailChange}
+                                />
+                            </div>
+                            <div className=''>
+                                <label htmlFor='phone' className=''>
+                                    Số điện thoại
+                                </label>
+                                <Input
+                                    rounded
+                                    id='phone'
+                                    type='text'
+                                    placeholder='Nhập số điện thoại'
+                                    className={'w-full p-2'}
+                                    value={phone}
+                                    onChange={handlePhoneChange}
+                                />
+                            </div>
                         </div>
-                        <div className='mb-4'>
-                            <label htmlFor='email' className=''>
-                                Email
-                            </label>
-                            <Input
-                                rounded
-                                id='email'
-                                type='text'
-                                placeholder='Nhập email'
-                                className={'w-full p-2'}
-                                value={email}
-                                onChange={handleEmailChange}
-                            />
-                        </div>
-                        <div className='mb-4'>
-                            <label htmlFor='phone' className=''>
-                                Số điện thoại
-                            </label>
-                            <Input
-                                rounded
-                                id='phone'
-                                type='text'
-                                placeholder='Nhập số điện thoại'
-                                className={'w-full p-2'}
-                                value={phone}
-                                onChange={handlePhoneChange}
-                            />
-                        </div>
-                        <div className='mb-4'>
+                        <div className=''>
                             <label htmlFor='password' className=''>
-                                Password
+                                Mật khẩu
                             </label>
                             <Input
                                 rounded
                                 id='password'
                                 type='password'
-                                placeholder='Nhập password'
+                                placeholder='Nhập mật khẩu'
                                 className={'w-full p-2'}
                                 value={password}
                                 onChange={handlePasswordChange}
                             />
                         </div>
-                        <div className='mb-4'>
+                        <div className=''>
                             <label htmlFor='confirm-password' className=''>
-                                Nhập lại password
+                                Nhập lại mật khẩu
                             </label>
                             <Input
                                 rounded
                                 id='confirm-password'
                                 type='password'
-                                placeholder='Nhập lại password'
+                                placeholder='Nhập mật khẩu'
                                 className={'w-full p-2'}
                                 value={confirmPassword}
                                 onChange={handleConfirmPasswordChange}
@@ -235,14 +228,14 @@ function Register() {
                     </form>
 
                     <Button
-                        className='w-full font-medium'
+                        className='mt-2 w-full font-medium'
                         rounded
                         onClick={handleRegister}
                     >
                         Đăng ký
                     </Button>
                     <div className='mt-4 flex gap-1'>
-                        <span>Bạn chưa có tài khoản?</span>
+                        <span>Bạn đã có tài khoản?</span>
 
                         <Button
                             textonly
@@ -254,6 +247,7 @@ function Register() {
                     </div>
                 </div>
             </div>
+
             <ToastContainer
                 position='bottom-right'
                 autoClose={5000}

@@ -1,11 +1,11 @@
 import httpRequests from '@/src/ultils/httpRequest';
 
-const createBooking = async (bookingData) => {
+const createBooking = async ({ file, ...other }) => {
     try {
-        const res = await httpRequests.postFormData(
-            `users/bookings`,
-            bookingData
-        );
+        const res = await httpRequests.postFormData(`users/bookings`, {
+            data: JSON.stringify(other),
+            file,
+        });
 
         return res;
     } catch (error) {

@@ -180,7 +180,9 @@ function Profile() {
             userData
         );
 
-        if (res.status === configs.STATUS_CODE.OK) {
+        const statusCode = res.status;
+
+        if (statusCode === configs.STATUS_CODE.OK) {
             ultils.notifySuccess('Cập nhật thông tin thành công');
             setIsModify(false);
             setLoggedUserData((pre) => ({
@@ -196,6 +198,9 @@ function Profile() {
                     phone: phone,
                 },
             }));
+        } else if (statusCode == configs.STATUS_CODE.CONFLICT) {
+            ultils.notifyError('Tên tài khoản hoặc email đã tồn tại');
+            console.log(res);
         } else {
             ultils.notifyError('Cập nhật thông tin thất bại');
         }

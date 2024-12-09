@@ -45,6 +45,15 @@ function BookingDetail() {
     const [anchorEl, setAnchorEl] = useState(null);
     const open = Boolean(anchorEl);
 
+    const canModifyItems = useMemo(() => {
+        return (
+            user?.role === configs.USER_ROLES.admin &&
+            status !== configs.BOOKING_STATE.cancelled &&
+            status !== configs.BOOKING_STATE.done &&
+            !booking.is_paid
+        );
+    }, [user, status]);
+
     const handleClick = (event) => {
         setAnchorEl(event.currentTarget);
     };
@@ -561,7 +570,7 @@ function BookingDetail() {
                                             {item.name}
                                         </span>
                                         <div className='mr-4 flex items-center justify-center'>
-                                            {!booking.is_paid ? (
+                                            {canModifyItems ? (
                                                 <>
                                                     <IconButton
                                                         color='#ccc'
@@ -622,34 +631,35 @@ function BookingDetail() {
                     </div>
                     <div className={`p-3 ${booking.is_paid && 'hidden'}`}>
                         <div className='max-h-28 overflow-auto'>
-                            {listItems.map((item, index) => {
-                                return (
-                                    <div
-                                        key={index}
-                                        className='mb-1 mr-10 flex items-center justify-between gap-2 hover:cursor-pointer hover:bg-gray-100'
-                                    >
-                                        <Image
-                                            src={ultils.getFormatedImageUrl(
-                                                item.image_url
-                                            )}
-                                            alt={item.name}
-                                            className='size-10'
-                                        />
-                                        <span className='flex-1 text-sm'>
-                                            {item.name}
-                                        </span>
-
-                                        <Button
-                                            rounded
-                                            onClick={() => {
-                                                handleAddItem(item);
-                                            }}
+                            {canModifyItems &&
+                                listItems.map((item, index) => {
+                                    return (
+                                        <div
+                                            key={index}
+                                            className='mb-1 mr-10 flex items-center justify-between gap-2 hover:cursor-pointer hover:bg-gray-100'
                                         >
-                                            Thêm
-                                        </Button>
-                                    </div>
-                                );
-                            })}
+                                            <Image
+                                                src={ultils.getFormatedImageUrl(
+                                                    item.image_url
+                                                )}
+                                                alt={item.name}
+                                                className='size-10'
+                                            />
+                                            <span className='flex-1 text-sm'>
+                                                {item.name}
+                                            </span>
+
+                                            <Button
+                                                rounded
+                                                onClick={() => {
+                                                    handleAddItem(item);
+                                                }}
+                                            >
+                                                Thêm
+                                            </Button>
+                                        </div>
+                                    );
+                                })}
                         </div>
                     </div>
                 </div>
