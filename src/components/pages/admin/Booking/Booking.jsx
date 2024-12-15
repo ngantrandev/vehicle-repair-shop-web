@@ -48,7 +48,7 @@ function BookingMagager() {
         setBreadcrumbsData([
             {
                 to: configs.routes.admin.dashboard.statistics,
-                label: 'Dashboard',
+                label: 'Home',
                 icon: ViewCompactIcon,
             },
             {

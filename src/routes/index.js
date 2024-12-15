@@ -23,8 +23,10 @@ import UserInfo from '@/src/components/pages/admin/User/UserInfo';
 import StaffInfo from '@/src/components/pages/admin/Staff/StaffInfo';
 import PaymentResult from '@/src/components/pages/PaymentResult';
 import FreeLayout from '@/src/layouts/FreeLayout/FreeLayout';
-import ForgotPassword from '../components/pages/ForgotPassword';
-import ResetPassword from '../components/pages/ResetPassword';
+import ForgotPassword from '@/src/components/pages/ForgotPassword';
+import ResetPassword from '@/src/components/pages/ResetPassword';
+import ImportGood from '@/src/components/pages/admin/Inventory/ImportGood';
+import Product from '@/src/components/pages/admin/Product';
 
 const publicRoutes = [
     { path: configs.routes.login, component: Login, layout: null },
@@ -129,6 +131,18 @@ const privateRoutes = [
     {
         path: configs.routes.admin.service.modify,
         component: ModifyService,
+        role: configs.USER_ROLES.admin,
+        layout: SidebarLayout,
+    },
+    {
+        path: configs.routes.admin.inventories.import,
+        component: ImportGood,
+        role: configs.USER_ROLES.admin,
+        layout: SidebarLayout,
+    },
+    {
+        path: configs.routes.admin.items.list,
+        component: Product,
         role: configs.USER_ROLES.admin,
         layout: SidebarLayout,
     },

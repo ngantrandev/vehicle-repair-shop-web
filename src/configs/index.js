@@ -36,6 +36,12 @@ const routes = {
             create: '/admin/dashboard/stations/new',
         },
         statistics: '/admin/dashboard/statistics',
+        inventories: {
+            import: '/admin/dashboard/inventories/import',
+        },
+        items: {
+            list: '/admin/dashboard/items',
+        },
     },
     staff: {
         task: '/staff/tasks',

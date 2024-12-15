@@ -81,7 +81,7 @@ export default function StaffInfo() {
         setBreadcrumbsData([
             {
                 to: configs.routes.admin.dashboard.statistics,
-                label: 'Dashboard',
+                label: 'Home',
                 icon: ViewCompactIcon,
             },
             {

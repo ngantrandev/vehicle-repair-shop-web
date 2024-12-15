@@ -14,6 +14,7 @@ import Person2OutlinedIcon from '@mui/icons-material/Person2Outlined';
 import HandymanOutlinedIcon from '@mui/icons-material/HandymanOutlined';
 import SatelliteAltOutlinedIcon from '@mui/icons-material/SatelliteAltOutlined';
 import SupportAgentOutlinedIcon from '@mui/icons-material/SupportAgentOutlined';
+import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
 
 const items = [
     {
@@ -55,6 +56,17 @@ const items = [
         to: configs.routes.admin.dashboard.stations,
         isLabel: false,
         icon: SatelliteAltOutlinedIcon,
+    },
+    {
+        title: 'Danh mục phụ tùng',
+        to: configs.routes.admin.items.list,
+        isLabel: false,
+    },
+    {
+        title: 'Nhập hàng',
+        to: configs.routes.admin.inventories.import,
+        isLabel: false,
+        icon: AddShoppingCartIcon,
     },
 ];
 

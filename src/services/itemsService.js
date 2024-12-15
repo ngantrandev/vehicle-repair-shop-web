@@ -1,8 +1,10 @@
 import httpRequest from '@/src/ultils/httpRequest';
 
-const getAllItems = async () => {
+const getAllItems = async (params) => {
     try {
-        const res = await httpRequest.get('/items');
+        const res = await httpRequest.get('/items', {
+            params: params,
+        });
 
         return res;
     } catch (error) {

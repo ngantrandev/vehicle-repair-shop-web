@@ -23,7 +23,7 @@ function Service() {
         setBreadcrumbsData([
             {
                 to: configs.routes.admin.dashboard.statistics,
-                label: 'Dashboard',
+                label: 'Home',
                 icon: ViewCompactIcon,
             },
             {
@@ -128,7 +128,7 @@ function Service() {
                         <Button
                             rounded
                             className='h-full'
-                            onClick={()=>{
+                            onClick={() => {
                                 getServices({
                                     key: searchInput,
                                 });
