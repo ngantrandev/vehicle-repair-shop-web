@@ -1,7 +1,5 @@
+import PropTypes from 'prop-types';
 import { useCallback, useEffect, useState } from 'react';
-import { DatePicker } from 'antd';
-
-const { RangePicker } = DatePicker;
 
 import Breadcrumbs from '@/src/components/Breadcrumbs/Breadcrumbs';
 import Button from '@/src/components/button';
@@ -10,8 +8,201 @@ import ProductList from '@/src/components/pages/admin/Product/ProductList';
 import configs from '@/src/configs';
 import useBreadcrumbs from '@/src/hooks/useBreadcrumbs';
 import itemsService from '@/src/services/itemsService';
+import statisticsService from '@/src/services/statisticService';
+import ultils from '@/src/ultils';
 import ViewCompactIcon from '@mui/icons-material/ViewCompact';
-import dayjs from 'dayjs';
+import { Box } from '@mui/material';
+import {
+    BarPlot,
+    ChartsGrid,
+    ChartsTooltip,
+    ChartsXAxis,
+    ChartsYAxis,
+    LinePlot,
+    MarkPlot,
+    ResponsiveChartContainer,
+} from '@mui/x-charts';
+import { axisClasses } from '@mui/x-charts/ChartsAxis';
+
+const actionButtons = [
+    {
+        title: 'Tháng trước',
+        mode: 'previous_month',
+    },
+    {
+        title: 'Tháng này',
+        mode: 'current_month',
+    },
+    {
+        title: 'Năm nay',
+        mode: 'current_year',
+    },
+];
+
+const RevenueComponent = ({ className }) => {
+    const [selectedMode, setSelectedMode] = useState('current_month');
+
+    const [xLabels, setXLabels] = useState([]);
+    const [quantities, setQuantities] = useState([]);
+    const [revenues, setRevenues] = useState([]);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const data = await statisticsService.getTopItems({
+                    mode: selectedMode,
+                });
+                const resData = data?.data;
+
+                const topItemsData = resData?.data;
+
+                setXLabels([]);
+
+                const newPData = [];
+                const newXLabels = [];
+
+                const newQuantities = [];
+                const newRevenue = [];
+
+                topItemsData.forEach((item) => {
+                    const { name, total_output, total_price } = item;
+
+                    newQuantities.push(total_output);
+                    newRevenue.push(total_price);
+
+                    newPData.push(total_output);
+                    newXLabels.push(name);
+                });
+
+                setQuantities(newQuantities);
+                setRevenues(newRevenue);
+                setXLabels(newXLabels);
+            } catch (error) {
+                console.log(error);
+            }
+        };
+
+        fetchData();
+    }, [selectedMode]);
+
+    return (
+        <div className={`w-full ${className}`}>
+            <div className='flex h-[56px] items-center justify-between px-4'>
+                <h2 className='font-bold'>Thống kê số lượng xuất (Top 5)</h2>
+                <div className='flex gap-2 hover:cursor-pointer'>
+                    {actionButtons.map(({ title, mode }, index) => {
+                        return (
+                            <p
+                                key={index}
+                                className={`rounded-lg border-2 p-1 px-2 text-center ${mode === selectedMode ? 'border-0 bg-primary text-white' : ''}`}
+                                onClick={() => setSelectedMode(mode)}
+                            >
+                                {title}
+                            </p>
+                        );
+                    })}
+                </div>
+            </div>
+            <div className={`flex w-full border-t-2 border-blue-200`}>
+                {revenues.length == 0 || quantities.length == 0 ? (
+                    <Box className='flex h-96 w-full items-center justify-center'>
+                        Không có dữ liệu
+                    </Box>
+                ) : (
+                    <Box sx={{ width: '100%', maxWidth: 600, maxHeight: 400 }}>
+                        <ResponsiveChartContainer
+                            xAxis={[
+                                {
+                                    scaleType: 'band',
+                                    data: xLabels, // Tên các phụ tùng
+                                    id: 'items',
+                                    label: 'Items',
+                                    valueFormatter: (value) => {
+                                        return value;
+                                    },
+                                },
+                            ]}
+                            yAxis={[{ id: 'money' }, { id: 'quantities' }]}
+                            series={[
+                                {
+                                    type: 'bar',
+                                    id: 'quantities',
+                                    yAxisId: 'quantities',
+                                    data: quantities, // Số lượng xuất
+                                    label: 'Số lượng xuất',
+                                    valueFormatter: (value) => {
+                                        return value + ' SP';
+                                    },
+                                },
+                                {
+                                    type: 'line',
+                                    id: 'revenue',
+                                    yAxisId: 'money',
+                                    data: revenues, // Doanh thu
+                                    color: 'red',
+                                    curve: 'linear',
+                                    label: 'Doanh thu',
+                                    valueFormatter: (value) => {
+                                        return ultils.getCurrencyFormat(value);
+                                    },
+                                },
+                            ]}
+                            height={400}
+                            margin={{ left: 70, right: 70 }}
+                            sx={{
+                                [`.${axisClasses.left} .${axisClasses.label}`]:
+                                    {
+                                        transform: 'translate(-25px, 0)',
+                                    },
+                                [`.${axisClasses.right} .${axisClasses.label}`]:
+                                    {
+                                        transform: 'translate(30px, 0)',
+                                    },
+                            }}
+                        >
+                            <ChartsGrid horizontal />
+                            <BarPlot
+                                slotProps={{
+                                    loadingOverlay: {
+                                        message: 'Đang tải dữ liệu...',
+                                    },
+
+                                    noDataOverlay: {
+                                        message: 'Không có dữ liệu',
+                                    },
+                                }}
+                                barLabel={(item) => {
+                                    return item.value + ' SP';
+                                }}
+                            />
+                            <MarkPlot />
+                            <LinePlot />
+                            <ChartsXAxis
+                                axisId='items'
+                                label='Thống kê số lương xuất và doanh thu'
+                                labelFontSize={18}
+                            />
+                            <ChartsYAxis
+                                axisId='quantities'
+                                label='Số lượng xuất'
+                                sx={{ stroke: '#02B2AF' }}
+                            />
+                            <ChartsYAxis
+                                axisId='money'
+                                position='right'
+                                sx={{ stroke: 'red' }}
+                                stroke='red'
+                                labelStyle={{ fill: 'red', color: 'red' }}
+                                label='Doanh thu'
+                            />
+                            <ChartsTooltip />
+                        </ResponsiveChartContainer>
+                    </Box>
+                )}
+            </div>
+        </div>
+    );
+};
 
 function User() {
     const [items, setItems] = useState([]);
@@ -20,7 +211,6 @@ function User() {
     const [searchValue, setSearchValue] = useState('');
     const [conhang, setConhang] = useState('');
     const [slxuat, setSlxuat] = useState('');
-    const [timeRange, setTimeRange] = useState(null);
 
     const { setBreadcrumbsData } = useBreadcrumbs();
 
@@ -73,7 +263,7 @@ function User() {
         }
 
         const filterData = items.filter((item) => {
-            if (item.name.includes(searchValue)) {
+            if (item.name.toLowerCase().includes(searchValue)) {
                 return item;
             }
         });
@@ -81,25 +271,9 @@ function User() {
         setFiltedItems(filterData);
     }, [searchValue, items]);
 
-    const handleChangeTime = (value) => {
-        setTimeRange(value);
-    };
-
     useEffect(() => {
         try {
-            let startDate = null;
-            let endDate = null;
-            if (timeRange) {
-                startDate = dayjs(timeRange[0]).format('YYYY-MM-DD');
-                endDate = dayjs(timeRange[1]).format('YYYY-MM-DD');
-            }
-
-            const params = {
-                start_date: startDate,
-                end_date: endDate,
-            };
-
-            const res = itemsService.getAllItems(params);
+            const res = itemsService.getAllItems();
 
             if (res.status !== configs.STATUS_CODE.OK) {
                 return;
@@ -113,7 +287,7 @@ function User() {
         } catch (error) {
             console.log(error);
         }
-    }, [timeRange]);
+    }, []);
 
     useEffect(() => {
         setBreadcrumbsData([
@@ -150,107 +324,73 @@ function User() {
         fetItems();
     }, []);
 
-    // useEffect(() => {
-    //     const exportData = items.reduce((acc, user, index) => {
-    //         const data = {
-    //             STT: index + 1,
-    //             'Mã khách hàng': user.id,
-    //             'Tên khách hàng': user.lastname + ' ' + user.firstname,
-    //             Email: user.email,
-    //             'Số điện thoại': '' + user.phone,
-    //             'Địa chỉ':
-    //                 user?.address &&
-    //                 user?.address?.address_name +
-    //                     ' ' +
-    //                     user?.address?.full_address,
-    //             'Ngày tạo': '' + ultils.getFormatedTime(user.created_at),
-    //             'Trạng thái': user.active == 1 ? 'Hoạt động' : 'Khóa',
-    //         };
-
-    //         acc.push(data);
-
-    //         return acc;
-    //     }, []);
-
-    //     setCsvData(exportData);
-    // }, [items]);
-
-    // const fileName = `user_list_${dayjs().format('YYYY-MM-DD')}.csv`;
-
     return (
-        <div className='flex h-full flex-1 flex-col items-center bg-white px-0 md:px-4'>
+        <div className='flex h-full flex-1 flex-col bg-white px-0 md:px-4'>
             <div className='flex w-full justify-between py-5'>
                 <Breadcrumbs />
-
-                {/* <Button rounded className='h-10'>
-                    <CSVLink data={csvData} filename={fileName}>
-                        Xuất excel
-                    </CSVLink>
-                </Button> */}
             </div>
 
-            <div className='mb-8 w-full overflow-hidden rounded-2xl pt-0 shadow-[rgba(0,5,0,0.15)_1px_1px_60px_1px]'>
-                <h2 className='border-b-2 px-4 py-2 font-bold'>
-                    Bộ lọc tìm kiếm
-                </h2>
-                <div className='grid w-full grid-cols-6 gap-4 p-8'>
-                    <div className='col-span-3 flex w-full gap-2'>
-                        <div className='flex-1'>
-                            <Input
-                                className='h-10 rounded-md border-2 border-neutral-500 px-2 focus:border-primary'
-                                placeholder='Bạn cần tìm kiếm gì?'
-                                value={searchValue}
-                                onChange={(e) => setSearchValue(e.target.value)}
-                            />
+            <div className='mb-8 flex w-full gap-4'>
+                <div className='flex-1 overflow-hidden rounded-2xl pt-0 shadow-[rgba(0,5,0,0.15)_1px_1px_60px_1px]'>
+                    <h2 className='border-b-2 px-4 py-2 font-bold'>
+                        Bộ lọc tìm kiếm
+                    </h2>
+                    <div className='grid w-full grid-cols-6 gap-4 p-8'>
+                        <div className='col-span-3 flex w-full gap-2'>
+                            <div className='flex-1'>
+                                <Input
+                                    className='h-10 rounded-md border-2 border-neutral-500 px-2 focus:border-primary'
+                                    placeholder='Bạn cần tìm kiếm gì?'
+                                    value={searchValue}
+                                    onChange={(e) =>
+                                        setSearchValue(e.target.value)
+                                    }
+                                />
+                            </div>
+                            <Button
+                                rounded
+                                className='h-full'
+                                onClick={handleSearch}
+                            >
+                                Tìm kiếm
+                            </Button>
                         </div>
-                        <Button
-                            rounded
-                            className='h-full'
-                            onClick={handleSearch}
-                        >
-                            Tìm kiếm
-                        </Button>
-                    </div>
 
-                    <div className='col-span-2 col-start-1 flex flex-col'>
-                        <label htmlFor='state'>Tồn kho</label>
-                        <select
-                            name=''
-                            id='state'
-                            className='h-10 rounded-md border-2 border-neutral-500 px-2 focus:border-primary'
-                            value={conhang}
-                            onChange={(e) => setConhang(e.target.value)}
-                        >
-                            <option value='#'>Tất cả</option>
-                            <option value='1'>Còn hàng</option>
-                            <option value='0'>Hết hàng</option>
-                            <option value='2'>Nhiều tới ít</option>
-                            <option value='3'>Ít tới nhiều</option>
-                        </select>
+                        <div className='col-span-3 col-start-1 flex flex-col'>
+                            <label htmlFor='state'>Tồn kho</label>
+                            <select
+                                name=''
+                                id='state'
+                                className='h-10 rounded-md border-2 border-neutral-500 px-2 focus:border-primary'
+                                value={conhang}
+                                onChange={(e) => setConhang(e.target.value)}
+                            >
+                                <option value='#'>Tất cả</option>
+                                <option value='1'>Còn hàng</option>
+                                <option value='0'>Hết hàng</option>
+                                <option value='2'>Nhiều tới ít</option>
+                                <option value='3'>Ít tới nhiều</option>
+                            </select>
+                        </div>
+                        <div className='col-span-3 flex flex-col'>
+                            <label htmlFor='state'>Số lượng xuất kho</label>
+                            <select
+                                name=''
+                                id='state'
+                                className='h-10 rounded-md border-2 border-neutral-500 px-2 focus:border-primary'
+                                value={slxuat}
+                                onChange={(e) => setSlxuat(e.target.value)}
+                            >
+                                <option value='#'>Tất cả</option>
+                                <option value='1'>Nhiều nhất</option>
+                                <option value='0'>Ít nhất</option>
+                            </select>
+                        </div>
                     </div>
-                    <div className='col-span-2 flex flex-col'>
-                        <label htmlFor='state'>Số lượng xuất kho</label>
-                        <select
-                            name=''
-                            id='state'
-                            className='h-10 rounded-md border-2 border-neutral-500 px-2 focus:border-primary'
-                            value={slxuat}
-                            onChange={(e) => setSlxuat(e.target.value)}
-                        >
-                            <option value='#'>Tất cả</option>
-                            <option value='1'>Nhiều nhất</option>
-                            <option value='0'>Ít nhất</option>
-                        </select>
-                    </div>
-                    <div className='col-span-2 flex flex-col'>
-                        <label htmlFor='state'>Thời gian</label>
-                        <RangePicker
-                            className='h-10 rounded-md border-2 border-neutral-500 px-2 focus:border-primary'
-                            value={timeRange}
-                            onChange={handleChangeTime}
-                            placeholder={['Từ ngày', 'Đến ngày']}
-                        />
-                    </div>
+                </div>
+
+                <div className='w-1/2'>
+                    <RevenueComponent className='overflow-hidden rounded-2xl pt-0 shadow-[rgba(0,5,0,0.15)_1px_1px_60px_1px]' />
                 </div>
             </div>
 
@@ -261,5 +401,10 @@ function User() {
         </div>
     );
 }
+
+RevenueComponent.propTypes = {
+    className: PropTypes.string,
+    onTotalRevenueChange: PropTypes.func,
+};
 
 export default User;

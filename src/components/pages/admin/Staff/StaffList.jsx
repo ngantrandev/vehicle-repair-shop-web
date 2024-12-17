@@ -34,8 +34,8 @@ const columns = [
         format: (value) => value.toLocaleString('en-US'),
     },
     {
-        id: 'created_at',
-        label: 'Ngày tạo',
+        id: 'current_tasks',
+        label: 'Nhiệm vụ hiện tại',
         minWidth: 120,
         align: 'left',
         format: (value) => value.toLocaleString('en-US'),
@@ -72,7 +72,7 @@ function createData(
     fullname,
     email,
     phone,
-    created_at,
+    current_tasks,
     active,
     station
 ) {
@@ -82,7 +82,7 @@ function createData(
         fullname,
         email,
         phone,
-        created_at,
+        current_tasks,
         active,
         station,
     };
@@ -102,18 +102,30 @@ function StaffList({ className, data }) {
 
     useEffect(() => {
         const rows = [
-            ...staffs.map((staff) => {
-                return createData(
-                    staff.id,
-                    staff.username,
-                    staff.lastname + ' ' + staff.firstname,
-                    staff.email,
-                    staff.phone,
-                    ultils.getFormatedTime(staff.created_at),
-                    staff.active,
-                    staff?.service_station?.name
-                );
-            }),
+            ...staffs.map(
+                ({
+                    id,
+                    username,
+                    lastname,
+                    firstname,
+                    email,
+                    phone,
+                    current_tasks,
+                    active,
+                    service_station,
+                }) => {
+                    return createData(
+                        id,
+                        username,
+                        lastname + ' ' + firstname,
+                        email,
+                        phone,
+                        current_tasks,
+                        active,
+                        service_station?.name
+                    );
+                }
+            ),
         ];
 
         setRowDatas(rows);

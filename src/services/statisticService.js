@@ -11,8 +11,32 @@ const getRevenue = async (params) => {
     }
 };
 
+const getTopItems = async (params) => {
+    try {
+        const res = await httpRequests.get('/admin/statistics/top-items', {
+            params,
+        });
+        return res;
+    } catch (error) {
+        throw new Error(error);
+    }
+};
+
+const getTopStaffs = async (params) => {
+    try {
+        const res = await httpRequests.get('/admin/statistics/top-staffs', {
+            params,
+        });
+        return res;
+    } catch (error) {
+        throw new Error(error);
+    }
+};
+
 const statisticsService = {
     getRevenue,
+    getTopItems,
+    getTopStaffs,
 };
 
 export default statisticsService;
