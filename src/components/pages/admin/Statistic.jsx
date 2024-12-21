@@ -414,15 +414,15 @@ export default function Statistic() {
 
             <div className='grid w-full grid-cols-12 grid-rows-3 gap-4'>
                 <div className='col-span-3 row-span-1 flex rounded-lg bg-blue-600 p-4 text-white'>
-                    <div className='flex h-full flex-col justify-center gap-1'>
-                        <p className=''>Tổng doanh thu</p>
+                    <div className='flex h-full flex-col justify-center gap-1 font-bold'>
+                        <p className=''>Lợi nhuận gộp</p>
                         <p className='text-xl font-bold'>
                             {ultils.getCurrencyFormat(totalPrice)}
                         </p>
                     </div>
                 </div>
                 <div className='col-span-3 row-span-1 rounded-lg bg-orange-400 p-4 text-white'>
-                    <div className='flex h-full flex-col justify-center gap-1'>
+                    <div className='flex h-full flex-col justify-center gap-1 font-bold'>
                         <p className=''>Tổng lịch hẹn</p>
                         <p className='text-xl font-bold'>{bookings.length}</p>
                     </div>

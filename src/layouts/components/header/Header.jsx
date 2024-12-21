@@ -1,25 +1,21 @@
-import { useEffect, useState } from 'react';
-import PropTypes from 'prop-types';
 import TippyHeadless from '@tippyjs/react/headless';
+import PropTypes from 'prop-types';
+import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 
+import logo from '@/src/assets/banner.svg';
 import Button from '@/src/components/button';
-import logo from '/favicon.svg';
-import textLogo from '/favicon_text.svg';
 
-import configs from '@/src/configs';
-import ultils from '@/src/ultils';
-import serviceService from '@/src/services/serviceService';
-import useDebounce from '@/src/hooks/useDebounce';
 import CloseIcon from '@/src/assets/icon/CloseIcon';
+import DefaultAvatar from '@/src/assets/icon/DefaultAvatar';
 import PersonIcon from '@/src/assets/icon/PersonIcon';
 import SignOutIcon from '@/src/assets/icon/SignOutIcon';
-import DefaultAvatar from '@/src/assets/icon/DefaultAvatar';
 import Image from '@/src/components/image/Image';
+import configs from '@/src/configs';
+import useDebounce from '@/src/hooks/useDebounce';
 import useUser from '@/src/hooks/useUser';
-import Utils from '@/src/ultils';
-
-const webName = import.meta.env.VITE_WEB_NAME;
+import serviceService from '@/src/services/serviceService';
+import { default as ultils, default as Utils } from '@/src/ultils';
 
 function Header({ className }) {
     const navigate = useNavigate();
@@ -170,16 +166,8 @@ function Header({ className }) {
                 <Image
                     src={logo}
                     alt='logo'
-                    className='hidden h-10 w-10 sm:block'
+                    className='hidden h-10 text-red-50 sm:block'
                 />
-                <Image
-                    src={textLogo}
-                    alt='logo'
-                    className='block h-10 w-10 sm:hidden'
-                />
-                <span className='hidden text-xl capitalize sm:block'>
-                    {webName || 'Shop sửa xe'}
-                </span>
             </Link>
             <div className='relative flex h-full justify-center sm:flex-grow'>
                 <TippyHeadless

@@ -110,7 +110,7 @@ function Service() {
                 </Button>
             </div>
 
-            <div className='mb-8 w-full overflow-hidden rounded-2xl pt-0 shadow-[rgba(0,5,0,0.15)_1px_1px_60px_1px]'>
+            <div className='w-full overflow-hidden rounded-2xl pt-0 shadow-[rgba(0,5,0,0.15)_1px_1px_60px_1px]'>
                 <h2 className='border-b-2 px-4 py-2 font-bold'>
                     Bộ lọc tìm kiếm
                 </h2>
@@ -181,6 +181,7 @@ function Service() {
             </div>
 
             <div className='relative w-full flex-1 pb-3'>
+                <div className='text-md py-4 text-right text-sm font-bold text-black'>{`Tổng số dịch vụ: ${services.length}`}</div>
                 <Paginateditems
                     data={services}
                     itemsPerPage={10}
