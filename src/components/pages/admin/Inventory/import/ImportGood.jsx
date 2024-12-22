@@ -171,32 +171,48 @@ export default function ImportGood() {
                                         <th className='text-left'>
                                             Tên phụ tùng
                                         </th>
+                                        <th className='text-left'>
+                                            Số lượng tồn
+                                        </th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {items.map((item, index) => (
-                                        <tr
-                                            key={item.id}
-                                            className={`border-b hover:cursor-pointer ${selectedItem?.id == item.id ? 'bg-blue-200' : ''}`}
-                                            onClick={() => {
-                                                if (
-                                                    selectedItem?.id == item.id
-                                                ) {
-                                                    setSelectedItem(null);
-                                                } else {
-                                                    setSelectedItem(item);
-                                                }
-                                            }}
-                                        >
-                                            <td className='py-2 pl-2'>
-                                                {index + 1}
-                                            </td>
-                                            <td className='py-2'>{item.id}</td>
-                                            <td className='max-w-60 py-2'>
-                                                {item.name}
-                                            </td>
-                                        </tr>
-                                    ))}
+                                    {items.map((item, index) => {
+                                        const {
+                                            id,
+                                            name,
+                                            total_input,
+                                            total_output,
+                                        } = item;
+
+                                        return (
+                                            <tr
+                                                key={id}
+                                                className={`border-b hover:cursor-pointer ${selectedItem?.id == id ? 'bg-blue-200' : ''}`}
+                                                onClick={() => {
+                                                    if (
+                                                        selectedItem?.id == id
+                                                    ) {
+                                                        setSelectedItem(null);
+                                                    } else {
+                                                        setSelectedItem(item);
+                                                    }
+                                                }}
+                                            >
+                                                <td className='py-2 pl-2'>
+                                                    {index + 1}
+                                                </td>
+                                                <td className='py-2'>{id}</td>
+                                                <td className='max-w-60 py-2'>
+                                                    {name}
+                                                </td>
+
+                                                <td className='py-2'>
+                                                    {total_input - total_output}
+                                                </td>
+                                            </tr>
+                                        );
+                                    })}
                                 </tbody>
                             </table>
                         </div>

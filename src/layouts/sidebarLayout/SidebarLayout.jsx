@@ -68,6 +68,16 @@ const items = [
         isLabel: false,
         icon: AddShoppingCartIcon,
     },
+    {
+        title: 'Phiếu nhập',
+        to: configs.routes.admin.dashboard.imports,
+        isLabel: false,
+    },
+    {
+        title: 'Phiếu xuất',
+        to: configs.routes.admin.dashboard.exports,
+        isLabel: false,
+    },
 ];
 
 function SidebarLayout({ children }) {

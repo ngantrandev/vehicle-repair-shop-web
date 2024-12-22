@@ -27,6 +27,8 @@ const routes = {
             statistics: '/admin/dashboard/statistics',
             userinfo: '/admin/dashboard/users/:user_id/info',
             staffinfo: '/admin/dashboard/staffs/:staff_id/info',
+            imports: '/admin/dashboard/imports',
+            exports: '/admin/dashboard/exports',
         },
         service: {
             modify: 'admin/services/:service_id/modify',
