@@ -549,6 +549,21 @@ function BookingDetail() {
                                 </span>
                             )}
                         </div>
+                        {booking?.invoice_file?.length > 0 && (
+                            <div className='flex gap-2'>
+                                <span>Hóa đơn:</span>
+                                <a
+                                    href={ultils.getFormatedImageUrl(
+                                        'invoices/' + booking?.invoice_file
+                                    )}
+                                    target='_blank'
+                                    rel='noreferrer'
+                                    className='text-blue-500'
+                                >
+                                    Xem hóa đơn
+                                </a>
+                            </div>
+                        )}
                     </div>
                     <div className='row-span-1 p-3'>
                         <h2 className='font-bold'>Danh sách sản phẩm</h2>

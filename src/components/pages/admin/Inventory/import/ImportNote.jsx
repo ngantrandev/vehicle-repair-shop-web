@@ -43,21 +43,24 @@ function ImportNote() {
         }
     }, [timeRange, notes]);
 
-    useEffect(() => {
-        if (selectValue == 'high') {
-            const newFilteredData = [...notes].sort(
+    const handleChangeSelect = (e) => {
+        const value = e.target.value;
+        setSelectValue(value);
+
+        if (value == 'high') {
+            const newFilteredData = [...filtedNotes].sort(
                 (a, b) => b.total_price - a.total_price
             );
             setFilteredNotes(newFilteredData);
-        } else if (selectValue == 'low') {
-            const newFilteredData = [...notes].sort(
+        } else if (value == 'low') {
+            const newFilteredData = [...filtedNotes].sort(
                 (a, b) => a.total_price - b.total_price
             );
             setFilteredNotes(newFilteredData);
         } else {
             setFilteredNotes(notes);
         }
-    }, [selectValue, filtedNotes, notes]);
+    };
 
     useEffect(() => {
         const fetchData = async () => {
@@ -116,7 +119,7 @@ function ImportNote() {
                             id='state'
                             className='h-10 rounded-md border-2 border-neutral-500 px-2 focus:border-primary'
                             value={selectValue}
-                            onChange={(e) => setSelectValue(e.target.value)}
+                            onChange={handleChangeSelect}
                         >
                             <option value=''>Tất cả</option>
                             <option value='high'>Cao nhất</option>
