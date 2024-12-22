@@ -43,9 +43,11 @@ function Login() {
 
             if (result.status === configs.STATUS_CODE.FORBIDDEN) {
                 ultils.notifyError('Tài khoản của bạn đã bị khóa');
+                setLoading(false);
                 return;
             } else if (result.status === configs.STATUS_CODE.NOT_FOUND) {
                 ultils.notifyError('Sai tên tài khoản hoặc mật khẩu');
+                setLoading(false);
 
                 setUser({
                     data: null,

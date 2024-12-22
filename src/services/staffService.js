@@ -10,6 +10,16 @@ const getAllStaffs = async () => {
     }
 };
 
+const createStaff = async (data) => {
+    try {
+        const res = await httpRequests.post('/admin/staffs', data);
+
+        return res;
+    } catch (error) {
+        throw new Error(error);
+    }
+};
+
 const activeStaff = async (id) => {
     try {
         const res = await httpRequests.patch(`/admin/staffs/${id}`, {
@@ -38,4 +48,5 @@ export default {
     getAllStaffs,
     activeStaff,
     inactiveStaff,
+    createStaff,
 };

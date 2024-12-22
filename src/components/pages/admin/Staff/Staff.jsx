@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
-import { Box } from '@mui/material';
+import { Box, Modal } from '@mui/material';
 import {
     BarPlot,
     ChartsGrid,
@@ -26,6 +26,7 @@ import loadData from '@/src/services/loadData';
 import statisticsService from '@/src/services/statisticService';
 import ultils from '@/src/ultils';
 import ViewCompactIcon from '@mui/icons-material/ViewCompact';
+import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 
 const actionButtons = [
     {
@@ -41,6 +42,206 @@ const actionButtons = [
         mode: 'current_year',
     },
 ];
+
+const CreateStaffForm = ({ open, onClose }) => {
+    const [stations, setStations] = useState([]);
+    const now = useMemo(() => new Date(), []);
+
+    // eslint-disable-next-line no-unused-vars
+    const [username, setUsername] = useState('');
+    // eslint-disable-next-line no-unused-vars
+    const [password, setPassword] = useState('');
+    const [email, setEmail] = useState('');
+    const [phone, setPhone] = useState('');
+    const [firstname, setFirstname] = useState('');
+    const [lastname, setLastname] = useState('');
+    const [station, setStation] = useState('');
+    const [isSuccess, setIsSuccess] = useState(false);
+
+    useEffect(() => {
+        /**user name is name + time */
+        /**remove blank */
+        if (
+            firstname &&
+            lastname &&
+            firstname.trim().length > 0 &&
+            lastname.trim().length > 0
+        ) {
+            const name = `${firstname} ${lastname}`;
+            const username = name.replace(/\s/g, '') + now.getTime();
+            setUsername(username);
+            setPassword('staff');
+        } else {
+            setUsername('');
+            setPassword('');
+        }
+    }, [lastname, firstname, now]);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const resStations = await loadData.getListServiceStation();
+
+                if (resStations.status == configs.STATUS_CODE.OK) {
+                    setStations(resStations.data.data);
+                }
+            } catch (error) {
+                console.log(error);
+            }
+        };
+
+        fetchData();
+    }, []);
+
+    const handleClear = () => {
+        setFirstname('');
+        setLastname('');
+        setEmail('');
+        setPhone('');
+        setStation('');
+        setIsSuccess(false);
+    };
+
+    const handleCreateStaff = async () => {
+        try {
+            const data = {
+                username,
+                password,
+                email,
+                phone,
+                firstname,
+                lastname,
+                station_id: station,
+            };
+
+            const res = await staffService.createStaff(data);
+
+            if (res.status == configs.STATUS_CODE.OK) {
+                setIsSuccess(true);
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
+    return (
+        <Modal
+            open={open}
+            onClose={onClose}
+            aria-labelledby='child-modal-title'
+            aria-describedby='child-modal-description'
+        >
+            <Box className='absolute left-1/2 top-1/2 flex h-[470px] w-1/2 -translate-x-1/2 -translate-y-1/2 flex-col items-center bg-white pb-8'>
+                <div className='w-full bg-green-500 py-2 text-center text-xl font-bold text-white'>
+                    Thêm mới nhân viên
+                </div>
+                <div className='w-full px-8 py-4'>
+                    <div className='grid grid-cols-2 gap-4'>
+                        <div>
+                            <label htmlFor='lastname'>Họ</label>
+                            <Input
+                                className='h-10 rounded-md border-2 border-neutral-500 px-2 focus:border-primary'
+                                placeholder='Nhập họ'
+                                value={lastname}
+                                onChange={(e) => setLastname(e.target.value)}
+                            />
+                        </div>
+                        <div>
+                            <label htmlFor='firstname'>Tên</label>
+                            <Input
+                                className='h-10 rounded-md border-2 border-neutral-500 px-2 focus:border-primary'
+                                placeholder='Nhập tên'
+                                value={firstname}
+                                onChange={(e) => setFirstname(e.target.value)}
+                            />
+                        </div>
+
+                        <div>
+                            <label htmlFor='email'>Email</label>
+                            <Input
+                                className='h-10 rounded-md border-2 border-neutral-500 px-2 focus:border-primary'
+                                placeholder='Nhập email'
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                            />
+                        </div>
+
+                        <div>
+                            <label htmlFor='phone'>Số điện thoại</label>
+                            <Input
+                                className='h-10 rounded-md border-2 border-neutral-500 px-2 focus:border-primary'
+                                placeholder='Nhập số điện thoại'
+                                value={phone}
+                                onChange={(e) => setPhone(e.target.value)}
+                            />
+                        </div>
+
+                        <div>
+                            <label htmlFor='password'>Mật khẩu</label>
+                            <div className='flex h-10 w-full items-center rounded-md border-2 border-neutral-400 bg-neutral-200 px-2'>
+                                {password}
+                            </div>
+                        </div>
+                        <div>
+                            <label htmlFor='username'>Tên đăng nhập</label>
+                            <div className='flex h-10 w-full items-center rounded-md border-2 border-neutral-400 bg-neutral-200 px-2'>
+                                {username}
+                            </div>
+                        </div>
+
+                        <div>
+                            <label htmlFor='station'>Chi nhánh</label>
+                            <select
+                                name='station'
+                                id='station'
+                                className='h-10 w-full rounded-md border-2 border-neutral-500 px-2 focus:border-primary'
+                                onChange={(e) => setStation(e.target.value)}
+                            >
+                                <option value=''>Chọn chi nhánh</option>
+                                {stations.map((station) => (
+                                    <option key={station.id} value={station.id}>
+                                        {station.name}
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
+                    </div>
+                    <div className='mt-4 flex w-full gap-2'>
+                        <Button
+                            rounded
+                            className='h-10 bg-primary text-white'
+                            onClick={handleCreateStaff}
+                        >
+                            Thêm mới
+                        </Button>
+                        <Button
+                            rounded
+                            className='h-10 bg-primary text-white'
+                            onClick={handleClear}
+                        >
+                            Xóa
+                        </Button>
+                        <div
+                            className={`mx-5 flex h-10 flex-1 items-center gap-2 ${isSuccess ? 'block' : 'hidden'}`}
+                        >
+                            <div className='font-bold'>Thành công</div>
+                            <div className='flex gap-2'>
+                                <span>Tên đăng nhập:</span>
+                                <span>{username}</span>
+                                <ContentCopyIcon className='hover:cursor-pointer' />
+                            </div>
+                            <div className='flex gap-2'>
+                                <span>Mật khẩu:</span>
+                                <span>{password}</span>
+                                <ContentCopyIcon className='hover:cursor-pointer' />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </Box>
+        </Modal>
+    );
+};
 
 const RevenueComponent = ({ className }) => {
     const [selectedMode, setSelectedMode] = useState('current_year');
@@ -209,6 +410,8 @@ const RevenueComponent = ({ className }) => {
 function Staff() {
     const [staffs, setStaffs] = useState([]);
     const [stations, setStations] = useState([]);
+    const [openCreateStaffForm, setOpenCreateStaffForm] = useState(false);
+    const handleCloseCreateStaffForm = () => setOpenCreateStaffForm(false);
     // const [csvData, setCsvData] = useState([]);
 
     const { setBreadcrumbsData } = useBreadcrumbs();
@@ -279,10 +482,18 @@ function Staff() {
 
     return (
         <div className='flex h-full flex-1 flex-col items-center bg-white px-0 md:px-4'>
+            <CreateStaffForm
+                open={openCreateStaffForm}
+                onClose={handleCloseCreateStaffForm}
+            />
             <div className='flex w-full justify-between py-5'>
                 <Breadcrumbs />
 
-                <Button rounded className='h-10'>
+                <Button
+                    rounded
+                    className='h-10'
+                    onClick={() => setOpenCreateStaffForm(true)}
+                >
                     <svg
                         fill='currentColor'
                         className='w-6'
@@ -374,6 +585,11 @@ function Staff() {
 
 RevenueComponent.propTypes = {
     className: PropTypes.string,
+};
+
+CreateStaffForm.propTypes = {
+    open: PropTypes.bool,
+    onClose: PropTypes.func,
 };
 
 export default Staff;

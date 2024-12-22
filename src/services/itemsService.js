@@ -1,5 +1,25 @@
 import httpRequest from '@/src/ultils/httpRequest';
 
+const createItem = async (data) => {
+    try {
+        const res = await httpRequest.post('/items', data);
+
+        return res;
+    } catch (error) {
+        throw new Error(error);
+    }
+};
+
+const updateItem = async (itemId, data) => {
+    try {
+        const res = await httpRequest.patch(`/items/${itemId}`, data);
+
+        return res;
+    } catch (error) {
+        throw new Error(error);
+    }
+};
+
 const getAllItems = async (params) => {
     try {
         const res = await httpRequest.get('/items', {
@@ -72,6 +92,8 @@ const itemsService = {
     getAllItemsOfBooking,
     addItemToBooking,
     removeItemFromBooking,
+    createItem,
+    updateItem,
 };
 
 export default itemsService;

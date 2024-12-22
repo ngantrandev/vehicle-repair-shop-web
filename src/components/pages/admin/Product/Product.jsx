@@ -11,7 +11,7 @@ import itemsService from '@/src/services/itemsService';
 import statisticsService from '@/src/services/statisticService';
 import ultils from '@/src/ultils';
 import ViewCompactIcon from '@mui/icons-material/ViewCompact';
-import { Box } from '@mui/material';
+import { Box, Modal } from '@mui/material';
 import {
     BarPlot,
     ChartsGrid,
@@ -38,6 +38,95 @@ const actionButtons = [
         mode: 'current_year',
     },
 ];
+
+const CreateItemForm = ({ open, onClose }) => {
+    const [itemName, setItemName] = useState('');
+    const [description, setDescription] = useState('');
+
+    const handleClear = () => {
+        setDescription('');
+        setItemName('');
+    };
+
+    const handleCreateItem = async () => {
+        if (itemName.trim() === '') {
+            ultils.notifyError('Vui lòng nhập tên sản phẩm');
+            return;
+        }
+
+        /**create item */
+        const data = {
+            name: itemName,
+            description: description,
+        };
+
+        try {
+            const res = await itemsService.createItem(data);
+
+            if (res.status == configs.STATUS_CODE.OK) {
+                ultils.notifySuccess('Tạo sản phẩm thành công');
+                handleClear();
+            } else {
+                ultils.notifyError('Tạo sản phẩm thất bại');
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
+    return (
+        <Modal
+            open={open}
+            onClose={onClose}
+            aria-labelledby='child-modal-title'
+            aria-describedby='child-modal-description'
+        >
+            <Box className='absolute left-1/2 top-1/2 flex h-[300px] w-1/2 -translate-x-1/2 -translate-y-1/2 flex-col items-center bg-white pb-8'>
+                <div className='w-full bg-green-500 py-2 text-center text-xl font-bold text-white'>
+                    Thêm mới sản phẩm
+                </div>
+                <div className='w-full px-8 py-4'>
+                    <div className='grid grid-cols-2 gap-4'>
+                        <div>
+                            <label htmlFor='itemname'>Tên sản phẩm</label>
+                            <Input
+                                className='h-10 rounded-md border-2 border-neutral-500 px-2 focus:border-primary'
+                                placeholder='Nhập tên sản phẩm'
+                                value={itemName}
+                                onChange={(e) => setItemName(e.target.value)}
+                            />
+                        </div>
+                        <div>
+                            <label htmlFor='desc'>Mô tả</label>
+                            <Input
+                                className='h-10 rounded-md border-2 border-neutral-500 px-2 focus:border-primary'
+                                placeholder='Nhập mô tả'
+                                value={description}
+                                onChange={(e) => setDescription(e.target.value)}
+                            />
+                        </div>
+                    </div>
+                    <div className='mt-4 flex w-full gap-2'>
+                        <Button
+                            rounded
+                            className='h-10 bg-primary text-white'
+                            onClick={handleCreateItem}
+                        >
+                            Thêm mới
+                        </Button>
+                        <Button
+                            rounded
+                            className='h-10 bg-primary text-white'
+                            onClick={handleClear}
+                        >
+                            Xóa
+                        </Button>
+                    </div>
+                </div>
+            </Box>
+        </Modal>
+    );
+};
 
 const RevenueComponent = ({ className }) => {
     const [selectedMode, setSelectedMode] = useState('current_month');
@@ -204,7 +293,7 @@ const RevenueComponent = ({ className }) => {
     );
 };
 
-function User() {
+function Product() {
     const [items, setItems] = useState([]);
     // const [csvData, setCsvData] = useState([]);
     const [filtedItems, setFiltedItems] = useState([]);
@@ -213,6 +302,8 @@ function User() {
     const [slxuat, setSlxuat] = useState('');
 
     const { setBreadcrumbsData } = useBreadcrumbs();
+
+    const [openCreateItemForm, setOpenCreateItemForm] = useState(false);
 
     useEffect(() => {
         if (conhang === '#') {
@@ -326,8 +417,33 @@ function User() {
 
     return (
         <div className='flex h-full flex-1 flex-col bg-white px-0 md:px-4'>
+            <CreateItemForm
+                open={openCreateItemForm}
+                onClose={() => setOpenCreateItemForm(false)}
+            />
             <div className='flex w-full justify-between py-5'>
                 <Breadcrumbs />
+
+                <Button
+                    rounded
+                    className='h-10'
+                    onClick={() => setOpenCreateItemForm(true)}
+                >
+                    <svg
+                        fill='currentColor'
+                        className='w-6'
+                        id='Layer_1'
+                        version='1.1'
+                        viewBox='0 0 512 512'
+                        width='512px'
+                        xmlSpace='preserve'
+                        xmlns='http://www.w3.org/2000/svg'
+                        xmlnsXlink='http://www.w3.org/1999/xlink'
+                    >
+                        <path d='M417.4,224H288V94.6c0-16.9-14.3-30.6-32-30.6c-17.7,0-32,13.7-32,30.6V224H94.6C77.7,224,64,238.3,64,256  c0,17.7,13.7,32,30.6,32H224v129.4c0,16.9,14.3,30.6,32,30.6c17.7,0,32-13.7,32-30.6V288h129.4c16.9,0,30.6-14.3,30.6-32  C448,238.3,434.3,224,417.4,224z' />
+                    </svg>
+                    <span>Thêm mới</span>
+                </Button>
             </div>
 
             <div className='mb-8 flex w-full gap-4'>
@@ -407,4 +523,9 @@ RevenueComponent.propTypes = {
     onTotalRevenueChange: PropTypes.func,
 };
 
-export default User;
+CreateItemForm.propTypes = {
+    open: PropTypes.bool,
+    onClose: PropTypes.func,
+};
+
+export default Product;
