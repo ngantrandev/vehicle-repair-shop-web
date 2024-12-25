@@ -33,7 +33,6 @@ function BookingDetail() {
     const [selectedStaff, setSelectedStaff] = useState('');
     const [selectedStation, setSelectedStation] = useState('');
 
-    console.log(selectedStation);
     const [note, setNote] = useState('');
 
     const [booking, setBooking] = useState({});
@@ -44,6 +43,19 @@ function BookingDetail() {
     const [listItems, setListItems] = useState([]);
     const [anchorEl, setAnchorEl] = useState(null);
     const open = Boolean(anchorEl);
+
+    const isPaid = useMemo(() => {
+        const { paid_amount } = booking;
+
+        let totalPrice = 0;
+        listItemsOfBooking.forEach((element) => {
+            const { quantity, price } = element;
+
+            totalPrice += quantity * price;
+        });
+
+        return totalPrice <= paid_amount;
+    }, [booking, listItemsOfBooking]);
 
     const canModifyItems = useMemo(() => {
         return (
@@ -539,7 +551,7 @@ function BookingDetail() {
                         <p>{`Thời gian  : ${booking.service?.estimated_time}`}</p>
                         <div>
                             <span>Trạng thái thanh toán: </span>
-                            {booking.is_paid ? (
+                            {isPaid ? (
                                 <span className='font-bold text-green-500'>
                                     Đã thanh toán
                                 </span>
