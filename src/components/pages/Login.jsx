@@ -125,6 +125,11 @@ function Login() {
                         </Link>
                     </div>
                     <form className='w-full'>
+                        <div>
+                            <h1 className='text-2xl font-bold'>
+                                username&password is admin
+                            </h1>
+                        </div>
                         <div className=''>
                             <label htmlFor='username' className=''>
                                 Email / Tên tài khoản
