@@ -7,7 +7,6 @@ import { Link } from 'react-router-dom';
 
 import { Button } from '@mui/material';
 import { CSVLink } from 'react-csv';
-import bookingsService from '@/src/services/bookingService';
 import serviceService from '@/src/services/serviceService';
 import statisticsService from '@/src/services/statisticService';
 import ultils from '@/src/ultils/ultils';
@@ -16,6 +15,7 @@ import configs from '@/src/configs';
 import Breadcrumbs from '@/src/components/Breadcrumbs/Breadcrumbs';
 import useBreadcrumbs from '@/src/hooks/useBreadcrumbs';
 import ViewCompactIcon from '@mui/icons-material/ViewCompact';
+import adminBookingService from '@/src/services/admin.bookingService';
 
 const { RangePicker } = DatePicker;
 
@@ -154,14 +154,14 @@ const ExportReport = ({ bookings }) => {
         const data = {
             'Mã lịch hẹn': booking.id,
             'Tên khách hàng':
-                booking.user.lastname + ' ' + booking.user.firstname,
-            'Dich vụ': booking.service.name,
-            'Phí dịch vụ': booking.service.price,
+                booking.user?.lastname + ' ' + booking.user?.firstname,
+            'Dich vụ': booking.service?.name,
+            'Phí dịch vụ': booking.service?.price,
             'Ngày đặt': booking.created_at.toString(),
             'Địa chỉ khách hàng':
-                booking.address.address_name +
+                booking.address?.address_name +
                 ' ' +
-                booking.address.full_address,
+                booking.address?.full_address,
             'Trạng thái phục vụ': bookingStatus[booking.status],
             'Trạng thái thanh toán': booking.is_paid
                 ? 'Đã thanh toán'
@@ -323,7 +323,7 @@ export default function Statistic() {
         const fetchTodayBooking = async () => {
             try {
                 const date = dayjs().format('YYYY-MM-DD');
-                const data = await bookingsService.getAllBookings({
+                const data = await adminBookingService.getAllBooking({
                     start_date: date,
                     end_date: date,
                 });
@@ -342,7 +342,7 @@ export default function Statistic() {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const data = await bookingsService.getAllBookings();
+                const data = await adminBookingService.getAllBooking();
                 const resData = data?.data;
                 const bookings = resData?.data;
 
