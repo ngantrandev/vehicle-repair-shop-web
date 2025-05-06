@@ -125,11 +125,6 @@ function Login() {
                         </Link>
                     </div>
                     <form className='w-full'>
-                        <div>
-                            <h1 className='text-2xl font-bold'>
-                                username&password is admin
-                            </h1>
-                        </div>
                         <div className=''>
                             <label htmlFor='username' className=''>
                                 Email / Tên tài khoản
@@ -138,7 +133,7 @@ function Login() {
                                 rounded
                                 id='username'
                                 type='text'
-                                placeholder='Nhập email hoặc tên tài khoản'
+                                placeholder='Email / Username / Try to type admin'
                                 className={'w-full p-2'}
                                 value={username}
                                 onChange={(e) => setUsername(e.target.value)}
@@ -152,7 +147,7 @@ function Login() {
                                 rounded
                                 id='password'
                                 type='password'
-                                placeholder='Nhập mật khẩu'
+                                placeholder='Mật khẩu / Try to type admin'
                                 className={'w-full p-2'}
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
